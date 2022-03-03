@@ -1,0 +1,7 @@
+name: BWP
+version: '${project.version}'
+main: me.trixxtraxx.bwp.BWP
+api-version: 1.18
+authors: [ TrixxTraxx ]
+description: Bedwars Practice core
+website: store.ranked.fun
