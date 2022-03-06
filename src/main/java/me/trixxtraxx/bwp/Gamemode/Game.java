@@ -17,6 +17,7 @@ public class Game
 
     public Game(GameLogic log, List<Player> players, Kit k)
     {
+        games.add(this);
         kit = k;
         logic = log;
         logic.start(this, players);
@@ -42,6 +43,4 @@ public class Game
         }
         return null;
     }
-
-
 }

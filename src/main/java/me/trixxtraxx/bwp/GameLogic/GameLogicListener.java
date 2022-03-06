@@ -1,6 +1,7 @@
 package me.trixxtraxx.bwp.GameLogic;
 
 import me.trixxtraxx.bwp.BWP;
+import me.trixxtraxx.bwp.Gamemode.Game;
 import org.bukkit.World;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.*;
@@ -19,7 +20,7 @@ public class GameLogicListener implements Listener
 {
     public void onEvent(Event e, World w)
     {
-        BWP.log(4, e.getClass().getName());
+        Game.getGame(w).getLogic().triggerEvent(e);
     }
 
     @EventHandler
@@ -33,43 +34,43 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(BlockFadeEvent e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockFormEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockFormEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockFromToEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockFromToEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockGrowEvent e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockGrowEvent e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockIgniteEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockIgniteEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
     public void onEventList(BlockPhysicsEvent   e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockPistonEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockPistonEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockPistonExtendEvent e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockPistonExtendEvent e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
     public void onEventList(BlockPistonRetractEvent   e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockPlaceEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockPlaceEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockRedstoneEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockRedstoneEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( BlockSpreadEvent e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(BlockSpreadEvent e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
     public void onEventList(EntityBlockFormEvent   e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( LeavesDecayEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(LeavesDecayEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( NotePlayEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(NotePlayEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( SignChangeEvent  e) {onEvent( e, e.getBlock().getWorld());}
+    public void onEventList(SignChangeEvent  e) {onEvent( e, e.getBlock().getWorld());}
     @EventHandler
-    public void onEventList( EnchantItemEvent  e) {onEvent( e, e.getView().getPlayer().getWorld());}
+    public void onEventList(EnchantItemEvent  e) {onEvent( e, e.getView().getPlayer().getWorld());}
     @EventHandler
     public void onEventList(PrepareItemEnchantEvent   e) {onEvent( e, e.getView().getPlayer().getWorld());}
     @EventHandler
-    public void onEventList( CreatureSpawnEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(CreatureSpawnEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityBreakDoorEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityBreakDoorEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
     public void onEventList(EntityChangeBlockEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
@@ -77,35 +78,35 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(EntityCombustByEntityEvent   e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityCombustEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityCombustEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityCreatePortalEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityCreatePortalEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityDamageByBlockEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityDamageByBlockEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
     public void onEventList(EntityDamageByEntityEvent   e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
     public void onEventList(EntityDamageEvent   e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityDeathEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityDeathEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityExplodeEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityExplodeEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityInteractEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityInteractEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityPortalEnterEvent e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityPortalEnterEvent e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
     public void onEventList(EntityRegainHealthEvent   e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityShootBowEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityShootBowEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityTameEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityTameEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityTargetEvent e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityTargetEvent e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
     public void onEventList(EntityTargetLivingEntityEvent   e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList( EntityTeleportEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityTeleportEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
     public void onEventList( ExpBottleEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler

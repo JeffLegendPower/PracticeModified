@@ -2,13 +2,18 @@ package me.trixxtraxx.bwp.GameLogic.Components;
 
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 
-public abstract class ComponentEvent
+public abstract class GameEvent
 {
     private GameLogic logic;
-    public ComponentEvent(GameLogic logic)
+    private boolean canceled = false;
+
+    public GameEvent(GameLogic logic)
     {
         this.logic = logic;
     }
 
     public GameLogic getlogic(){return logic;}
+
+    public void setCanceled(boolean b) {canceled = b;}
+    public boolean isCanceled() {return canceled;}
 }

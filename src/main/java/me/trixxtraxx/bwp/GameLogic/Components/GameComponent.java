@@ -12,6 +12,6 @@ public abstract class GameComponent
         this.logic = logic;
     }
 
-    public abstract void onEventList(ComponentEvent e);
-    public abstract void onEventList(Event e);
+    public abstract void onEvent(GameEvent e);
+    public abstract void onEvent(Event e);
 }

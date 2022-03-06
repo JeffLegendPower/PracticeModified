@@ -1,12 +1,13 @@
 package me.trixxtraxx.bwp.GameLogic.SoloGameLogic;
 
+import me.trixxtraxx.bwp.GameLogic.Components.Events.ToSpawnEvent;
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
+import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.bwp.Gamemode.Game;
 import me.trixxtraxx.bwp.Map.Map;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,11 +51,13 @@ public class SoloGameLogic extends GameLogic
 
     public void toSpawn()
     {
+        if(triggerEvent(new ToSpawnEvent(player)).isCanceled()) return;
         player.teleport(map.getSpawn().getSpawn(this, player));
     }
 
     public void reset()
     {
+        if(triggerEvent(new ResetEvent(this)).isCanceled()) return;
         toSpawn();
         resetInventory();
     }

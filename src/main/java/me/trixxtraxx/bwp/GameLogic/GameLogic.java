@@ -1,9 +1,11 @@
 package me.trixxtraxx.bwp.GameLogic;
 
+import me.trixxtraxx.bwp.GameLogic.Components.GameEvent;
 import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
 import me.trixxtraxx.bwp.Gamemode.Game;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,18 @@ public abstract class GameLogic
     public void removeComponent(GameComponent comp)
     {
         components.remove(comp);
+    }
+
+    public Event triggerEvent(Event e)
+    {
+        for (GameComponent comp : getComponents()) comp.onEvent(e);
+        return e;
+    }
+
+    public GameEvent triggerEvent(GameEvent e)
+    {
+        for (GameComponent comp : getComponents()) comp.onEvent(e);
+        return e;
     }
 
 

@@ -1,6 +1,6 @@
 package me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components;
 
-import me.trixxtraxx.bwp.GameLogic.Components.ComponentEvent;
+import me.trixxtraxx.bwp.GameLogic.Components.GameEvent;
 import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloGameLogic;
@@ -19,13 +19,10 @@ public class BreakResetComponent extends GameComponent
     }
 
     @Override
-    public void onEventList(ComponentEvent e)
-    {
-
-    }
+    public void onEvent(GameEvent e) {}
 
     @Override
-    public void onEventList(Event event)
+    public void onEvent(Event event)
     {
         if(event instanceof BlockBreakEvent)
         {
