@@ -1,1 +1,10 @@
 LogLevel: 2
+
+SQL:
+  Database: database
+  Host: localhost
+  Port: 3006
+  Username: root
+  Password: myCoolPassword
+
+SlimeLoader: "sql"

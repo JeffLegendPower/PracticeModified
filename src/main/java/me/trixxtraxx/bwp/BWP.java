@@ -1,36 +1,53 @@
 package me.trixxtraxx.bwp;
 
+import com.grinderwolf.swm.api.SlimePlugin;
+import me.trixxtraxx.bwp.SQL.SQLUtil;
+import me.trixxtraxx.bwp.worldloading.SlimeWorldLoader;
+import me.trixxtraxx.bwp.worldloading.WorldLoader;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BWP extends JavaPlugin
 {
-    public static BWP Instance;
-    private static int loglevel;
-
     // Stats:
     // Store it in a table, make a new table for each Gamemode. stats will be handles by the GAMEMODE EXTENSIONS!
     //
     // Gamemodes:
-    // have it implement a abstract class that does:
+    // THIS IS THE MAIN GAME CLASS!
     // - joining/leaving
     // - world loading
+    // - COMPONENT SYSTEM,
     // - Winning
-    // - Scoreboard, custimizeable, make a function to apply placeholders in the implementations tho, use Fastboard library its good
+    // - Scoreboard, custimizeable, make a function to apply placeholders in the implementations tho, use Fastboard library its good //COMPONENT
     // - kits, including hotbar configurations. Add kits to the config, make a sql storing methode for kits and a kit editor!
     //   Hotbar configurations will be available for all kits including custom ones
-    // - modifiers: double jump, map break, combo, whatever we can come up with, custimizable in the KIT
+    // - modifiers: double jump, map break, combo, whatever we can come up with, custimizable in the KIT //COMPONENT
+    // - provides common functions like map resets, teams, respawning, etc... they can be overwritten by the gamemode extensions //COMPONENT
+    // - point System within teams, OPTIONAL usage //COMPONENT
+    // add it if I forgot something, here and in the class
     //
-    // this class is also extended by presets:
+    //
+    // HANDLED BY ALL GAMEPLAY LOOPS:
+    // - map configurations
+    //
+    // There will be a GAMELOOP Component, that handles the general GAMELOOP:
     // - solo practice:
-    //      handles map resets
+    //      handles SQL
     //      handles win condition //reach a region, step on a pressure plate, break a block...
     // - Duel - 1v1 to the death
-    //
+    //      handles SQL
     // - x teams with x players, respawn mechanic TEAMS CAN BE DIFFERENT SIZES FOR EXAMPLE 1v4
+    //      handles teams
+    //      uses a general purpose team class
+    //      handles respawn mechanic, toggleable // no_respawn, respawn without final chance, respawn with final chance like Bedwars
+    //      handles integrations with Bedwars
     // - FFA
-    // - Point Duels (for The Bridge, mlg rush etc.)
-    // - Point System with x teams of x Players
+    //      a mode that works like infinite gun games, that people can join and leave whenever, TOGGLEABLE
+    //      everyone vs everyone
+    //      same as duels but with more players
     // you can extend these classes in order to make your own Gamemode, they just function as a base
+    // add it if I forgot something, here and in the class
     //
     // GAMEMODES WILL BE STORED IN MYSQL, YOU WILL BE ABLE TO GET IT FROM A CONFIG FILE HOWEVER!
     // all slime worlds should also be stored in mysql for easier scalability!
@@ -60,13 +77,56 @@ public final class BWP extends JavaPlugin
     //
     // make an extensive api in order to create Gamemodes Quick
 
+    // NEW:
+    //
+    // 4 Components play together: Gamemode, Gameloop, Map, Kit
+    //
+    // Gamemode:
+    // - by default it handles only very basic stuff
+    // - you can add components too it, which makes it custimizable
+    // - Contains a Gameloop and a kit that isnt always the same
+    //
+    // Gameloop:
+    // - handles teams, modes are: solo, duels, x teams with x players, FFA
+    // - this also has a component api, that can do something else then the Gamemode Api, for example make is bo3, add points for The Bridge...
+    // - contains a map, that should get reloaded every game from sql cuz why not, runtime custimization is always good
+    //
+    // Map:
+    // - this will handle ONLY the map loading and preperation
+    // - will contains a SPAWN Component, that gets dictated by the Gameloop, different Gameloops have different spawn Components, closely tied to the gameloop
+    // - Component api to place shops and other stuff
+    //
+    // Kits:
+    // - handles inventory
+    // - has a component editor
+
+    public static BWP Instance;
+    private static int loglevel;
+    public static WorldLoader worldLoader;
+
     @Override
     public void onEnable()
     {
         Instance = this;
-        saveDefaultConfig();
-        loglevel = getConfig().getInt("LogLevel");
 
+        saveDefaultConfig();
+        FileConfiguration conf = getConfig();
+
+        loglevel = conf.getInt("LogLevel");
+
+        SQLUtil.Instance.init(
+                conf.getString("SQL.Host"),
+                conf.getString("SQL.Port"),
+                conf.getString("SQL.Database"),
+                conf.getString("SQL.Username"),
+                conf.getString("SQL.Password")
+        );
+        SlimePlugin slime = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
+
+        worldLoader = new SlimeWorldLoader(
+                slime,
+                slime.getLoader(conf.getString("SlimeLoader"))
+        );
     }
 
     @Override
