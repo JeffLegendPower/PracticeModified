@@ -17,10 +17,11 @@ public class Map
     private ISpawnComponent spawn;
     private World world;
 
-    public Map(String name, String load)
+    public Map(String name, String load, ISpawnComponent s)
     {
         Name = name;
         LoadName = load;
+        spawn = s;
     }
 
     public World load()
@@ -33,10 +34,7 @@ public class Map
     {
         return Name;
     }
-
-    public ISpawnComponent getSpawn(){
-        return spawn;
-    }
+    public ISpawnComponent getSpawn(){return spawn;}
 
     public static void init()
     {

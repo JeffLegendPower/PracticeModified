@@ -7,12 +7,12 @@ import org.bukkit.entity.Player;
 
 public class SpawnComponentSolo implements ISpawnComponent
 {
+    // no location for easy serialisation
     private double x;
     private double y;
     private double z;
     private float yaw;
     private float pitch;
-
 
     @Override
     public Location getSpawn(GameLogic logic, Player p)

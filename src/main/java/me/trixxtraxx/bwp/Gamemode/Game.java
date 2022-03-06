@@ -2,6 +2,7 @@ package me.trixxtraxx.bwp.Gamemode;
 
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.Kit.Kit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -23,4 +24,24 @@ public class Game
 
     public GameLogic getLogic(){return logic;}
     public Kit getKit(){return kit;}
+
+    public static Game getGame(Player p)
+    {
+        for (Game g:games)
+        {
+            if(g.getLogic().getPlayers().contains(p)) return g;
+        }
+        return null;
+    }
+
+    public static Game getGame(World w)
+    {
+        for (Game g:games)
+        {
+            if(g.getLogic().getWorld() == w) return g;
+        }
+        return null;
+    }
+
+
 }
