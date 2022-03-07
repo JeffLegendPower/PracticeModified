@@ -1,12 +1,8 @@
 package me.trixxtraxx.bwp.Map;
 
-import com.google.gson.Gson;
 import me.trixxtraxx.bwp.BWP;
-import me.trixxtraxx.bwp.SQL.SQLUtil;
-import me.trixxtraxx.bwp.Utils;
 import org.bukkit.World;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Map

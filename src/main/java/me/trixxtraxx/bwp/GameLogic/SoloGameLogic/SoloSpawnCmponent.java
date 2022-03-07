@@ -5,7 +5,7 @@ import me.trixxtraxx.bwp.Map.ISpawnComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class SpawnComponentSolo implements ISpawnComponent
+public class SoloSpawnCmponent implements ISpawnComponent
 {
     // no location for easy serialisation
     private double x;
@@ -13,6 +13,15 @@ public class SpawnComponentSolo implements ISpawnComponent
     private double z;
     private float yaw;
     private float pitch;
+
+    public SoloSpawnCmponent(Location loc)
+    {
+        x = loc.getX();
+        y = loc.getY();
+        z = loc.getZ();
+        yaw = loc.getYaw();
+        pitch = loc.getPitch();
+    }
 
     @Override
     public Location getSpawn(GameLogic logic, Player p)

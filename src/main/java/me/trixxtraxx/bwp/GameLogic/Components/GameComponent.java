@@ -10,8 +10,12 @@ public abstract class GameComponent
     public GameComponent(GameLogic logic)
     {
         this.logic = logic;
+        logic.addComponent(this);
     }
 
-    public abstract void onEvent(GameEvent e);
-    public abstract void onEvent(Event e);
+    public void onEvent(GameEvent e){}
+    public void onEvent(Event e){}
+
+    public void onEventAfter(GameEvent e){}
+    public void onEventAfter(Event e){}
 }

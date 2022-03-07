@@ -1,4 +1,4 @@
-package me.trixxtraxx.bwp;
+package me.trixxtraxx.bwp.Utils;
 
 public class Utils
 {

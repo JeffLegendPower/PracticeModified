@@ -1,5 +1,6 @@
 package me.trixxtraxx.bwp.GameLogic;
 
+import me.trixxtraxx.bwp.BWP;
 import me.trixxtraxx.bwp.GameLogic.Components.GameEvent;
 import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
 import me.trixxtraxx.bwp.Gamemode.Game;
@@ -37,13 +38,17 @@ public abstract class GameLogic
 
     public Event triggerEvent(Event e)
     {
+        BWP.log(5, "Event triggered: " + e.getEventName());
         for (GameComponent comp : getComponents()) comp.onEvent(e);
+        for (GameComponent comp : getComponents()) comp.onEventAfter(e);
         return e;
     }
 
     public GameEvent triggerEvent(GameEvent e)
     {
+        BWP.log(5, "Event triggered: " + e.getClass().getName());
         for (GameComponent comp : getComponents()) comp.onEvent(e);
+        for (GameComponent comp : getComponents()) comp.onEventAfter(e);
         return e;
     }
 

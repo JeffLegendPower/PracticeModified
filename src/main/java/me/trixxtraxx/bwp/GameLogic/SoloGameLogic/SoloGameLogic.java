@@ -1,5 +1,6 @@
 package me.trixxtraxx.bwp.GameLogic.SoloGameLogic;
 
+import me.trixxtraxx.bwp.BWP;
 import me.trixxtraxx.bwp.GameLogic.Components.Events.ToSpawnEvent;
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Events.ResetEvent;
@@ -57,6 +58,7 @@ public class SoloGameLogic extends GameLogic
 
     public void reset()
     {
+        BWP.log(4, "RESET TRIGGERED!");
         if(triggerEvent(new ResetEvent(this)).isCanceled()) return;
         toSpawn();
         resetInventory();

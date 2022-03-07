@@ -20,7 +20,9 @@ public class GameLogicListener implements Listener
 {
     public void onEvent(Event e, World w)
     {
-        Game.getGame(w).getLogic().triggerEvent(e);
+        Game g = Game.getGame(w);
+        if( g== null) return;
+        g.getLogic().triggerEvent(e);
     }
 
     @EventHandler
@@ -144,14 +146,6 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(InventoryOpenEvent   e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
-    public void onEventList( PaintingBreakByEntityEvent  e) {onEvent( e, e.getPainting().getWorld());}
-    @EventHandler
-    public void onEventList(PaintingBreakEvent   e) {onEvent( e, e.getPainting().getWorld());}
-    @EventHandler
-    public void onEventList(PaintingEvent   e) {onEvent( e, e.getPainting().getWorld());}
-    @EventHandler
-    public void onEventList(PaintingPlaceEvent   e) {onEvent( e, e.getPainting().getWorld());}
-    @EventHandler
     public void onEventList( AsyncPlayerChatEvent  e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
     public void onEventList(PlayerAnimationEvent   e) {onEvent( e, e.getPlayer().getWorld());}
@@ -178,8 +172,6 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(PlayerEggThrowEvent e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
-    public void onEventList(PlayerEvent e) {onEvent( e, e.getPlayer().getWorld());}
-    @EventHandler
     public void onEventList( PlayerExpChangeEvent  e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
     public void onEventList(PlayerFishEvent   e) {onEvent( e, e.getPlayer().getWorld());}
@@ -189,8 +181,6 @@ public class GameLogicListener implements Listener
     public void onEventList( PlayerInteractEntityEvent  e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
     public void onEventList(PlayerInteractEvent   e) {onEvent( e, e.getPlayer().getWorld());}
-    @EventHandler
-    public void onEventList(PlayerInventoryEvent   e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
     public void onEventList( PlayerItemBreakEvent  e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
@@ -251,8 +241,6 @@ public class GameLogicListener implements Listener
     public void onEventList( ThunderChangeEvent  e) {onEvent( e, e.getWorld());}
     @EventHandler
     public void onEventList(WeatherChangeEvent   e) {onEvent( e, e.getWorld());}
-    @EventHandler
-    public void onEventList( WeatherEvent  e) {onEvent( e, e.getWorld());}
     @EventHandler
     public void onEventList(ChunkEvent   e) {onEvent( e, e.getWorld());}
     @EventHandler

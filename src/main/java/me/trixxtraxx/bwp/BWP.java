@@ -1,8 +1,10 @@
 package me.trixxtraxx.bwp;
 
 import com.grinderwolf.swm.api.SlimePlugin;
+import me.trixxtraxx.bwp.GameLogic.GameLogicListener;
+import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.BreakResetComponent;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloGameLogic;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SpawnComponentSolo;
+import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloSpawnCmponent;
 import me.trixxtraxx.bwp.Gamemode.Game;
 import me.trixxtraxx.bwp.Kit.Kit;
 import me.trixxtraxx.bwp.Map.Map;
@@ -10,15 +12,14 @@ import me.trixxtraxx.bwp.SQL.SQLUtil;
 import me.trixxtraxx.bwp.worldloading.SlimeWorldLoader;
 import me.trixxtraxx.bwp.worldloading.WorldLoader;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public final class BWP extends JavaPlugin
@@ -141,6 +142,7 @@ public final class BWP extends JavaPlugin
                 slime.getLoader(conf.getString("SlimeLoader"))
         );
 
+        getServer().getPluginManager().registerEvents(new GameLogicListener(), this);
     }
 
     @Override
@@ -154,7 +156,9 @@ public final class BWP extends JavaPlugin
     {
         if(label.equalsIgnoreCase("TestGame"))
         {
-            new Game(new SoloGameLogic(new Map("MapName", "TestMap", new SpawnComponentSolo())), Collections.singletonList((Player) s), new Kit());
+            Player p = (Player) s;
+            Game g = new Game(new SoloGameLogic(new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0,70,0)))), Collections.singletonList(p), new Kit());
+            new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
         }
         return false;
     }
