@@ -3,6 +3,7 @@ package me.trixxtraxx.bwp.GameLogic;
 import me.trixxtraxx.bwp.BWP;
 import me.trixxtraxx.bwp.Gamemode.Game;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.block.*;
@@ -88,7 +89,7 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(EntityDamageEvent   e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
-    public void onEventList(EntityDeathEvent  e) {onEvent( e, e.getEntity().getWorld());}
+    public void onEventList(EntityDeathEvent  e) {if(!(e.getEntity() instanceof Player))onEvent( e, e.getEntity().getWorld());}
     @EventHandler
     public void onEventList(EntityExplodeEvent  e) {onEvent( e, e.getEntity().getWorld());}
     @EventHandler
@@ -176,11 +177,13 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(PlayerInteractEvent   e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
-    public void onEventList( PlayerItemBreakEvent  e) {onEvent( e, e.getPlayer().getWorld());}
+    public void onEventList(PlayerItemBreakEvent  e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
     public void onEventList(PlayerItemHeldEvent   e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
-    public void onEventList(PlayerJoinEvent   e) {onEvent( e, e.getPlayer().getWorld());}
+    public void onEventList(PlayerJoinEvent e) {onEvent( e, e.getPlayer().getWorld());}
+    @EventHandler
+    public void onEventList(PlayerQuitEvent e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler
     public void onEventList(PlayerKickEvent  e) {onEvent( e, e.getPlayer().getWorld());}
     @EventHandler

@@ -35,6 +35,7 @@ public class BreakResetComponent extends GameComponent
         if(e.getBlock().getType() != mat) return;
         if(logic instanceof SoloGameLogic)
         {
+            e.setCancelled(true);
             ((SoloGameLogic)logic).reset();
         }
     }

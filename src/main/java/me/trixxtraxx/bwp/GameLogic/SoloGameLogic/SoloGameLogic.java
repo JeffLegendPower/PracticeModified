@@ -6,6 +6,8 @@ import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.bwp.Gamemode.Game;
 import me.trixxtraxx.bwp.Map.Map;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -37,6 +39,14 @@ public class SoloGameLogic extends GameLogic
     }
 
     @Override
+    public void stop()
+    {
+        player.teleport(new Location(Bukkit.getWorld("world"),0,100,0));
+        map.unload();
+        game.stop(false);
+    }
+
+    @Override
     public World getWorld() {return world;}
 
     @Override
@@ -44,6 +54,11 @@ public class SoloGameLogic extends GameLogic
     {
         return Collections.singletonList(player);
     }
+
+    @Override
+    public Game getGame() {return game;}
+
+    public Player getPlayer(){return player;}
 
     public void loadWorld()
     {
@@ -53,13 +68,15 @@ public class SoloGameLogic extends GameLogic
     public void toSpawn()
     {
         if(triggerEvent(new ToSpawnEvent(player)).isCanceled()) return;
-        player.teleport(map.getSpawn().getSpawn(this, player));
+        Location loc = map.getSpawn().getSpawn(this, player);
+        BWP.log(4, "TELEPORTING TO SPAWN :" + player.getName() + "," + loc);
+        player.teleport(loc);
     }
 
     public void reset()
     {
-        BWP.log(4, "RESET TRIGGERED!");
         if(triggerEvent(new ResetEvent(this)).isCanceled()) return;
+        BWP.log(4, "RESETING");
         toSpawn();
         resetInventory();
     }

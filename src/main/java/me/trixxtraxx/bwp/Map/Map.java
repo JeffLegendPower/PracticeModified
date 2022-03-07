@@ -1,6 +1,7 @@
 package me.trixxtraxx.bwp.Map;
 
 import me.trixxtraxx.bwp.BWP;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.util.List;
@@ -24,6 +25,11 @@ public class Map
     {
         world = BWP.worldLoader.loadWorld(LoadName);
         return world;
+    }
+
+    public void unload()
+    {
+        Bukkit.unloadWorld(world, false);
     }
 
     public String getName()

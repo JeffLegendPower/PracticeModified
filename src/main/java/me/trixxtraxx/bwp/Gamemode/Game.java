@@ -26,6 +26,12 @@ public class Game
     public GameLogic getLogic(){return logic;}
     public Kit getKit(){return kit;}
 
+    public void stop(boolean stopLogic)
+    {
+        if(stopLogic) logic.stop();
+        games.remove(this);
+    }
+
     public static Game getGame(Player p)
     {
         for (Game g:games)

@@ -1,8 +1,12 @@
 package me.trixxtraxx.bwp;
 
 import com.grinderwolf.swm.api.SlimePlugin;
+import me.trixxtraxx.bwp.GameLogic.Components.Components.DisconnectStopComponent;
+import me.trixxtraxx.bwp.GameLogic.Components.Components.YKillComponent;
 import me.trixxtraxx.bwp.GameLogic.GameLogicListener;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.BreakResetComponent;
+import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.KillResetComponent;
+import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.MapResetComponent;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloSpawnCmponent;
 import me.trixxtraxx.bwp.Gamemode.Game;
@@ -157,8 +161,12 @@ public final class BWP extends JavaPlugin
         if(label.equalsIgnoreCase("TestGame"))
         {
             Player p = (Player) s;
-            Game g = new Game(new SoloGameLogic(new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0,70,0)))), Collections.singletonList(p), new Kit());
+            Game g = new Game(new SoloGameLogic(new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0,105,0)))), Collections.singletonList(p), new Kit());
             new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
+            new MapResetComponent(g.getLogic());
+            new YKillComponent(g.getLogic(), 50);
+            new KillResetComponent(g.getLogic());
+            new DisconnectStopComponent(g.getLogic());
         }
         return false;
     }

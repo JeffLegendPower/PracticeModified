@@ -16,10 +16,6 @@ public abstract class GameLogic
     protected List<GameComponent> components = new ArrayList<>();
 
     public GameLogic() {}
-    public GameLogic(List<GameComponent> comps)
-    {
-        components = comps;
-    }
 
     public List<GameComponent> getComponents()
     {
@@ -49,11 +45,14 @@ public abstract class GameLogic
         BWP.log(5, "Event triggered: " + e.getClass().getName());
         for (GameComponent comp : getComponents()) comp.onEvent(e);
         for (GameComponent comp : getComponents()) comp.onEventAfter(e);
+        if(e.isCanceled()) BWP.log(5, "Canceled");
         return e;
     }
 
 
     public abstract void start(Game gm, List<Player> players);
+    public abstract void stop();
     public abstract World getWorld();
     public abstract List<Player> getPlayers();
+    public abstract Game getGame();
 }
