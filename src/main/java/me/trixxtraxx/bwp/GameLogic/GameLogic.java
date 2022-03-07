@@ -5,6 +5,8 @@ import me.trixxtraxx.bwp.GameEvents.GameEvent;
 
 import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
 import me.trixxtraxx.bwp.Gamemode.Game;
+import me.trixxtraxx.bwp.Kit.Kit;
+import me.trixxtraxx.bwp.Kit.KitComponent;
 import me.trixxtraxx.bwp.Map.Map;
 import me.trixxtraxx.bwp.Map.MapComponent;
 import org.bukkit.World;
@@ -40,8 +42,10 @@ public abstract class GameLogic
         BWP.log(5, "Event triggered: " + e.getEventName());
         for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
         for (GameComponent comp : getComponents()) comp.onEvent(e);
+        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);
         for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
         for (GameComponent comp : getComponents()) comp.onEventAfter(e);
+        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
         return e;
     }
 
@@ -50,8 +54,10 @@ public abstract class GameLogic
         BWP.log(5, "Event triggered: " + e.getClass().getName());
         for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
         for (GameComponent comp : getComponents()) comp.onEvent(e);
+        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);
         for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
         for (GameComponent comp : getComponents()) comp.onEventAfter(e);
+        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
         if(e.isCanceled()) BWP.log(5, "Canceled");
         return e;
     }

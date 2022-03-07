@@ -1,4 +1,4 @@
-package me.trixxtraxx.bwp.GameEvents.AllModes;
+package me.trixxtraxx.bwp.GameLogic.Components.Components;
 
 import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
 import me.trixxtraxx.bwp.GameLogic.GameLogic;

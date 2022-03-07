@@ -30,6 +30,7 @@ public class DropItemComponent extends GameComponent
         protected byte data;
     }
 
+    //SEPERATE INTO DROP COMPONENT (GAME) AND DELETE REGION (MAP) COMPONENT, LISTEN TO THE DROP EVENT!!
     public DropItemComponent(GameLogic logic, Material drop, List<Material> removeItems, Region remove)
     {
         super(logic);

@@ -2,12 +2,10 @@ package me.trixxtraxx.bwp;
 
 import com.grinderwolf.swm.api.SlimePlugin;
 import me.trixxtraxx.bwp.GameLogic.Components.Components.DisconnectStopComponent;
+import me.trixxtraxx.bwp.GameLogic.Components.Components.StartInventoryComponent;
 import me.trixxtraxx.bwp.GameLogic.Components.Components.YKillComponent;
 import me.trixxtraxx.bwp.GameLogic.GameLogicListener;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.BreakResetComponent;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.DropItemComponent;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.KillResetComponent;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.MapResetComponent;
+import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.*;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloSpawnCmponent;
 import me.trixxtraxx.bwp.Gamemode.Game;
@@ -179,6 +177,8 @@ public final class BWP extends JavaPlugin
                     Material.ANVIL,
                     Arrays.asList(new Material[]{Material.ANVIL, Material.BED}),
                     new Region(new Location(p.getWorld(), -5, 107, -5),new Location(p.getWorld(), 4, 112, 4)));
+            new StartInventoryComponent(g.getLogic());
+            new InventoryOnResetComponent(g.getLogic());
             new NoMapBreakComponent(m);
             new BreakRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), true);
             new PlaceRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), false);

@@ -1,10 +1,12 @@
 package me.trixxtraxx.bwp.GameLogic.SoloGameLogic;
 
 import me.trixxtraxx.bwp.BWP;
+import me.trixxtraxx.bwp.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.bwp.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.bwp.Gamemode.Game;
+import me.trixxtraxx.bwp.Kit.Kit;
 import me.trixxtraxx.bwp.Map.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,9 +35,10 @@ public class SoloGameLogic extends GameLogic
         game = gm;
         player = players.get(0);
 
+        triggerEvent(new StartEvent(this));
+
         loadWorld();
         toSpawn();
-        resetInventory();
     }
 
     @Override
@@ -81,11 +84,5 @@ public class SoloGameLogic extends GameLogic
         if(triggerEvent(new ResetEvent(this)).isCanceled()) return;
         BWP.log(4, "RESETING");
         toSpawn();
-        resetInventory();
-    }
-
-    public void resetInventory()
-    {
-        game.getKit().setInventory(player);
     }
 }
