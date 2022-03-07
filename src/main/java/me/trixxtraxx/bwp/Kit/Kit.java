@@ -7,12 +7,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Kit
 {
     protected List<KitComponent> components = new ArrayList<>();
     private List<ItemStack> items = new ArrayList<>();
+    private HashMap<Integer, Integer> defaultOrder = new HashMap<>();
+    private HashMap<Player, HashMap<Integer, Integer>> playerOrders = new HashMap<>();
 
     public List<KitComponent> getComponents()
     {
