@@ -1,6 +1,7 @@
 package me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components;
 
-import me.trixxtraxx.bwp.GameLogic.Components.GameEvent;
+import me.trixxtraxx.bwp.GameEvents.GameEvent;
+
 import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloGameLogic;

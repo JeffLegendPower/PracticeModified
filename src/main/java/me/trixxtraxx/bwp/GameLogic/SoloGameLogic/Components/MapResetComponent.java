@@ -1,20 +1,18 @@
 package me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components;
 
+import me.trixxtraxx.bwp.GameEvents.GameEvent;
 import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
-import me.trixxtraxx.bwp.GameLogic.Components.GameEvent;
+
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Events.ResetEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class MapResetComponent extends GameComponent
 {

@@ -1,4 +1,4 @@
-package me.trixxtraxx.bwp.GameLogic.Components;
+package me.trixxtraxx.bwp.GameEvents;
 
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 

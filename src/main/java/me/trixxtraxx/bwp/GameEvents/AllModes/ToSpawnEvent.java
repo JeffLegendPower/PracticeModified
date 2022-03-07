@@ -1,6 +1,6 @@
-package me.trixxtraxx.bwp.GameLogic.Components.Events;
+package me.trixxtraxx.bwp.GameEvents.AllModes;
 
-import me.trixxtraxx.bwp.GameLogic.Components.GameEvent;
+import me.trixxtraxx.bwp.GameEvents.GameEvent;
 import me.trixxtraxx.bwp.Gamemode.Game;
 import org.bukkit.entity.Player;
 

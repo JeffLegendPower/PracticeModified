@@ -1,9 +1,13 @@
 package me.trixxtraxx.bwp.Map;
 
 import me.trixxtraxx.bwp.BWP;
+
+import me.trixxtraxx.bwp.GameEvents.GameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.Event;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Map
@@ -13,6 +17,7 @@ public class Map
     private String LoadName;
     private ISpawnComponent spawn;
     private World world;
+    protected List<MapComponent> components = new ArrayList<>();
 
     public Map(String name, String load, ISpawnComponent s)
     {
@@ -41,5 +46,20 @@ public class Map
     public static void init()
     {
 
+    }
+
+    public List<MapComponent> getComponents()
+    {
+        return components;
+    }
+
+    public void addComponent(MapComponent comp)
+    {
+        components.add(comp);
+    }
+
+    public void removeComponent(MapComponent comp)
+    {
+        components.remove(comp);
     }
 }

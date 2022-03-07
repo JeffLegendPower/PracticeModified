@@ -1,7 +1,7 @@
 package me.trixxtraxx.bwp.GameLogic.SoloGameLogic;
 
 import me.trixxtraxx.bwp.BWP;
-import me.trixxtraxx.bwp.GameLogic.Components.Events.ToSpawnEvent;
+import me.trixxtraxx.bwp.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.bwp.GameLogic.GameLogic;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.bwp.Gamemode.Game;
@@ -57,6 +57,9 @@ public class SoloGameLogic extends GameLogic
 
     @Override
     public Game getGame() {return game;}
+
+    @Override
+    public Map getMap() {return map;}
 
     public Player getPlayer(){return player;}
 
