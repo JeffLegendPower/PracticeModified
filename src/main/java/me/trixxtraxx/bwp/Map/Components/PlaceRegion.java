@@ -1,5 +1,6 @@
 package me.trixxtraxx.bwp.Map.Components;
 
+import me.trixxtraxx.bwp.BWP;
 import me.trixxtraxx.bwp.Map.Map;
 import me.trixxtraxx.bwp.Map.MapComponent;
 import me.trixxtraxx.bwp.Utils.Region;
@@ -10,6 +11,7 @@ public class PlaceRegion extends MapComponent
 {
     private Region region;
     private boolean canPlace;
+
     public PlaceRegion(Map map, Region r, boolean canPlace)
     {
         super(map);
@@ -27,10 +29,7 @@ public class PlaceRegion extends MapComponent
     {
         if(region.contains(e.getBlock().getLocation()))
         {
-            if(e.isCancelled() != canPlace)
-            {
-                e.setCancelled(canPlace);
-            }
+            e.setCancelled(!canPlace);
         }
     }
 }

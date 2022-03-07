@@ -174,6 +174,7 @@ public final class BWP extends JavaPlugin
             new DisconnectStopComponent(g.getLogic());
             new NoMapBreakComponent(m);
             new BreakRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), true);
+            new PlaceRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), false);
         }
         return false;
     }
