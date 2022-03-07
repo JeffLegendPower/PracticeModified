@@ -5,6 +5,7 @@ import me.trixxtraxx.bwp.GameLogic.Components.Components.DisconnectStopComponent
 import me.trixxtraxx.bwp.GameLogic.Components.Components.YKillComponent;
 import me.trixxtraxx.bwp.GameLogic.GameLogicListener;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.BreakResetComponent;
+import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.DropItemComponent;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.KillResetComponent;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.MapResetComponent;
 import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloGameLogic;
@@ -28,6 +29,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 public final class BWP extends JavaPlugin
@@ -165,13 +167,18 @@ public final class BWP extends JavaPlugin
         if(label.equalsIgnoreCase("TestGame"))
         {
             Player p = (Player) s;
-            Map m = new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0,105,0)));
+            Map m = new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0,108,0)));
             Game g = new Game(new SoloGameLogic(m), Collections.singletonList(p), new Kit());
             new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
             new MapResetComponent(g.getLogic());
             new YKillComponent(g.getLogic(), 50);
             new KillResetComponent(g.getLogic());
             new DisconnectStopComponent(g.getLogic());
+            new DropItemComponent(
+                    g.getLogic(),
+                    Material.ANVIL,
+                    Arrays.asList(new Material[]{Material.ANVIL, Material.BED}),
+                    new Region(new Location(p.getWorld(), -5, 107, -5),new Location(p.getWorld(), 4, 112, 4)));
             new NoMapBreakComponent(m);
             new BreakRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), true);
             new PlaceRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), false);
