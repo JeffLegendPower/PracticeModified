@@ -22,7 +22,9 @@ public class LeaveItemComponent extends GameComponent
 
     public void onInteract(PlayerInteractEvent e)
     {
-        if(e.getItem() != null && e.getItem().getType() == mat){
+        if(e.getItem() != null && e.getItem().getType() == mat)
+        {
+            e.setCancelled(true);
             e.getPlayer().performCommand("lobby");
         }
     }

@@ -9,13 +9,34 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Kit
 {
     protected List<KitComponent> components = new ArrayList<>();
-    private List<ItemStack> items = new ArrayList<>();
-    private HashMap<Integer, Integer> defaultOrder = new HashMap<>();
+    private List<ItemStack> items;
+    private HashMap<Integer, Integer> defaultOrder;
     private HashMap<Player, HashMap<Integer, Integer>> playerOrders = new HashMap<>();
+
+    //- different Items (duh)
+    //- double jump
+    //- health modification
+    //- custom tnt timer
+    //- tnt instand prime
+    //- map break
+    //- no natural regeneration
+    //- permanent effects
+    //- soup heal
+    //- nohunger
+    //- no fall damage
+    //- no Item Drops
+    //- No Damage
+
+    public Kit(List<ItemStack> stacks, HashMap<Integer,Integer> defaultOrder)
+    {
+        items = stacks;
+        this.defaultOrder = defaultOrder;
+    }
 
     public List<KitComponent> getComponents()
     {
@@ -34,6 +55,34 @@ public class Kit
     public void setInventory(Player p)
     {
         clearInventory(p);
+        setItems(p);
+    }
+
+    private void setItems(Player p)
+    {
+        PlayerInventory inv = p.getInventory();
+        HashMap<Integer, Integer> order = defaultOrder;
+        if(playerOrders.containsKey(p)) order = playerOrders.get(p);
+
+        List<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) indexes.add(i);
+
+        for (Map.Entry<Integer, Integer> entry: order.entrySet())
+        {
+            try
+            {
+                ItemStack stack = items.get(entry.getKey());
+                inv.setItem(entry.getValue(), stack.clone());
+                indexes.remove(entry.getKey());
+            }
+            catch (Exception ex){}
+        }
+
+        for (int index:indexes)
+        {
+            ItemStack stack = items.get(index);
+            inv.addItem(stack.clone());
+        }
     }
 
     private void clearInventory(Player p)

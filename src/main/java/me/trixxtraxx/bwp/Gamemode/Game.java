@@ -20,6 +20,10 @@ public class Game
         games.add(this);
         kit = k;
         logic = log;
+        for (Player p:players) {
+            p.setNoDamageTicks(5);
+            p.setHealth(p.getMaxHealth());
+        }
         logic.start(this, players);
     }
 

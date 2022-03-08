@@ -25,10 +25,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public final class BWP extends JavaPlugin
 {
@@ -122,6 +124,24 @@ public final class BWP extends JavaPlugin
     // - handles inventory
     // - has a component editor
 
+    // Gamemode List:
+    // Solo:
+    // - Blocking Practice
+    // - Bridge Practice
+    // FFA:
+    // - gun games? like infinite gun game lobby you can just join
+    // - parties/events
+    // Duels:
+    // - Pot pvp
+    // - uhc
+    // - sumo
+    // - meh would have to look at other servers
+    // - skywars duels
+    // Teams:
+    // - Invis Practice
+    // - Top Bridge fight or whatever
+
+
     public static BWP Instance;
     private static int loglevel;
     public static WorldLoader worldLoader;
@@ -162,26 +182,37 @@ public final class BWP extends JavaPlugin
     @Override
     public boolean onCommand(CommandSender s, Command c, String label, String[] args)
     {
-        if(label.equalsIgnoreCase("TestGame"))
+        if (label.equalsIgnoreCase("TestGame"))
         {
             Player p = (Player) s;
-            Map m = new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0,108,0)));
-            Game g = new Game(new SoloGameLogic(m), Collections.singletonList(p), new Kit());
+            Map m = new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0, 108, 0)));
+            HashMap<Integer, Integer> order = new HashMap<>();
+            order.put(0,2);
+            order.put(1,3);
+            order.put(2,8);
+            order.put(3,6);
+            order.put(4,7);
+            order.put(5,1);
+            Kit k = new Kit(Arrays.asList(new ItemStack[]
+                    {
+                            new ItemStack(Material.IRON_AXE),
+                            new ItemStack(Material.WOOL, 64),
+                            new ItemStack(Material.IRON_PICKAXE),
+                            new ItemStack(Material.SHEARS),
+                            new ItemStack(Material.ANVIL),
+                            new ItemStack(Material.BED)
+                    }), order);
+            Game g = new Game(new SoloGameLogic(m), Collections.singletonList(p), k);
             new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
             new MapResetComponent(g.getLogic());
             new YKillComponent(g.getLogic(), 50);
             new KillResetComponent(g.getLogic());
             new DisconnectStopComponent(g.getLogic());
-            new DropItemComponent(
-                    g.getLogic(),
-                    Material.ANVIL,
-                    Arrays.asList(new Material[]{Material.ANVIL, Material.BED}),
-                    new Region(new Location(p.getWorld(), -5, 107, -5),new Location(p.getWorld(), 4, 112, 4)));
+            new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED}), new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
             new StartInventoryComponent(g.getLogic());
             new InventoryOnResetComponent(g.getLogic());
             new NoMapBreakComponent(m);
-            new BreakRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), true);
-            new PlaceRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), false);
+            new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
         }
         return false;
     }

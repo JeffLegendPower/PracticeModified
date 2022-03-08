@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,10 +36,16 @@ public class SoloGameLogic extends GameLogic
         game = gm;
         player = players.get(0);
 
-        triggerEvent(new StartEvent(this));
-
         loadWorld();
         toSpawn();
+        GameLogic log = this;
+        new BukkitRunnable(){
+            @Override
+            public void run()
+            {
+                triggerEvent(new StartEvent(log));
+            }
+        }.runTaskLater(BWP.Instance,0);
     }
 
     @Override
