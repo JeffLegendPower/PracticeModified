@@ -1,23 +1,24 @@
-package me.trixxtraxx.bwp;
+package me.trixxtraxx.Practice;
 
 import com.grinderwolf.swm.api.SlimePlugin;
-import me.trixxtraxx.bwp.GameLogic.Components.Components.DisconnectStopComponent;
-import me.trixxtraxx.bwp.GameLogic.Components.Components.StartInventoryComponent;
-import me.trixxtraxx.bwp.GameLogic.Components.Components.YKillComponent;
-import me.trixxtraxx.bwp.GameLogic.GameLogicListener;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components.*;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloGameLogic;
-import me.trixxtraxx.bwp.GameLogic.SoloGameLogic.SoloSpawnCmponent;
-import me.trixxtraxx.bwp.Gamemode.Game;
-import me.trixxtraxx.bwp.Kit.Kit;
-import me.trixxtraxx.bwp.Map.Components.BreakRegion;
-import me.trixxtraxx.bwp.Map.Components.NoMapBreakComponent;
-import me.trixxtraxx.bwp.Map.Components.PlaceRegion;
-import me.trixxtraxx.bwp.Map.Map;
-import me.trixxtraxx.bwp.SQL.SQLUtil;
-import me.trixxtraxx.bwp.Utils.Region;
-import me.trixxtraxx.bwp.worldloading.SlimeWorldLoader;
-import me.trixxtraxx.bwp.worldloading.WorldLoader;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.DisconnectStopComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.StartInventoryComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.YKillComponent;
+import me.trixxtraxx.Practice.GameLogic.GameLogicListener;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.*;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCmponent;
+import me.trixxtraxx.Practice.Gamemode.Game;
+import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Map.Components.BreakRegion;
+import me.trixxtraxx.Practice.Map.Components.ClearOnDropComponent;
+import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
+import me.trixxtraxx.Practice.Map.Components.PlaceRegion;
+import me.trixxtraxx.Practice.Map.Map;
+import me.trixxtraxx.Practice.SQL.SQLUtil;
+import me.trixxtraxx.Practice.Utils.Region;
+import me.trixxtraxx.Practice.worldloading.SlimeWorldLoader;
+import me.trixxtraxx.Practice.worldloading.WorldLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,12 +26,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
-public final class BWP extends JavaPlugin
+public class Practice extends JavaPlugin
 {
     // Stats:
     // Store it in a table, make a new table for each Gamemode. stats will be handles by the GAMEMODE EXTENSIONS!
@@ -122,7 +125,7 @@ public final class BWP extends JavaPlugin
     // - handles inventory
     // - has a component editor
 
-    public static BWP Instance;
+    public static Practice Instance;
     private static int loglevel;
     public static WorldLoader worldLoader;
 
@@ -210,7 +213,6 @@ public final class BWP extends JavaPlugin
                 new DropToResetTimerComponent(g.getLogic());
                 new NoMapBreakComponent(m);
             }
-        }
         }
         return false;
     }

@@ -1,9 +1,9 @@
-package me.trixxtraxx.bwp.GameLogic.SoloGameLogic.Components;
+package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
 
-import me.trixxtraxx.bwp.GameEvents.AllModes.StartEvent;
-import me.trixxtraxx.bwp.GameEvents.GameEvent;
-import me.trixxtraxx.bwp.GameLogic.Components.GameComponent;
-import me.trixxtraxx.bwp.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
+import me.trixxtraxx.Practice.GameEvents.GameEvent;
+import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
+import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
