@@ -20,34 +20,19 @@ public class DropItemComponent extends GameComponent
 {
     private Material drop;
     private List<Material> removeItems;
-    private Region remove;
-    private List<ItemStorage> stored = new ArrayList<>();
-
-    private class ItemStorage
-    {
-        protected Material mat;
-        protected byte data;
-    }
 
     //SEPERATE INTO DROP COMPONENT (GAME) AND DELETE REGION (MAP) COMPONENT, LISTEN TO THE DROP EVENT!!
-    public DropItemComponent(GameLogic logic, Material drop, List<Material> removeItems, Region remove)
+    public DropItemComponent(GameLogic logic, Material drop, List<Material> removeItems)
     {
         super(logic);
         this.drop = drop;
         this.removeItems = removeItems;
-        this.remove = remove;
     }
 
     @Override
     public void onEvent(Event event)
     {
         if(event instanceof PlayerInteractEvent) onDrop((PlayerInteractEvent) event);
-    }
-
-    @Override
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof ResetEvent) onReset((ResetEvent) event);
     }
 
     @SuppressWarnings("deprecation")
@@ -57,33 +42,9 @@ public class DropItemComponent extends GameComponent
         {
             if(logic.triggerEvent(new DropEvent(logic)).isCanceled()) return;
             e.setCancelled(true);
-            for (Location loc:remove.getLocations())
-            {
-                ItemStorage store = new ItemStorage();
-                Block b = loc.getBlock();
-                store.mat = b.getType();
-                store.data = b.getData();
-                stored.add(store);
-                b.setType(Material.AIR);
-            }
 
             PlayerInventory inv = e.getPlayer().getInventory();
             for (Material mat:removeItems) inv.remove(mat);
         }
-    }
-
-    @SuppressWarnings("deprecation")
-    public void onReset(ResetEvent e)
-    {
-        if(stored.size() == 0) return;
-        int i = 0;
-        for (Location loc:remove.getLocations())
-        {
-            ItemStorage store = stored.get(i);
-            loc.getBlock().setType(store.mat);
-            loc.getBlock().setData(store.data);
-            i++;
-        }
-        stored.clear();
     }
 }

@@ -85,9 +85,9 @@ public class SoloGameLogic extends GameLogic
         player.teleport(loc);
     }
 
-    public void reset()
+    public void reset(boolean sucess)
     {
-        if(triggerEvent(new ResetEvent(this)).isCanceled()) return;
+        if(triggerEvent(new ResetEvent(this,sucess)).isCanceled()) return;
         Practice.log(4, "RESETING");
         toSpawn();
     }

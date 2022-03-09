@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Map;
 
+import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Practice;
 
 import org.bukkit.Bukkit;
@@ -50,14 +51,21 @@ public class Map
     {
         return components;
     }
-
     public void addComponent(MapComponent comp)
     {
         components.add(comp);
     }
-
     public void removeComponent(MapComponent comp)
     {
         components.remove(comp);
+    }
+    public List<MapComponent> getComponents(Class<?> c)
+    {
+        List<MapComponent> comps = new ArrayList<>();
+        for (MapComponent comp:components)
+        {
+            if(c.isInstance(comp) || c.isAssignableFrom(comp.getClass())) comps.add(comp);
+        }
+        return comps;
     }
 }

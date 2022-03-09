@@ -7,4 +7,4 @@ SQL:
   Username: root
   Password: myCoolPassword
 
-SlimeLoader: "sql"
+SlimeLoader: "mysql"

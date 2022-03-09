@@ -6,6 +6,11 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 
 public class ResetEvent extends GameEvent
 {
-    public ResetEvent(GameLogic logic) {super(logic);}
+    private boolean sucess;
 
+    public ResetEvent(GameLogic logic, boolean sucess)
+    {
+        super(logic);
+        this.sucess = sucess;
+    }
 }

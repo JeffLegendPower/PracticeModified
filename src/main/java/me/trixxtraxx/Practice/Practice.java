@@ -11,6 +11,7 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCmponent;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Components.BreakRegion;
+import me.trixxtraxx.Practice.Map.Components.ClearOnDropComponent;
 import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
@@ -136,9 +137,12 @@ public final class Practice extends JavaPlugin
     // - sumo
     // - meh would have to look at other servers
     // - skywars duels
+    // - combo
+    // - boxxing
+    // - Bed Fight
     // Teams:
     // - Invis Practice
-    // - Top Bridge fight or whatever
+    // - Top Bridge fight
 
 
     public static Practice Instance;
@@ -183,35 +187,49 @@ public final class Practice extends JavaPlugin
     {
         if (label.equalsIgnoreCase("TestGame"))
         {
-            Player p = (Player) s;
-            Map m = new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0, 108, 0)));
-            HashMap<Integer, Integer> order = new HashMap<>();
-            order.put(0,2);
-            order.put(1,3);
-            order.put(2,8);
-            order.put(3,6);
-            order.put(4,7);
-            order.put(5,1);
-            Kit k = new Kit(Arrays.asList(new ItemStack[]
-                    {
-                            new ItemStack(Material.IRON_AXE),
-                            new ItemStack(Material.WOOL, 64),
-                            new ItemStack(Material.IRON_PICKAXE),
-                            new ItemStack(Material.SHEARS),
-                            new ItemStack(Material.ANVIL),
-                            new ItemStack(Material.BED)
-                    }), order);
-            Game g = new Game(new SoloGameLogic(m), Collections.singletonList(p), k);
-            new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
-            new MapResetComponent(g.getLogic());
-            new YKillComponent(g.getLogic(), 50);
-            new KillResetComponent(g.getLogic());
-            new DisconnectStopComponent(g.getLogic());
-            new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED}), new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
-            new StartInventoryComponent(g.getLogic());
-            new InventoryOnResetComponent(g.getLogic());
-            new NoMapBreakComponent(m);
-            new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
+            if(args[0].equalsIgnoreCase("Blockin"))
+            {
+                Player p = (Player) s;
+                Map m = new Map("MapName", "TestMap", new SoloSpawnCmponent(new Location(p.getWorld(), 0, 108, 0)));
+                HashMap<Integer, Integer> order = new HashMap<>();
+                order.put(0, 2);
+                order.put(1, 3);
+                order.put(2, 8);
+                order.put(3, 6);
+                order.put(4, 7);
+                order.put(5, 1);
+                Kit k = new Kit(Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED)}), order);
+                Game g = new Game(new SoloGameLogic(m), Collections.singletonList(p), k);
+                new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
+                new MapResetComponent(g.getLogic());
+                new YKillComponent(g.getLogic(), 50);
+                new KillResetComponent(g.getLogic());
+                new DisconnectStopComponent(g.getLogic());
+                new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED}));
+                new StartInventoryComponent(g.getLogic());
+                new InventoryOnResetComponent(g.getLogic());
+                new DropToResetTimerComponent(g.getLogic());
+                new NoMapBreakComponent(m);
+                new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
+                new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
+            }
+            else if(args[0].equalsIgnoreCase("Bridge")){
+                Player p = (Player) s;
+                Map m = new Map("MapName", "BridgeTest", new SoloSpawnCmponent(new Location(p.getWorld(), 0, 100, 0)));
+                HashMap<Integer, Integer> order = new HashMap<>();
+                Kit k = new Kit(Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), order);
+                Game g = new Game(new SoloGameLogic(m), Collections.singletonList(p), k);
+                new PressurePlateResetComponent(g.getLogic());
+                new MapResetComponent(g.getLogic());
+                new YKillComponent(g.getLogic(), 90);
+                new KillResetComponent(g.getLogic());
+                new DisconnectStopComponent(g.getLogic());
+                new DropItemComponent(g.getLogic(), Material.WOOL, Arrays.asList(new Material[]{Material.BED}));
+                new StartInventoryComponent(g.getLogic());
+                new InventoryOnResetComponent(g.getLogic());
+                new DropToResetTimerComponent(g.getLogic());
+                new NoMapBreakComponent(m);
+            }
         }
         return false;
     }

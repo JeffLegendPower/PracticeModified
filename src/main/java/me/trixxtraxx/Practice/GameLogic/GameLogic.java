@@ -36,6 +36,16 @@ public abstract class GameLogic
         components.remove(comp);
     }
 
+    public List<GameComponent> getComponents(Class<?> c)
+    {
+        List<GameComponent> comps = new ArrayList<>();
+        for (GameComponent comp:components)
+        {
+            if(c.isInstance(comp)) comps.add(comp);
+        }
+        return comps;
+    }
+
     public Event triggerEvent(Event e)
     {
         Practice.log(5, "Event triggered: " + e.getEventName());

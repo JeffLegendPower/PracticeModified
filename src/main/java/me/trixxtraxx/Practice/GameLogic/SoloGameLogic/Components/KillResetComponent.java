@@ -30,7 +30,7 @@ public class KillResetComponent extends GameComponent
             new BukkitRunnable()
             {
                 @Override
-                public void run() {log.reset();}
+                public void run() {log.reset(false);}
             }.runTaskLater(Practice.Instance,0);
         }
     }

@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Kit;
 
+import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -49,7 +50,15 @@ public class Kit
     {
         components.remove(comp);
     }
-
+    public List<KitComponent> getComponents(Class<?> c)
+    {
+        List<KitComponent> comps = new ArrayList<>();
+        for (KitComponent comp:components)
+        {
+            if(c.isInstance(comp)) comps.add(comp);
+        }
+        return comps;
+    }
 
     public void setInventory(Player p)
     {

@@ -1,6 +1,6 @@
 name: BWP
 version: '${project.version}'
-main: me.trixxtraxx.bwp.BWP
+main: me.trixxtraxx.Practice.Practice
 api-version: 1.18
 authors: [ TrixxTraxx ]
 description: Bedwars Practice core
