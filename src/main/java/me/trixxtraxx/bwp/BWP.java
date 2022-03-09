@@ -179,6 +179,9 @@ public final class BWP extends JavaPlugin
                     new Region(new Location(p.getWorld(), -5, 107, -5),new Location(p.getWorld(), 4, 112, 4)));
             new StartInventoryComponent(g.getLogic());
             new InventoryOnResetComponent(g.getLogic());
+            new BedLayerComponent(g.getLogic(), Material.ENDER_STONE, new Location(g.getLogic().getWorld(), 0,100,0), new Location(g.getLogic().getWorld(), 1,100,0), 1, false);
+            new BedLayerComponent(g.getLogic(), Material.WOOD, new Location(g.getLogic().getWorld(), 0,100,0), new Location(g.getLogic().getWorld(), 1,100,0), 2, false);
+            new BedLayerComponent(g.getLogic(), Material.WOOL, new Location(g.getLogic().getWorld(), 0,100,0), new Location(g.getLogic().getWorld(), 1,100,0), 3, false);
             new NoMapBreakComponent(m);
             new BreakRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), true);
             new PlaceRegion(m, new Region(new Location(p.getWorld(), -3,101,3),new Location(p.getWorld(), 4,104,-3)), false);
