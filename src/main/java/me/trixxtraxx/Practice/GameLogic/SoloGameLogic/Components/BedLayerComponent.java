@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,9 +41,10 @@ public class BedLayerComponent extends GameComponent
     public void onStart(StartEvent e)
     {
         List<Block> blocks = getDefenceBlocks();
+        Practice.log(4, "Now placing: " + blocks.size() + " blocks");
         for (Block b : blocks)
         {
-            b.setType(mat);
+            if(b.getType() == Material.AIR) b.setType(mat);
         }
     }
 
@@ -57,9 +59,22 @@ public class BedLayerComponent extends GameComponent
 
         List<Block> blocks = getBlocks(b1, new BlockFace[]{f0, f1, BlockFace.UP});
         blocks.addAll(getBlocks(b1, new BlockFace[]{f0, f2, BlockFace.UP}));
+        blocks.addAll(getBlocks(b2, new BlockFace[]{f, f1, BlockFace.UP}));
         blocks.addAll(getBlocks(b2, new BlockFace[]{f, f2, BlockFace.UP}));
-        blocks.addAll(getBlocks(b2, new BlockFace[]{f, f2, BlockFace.UP}));
+        if(butterfly)
+        {
+            blocks.add(getBlock(b1, f1));
+            blocks.add(getBlock(b1, f2));
+            blocks.add(getBlock(b2, f1));
+            blocks.add(getBlock(b2, f2));
+        }
         return blocks;
+    }
+
+    private Block getBlock(Block b, BlockFace face){
+        Block block = b;
+        for(int i = 0; i <( layer + 1); i++) block = block.getRelative(face);
+        return block;
     }
 
     private List<Block> getBlocks(Block b, BlockFace[] faces)
@@ -74,6 +89,7 @@ public class BedLayerComponent extends GameComponent
                 for (int i = 0; i < i1; i++) block = block.getRelative(faces[0]);
                 for (int i = 0; i < i2; i++) block = block.getRelative(faces[1]);
                 for (int i = 0; i < i3; i++) block = block.getRelative(faces[2]);
+                blocks.add(block);
             }
         }
         return blocks;
