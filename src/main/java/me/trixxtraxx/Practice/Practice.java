@@ -5,6 +5,9 @@ import me.trixxtraxx.Practice.GameLogic.Components.Components.DisconnectStopComp
 import me.trixxtraxx.Practice.GameLogic.Components.Components.StartInventoryComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.YKillComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogicListener;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToBlockinTimer;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToBreakTimer;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToResetTimer;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.*;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCmponent;
@@ -20,6 +23,7 @@ import me.trixxtraxx.Practice.Utils.Region;
 import me.trixxtraxx.Practice.worldloading.SlimeWorldLoader;
 import me.trixxtraxx.Practice.worldloading.WorldLoader;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -33,7 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class Practice extends JavaPlugin
+public final class Practice extends JavaPlugin
 {
     // Stats:
     // Store it in a table, make a new table for each Gamemode. stats will be handles by the GAMEMODE EXTENSIONS!
@@ -125,6 +129,27 @@ public class Practice extends JavaPlugin
     // - handles inventory
     // - has a component editor
 
+    // Gamemode List:
+    // Solo:
+    // - Blocking Practice
+    // - Bridge Practice
+    // FFA:
+    // - gun games? like infinite gun game lobby you can just join
+    // - parties/events
+    // Duels:
+    // - Pot pvp
+    // - uhc
+    // - sumo
+    // - meh would have to look at other servers
+    // - skywars duels
+    // - combo
+    // - boxxing
+    // - Bed Fight
+    // Teams:
+    // - Invis Practice
+    // - Top Bridge fight
+
+
     public static Practice Instance;
     private static int loglevel;
     public static WorldLoader worldLoader;
@@ -165,7 +190,7 @@ public class Practice extends JavaPlugin
     @Override
     public boolean onCommand(CommandSender s, Command c, String label, String[] args)
     {
-        if(label.equalsIgnoreCase("TestGame"))
+        if (label.equalsIgnoreCase("TestGame"))
         {
             if(args[0].equalsIgnoreCase("Blockin"))
             {
@@ -188,10 +213,24 @@ public class Practice extends JavaPlugin
                 new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED}));
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
-                new DropToResetTimerComponent(g.getLogic());
-                new BedLayerComponent(g.getLogic(), Material.ENDER_STONE, new Location(g.getLogic().getWorld(), 0,101,0), new Location(g.getLogic().getWorld(), 1,101,0), 1, true);
-                new BedLayerComponent(g.getLogic(), Material.WOOD, new Location(g.getLogic().getWorld(), 0,101,0), new Location(g.getLogic().getWorld(), 1,101,0), 2, false);
-                new BedLayerComponent(g.getLogic(), Material.WOOL, new Location(g.getLogic().getWorld(), 0,101,0), new Location(g.getLogic().getWorld(), 1,101,0), 3, false);
+                new DropToBlockinTimer(g.getLogic());
+                new DropToResetTimer(g.getLogic());
+                new DropToBreakTimer(g.getLogic(), Material.WOOL);
+                new DropToBreakTimer(g.getLogic(), Material.WOOD);
+                new DropToBreakTimer(g.getLogic(), Material.ENDER_STONE);
+                new ScoreboardComponent(g.getLogic(),
+                        ChatColor.GOLD + "Blockin Practice",
+                        Arrays.asList(
+                                "",
+                                ChatColor.BLUE + "Wool      " + ChatColor.AQUA + "{WOOLTimer}",
+                                ChatColor.BLUE + "Wood      " + ChatColor.AQUA + "{WOODTimer}",
+                                ChatColor.BLUE + "Endstone: " + ChatColor.AQUA + "{ENDER_STONETimer}",
+                                ChatColor.BLUE + "Blockin:  " + ChatColor.AQUA + "{BlockinTimer}",
+                                ChatColor.BLUE + "Bed:      " + ChatColor.AQUA + "{TotalTimer}",
+                                "",
+                                ChatColor.GOLD + "Ranked.fun"
+                        )
+                );
                 new NoMapBreakComponent(m);
                 new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
                 new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);

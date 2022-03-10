@@ -71,6 +71,28 @@ public abstract class GameLogic
         return e;
     }
 
+    public String applyPlaceholders(Player p, String s)
+    {
+        for (MapComponent comp : getMap().getComponents()) s = comp.applyPlaceholder(p, s);
+        for (GameComponent comp : getComponents()) s = comp.applyPlaceholder(p, s);
+        for (KitComponent comp : getGame().getKit().getComponents()) s = comp.applyPlaceholder(p, s);
+        return s;
+    }
+
+    public List<String> applyPlaceholders(Player p, List<String> list)
+    {
+        List<String> newStrings = new ArrayList<>();
+        for (String string:list)
+        {
+            String s = string;
+            for (MapComponent comp : getMap().getComponents()) s = comp.applyPlaceholder(p, s);
+            for (GameComponent comp : getComponents()) s = comp.applyPlaceholder(p, s);
+            for (KitComponent comp : getGame().getKit().getComponents()) s = comp.applyPlaceholder(p, s);
+            newStrings.add(s);
+        }
+        return newStrings;
+    }
+
 
     public abstract void start(Game gm, List<Player> players);
     public abstract void stop();

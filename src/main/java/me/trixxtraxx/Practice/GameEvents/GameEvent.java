@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.GameEvents;
 
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import org.bukkit.event.Event;
 
 public abstract class GameEvent
 {

@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.Kit;
 
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public abstract class KitComponent
@@ -18,4 +19,6 @@ public abstract class KitComponent
 
     public void onEventAfter(GameEvent e){}
     public void onEventAfter(Event e){}
+
+    public String applyPlaceholder(Player p, String s){return s;}
 }
