@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice;
 
 import com.grinderwolf.swm.api.SlimePlugin;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.DisconnectStopComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.ScoreboardComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.StartInventoryComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.YKillComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogicListener;
@@ -249,7 +250,7 @@ public final class Practice extends JavaPlugin
                 new DropItemComponent(g.getLogic(), Material.WOOL, Arrays.asList(new Material[]{Material.BED}));
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
-                new DropToResetTimerComponent(g.getLogic());
+                new DropToResetTimer(g.getLogic());
                 new NoMapBreakComponent(m);
             }
         }
