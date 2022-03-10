@@ -1,3 +1,5 @@
+//SOURCE: https://github.com/MrMicky-FR/FastBoard
+package me.trixxtraxx.Practice.libs.Fastboard;
 /*
  * This file is part of FastBoard, licensed under the MIT License.
  *
@@ -21,10 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-
-//SOURCE: https://github.com/MrMicky-FR/FastBoard
-package me.trixxtraxx.Practice.libs.Fastboard;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -56,8 +54,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author MrMicky
  * @version 1.2.1
  */
-public class FastBoard
-{
+public class FastBoard {
 
     private static final Map<Class<?>, Field[]> PACKETS = new HashMap<>(8);
     private static final String[] COLOR_CODES = Arrays.stream(ChatColor.values())
@@ -217,19 +214,12 @@ public class FastBoard
             throw new IllegalArgumentException("Title is longer than 32 chars");
         }
 
-        //MY OPTIMISATION
-        if(!this.title.contentEquals(title))
-        {
-            this.title = title;
+        this.title = title;
 
-            try
-            {
-                sendObjectivePacket(ObjectiveMode.UPDATE);
-            }
-            catch (Throwable t)
-            {
-                throw new RuntimeException("Unable to update scoreboard title", t);
-            }
+        try {
+            sendObjectivePacket(ObjectiveMode.UPDATE);
+        } catch (Throwable t) {
+            throw new RuntimeException("Unable to update scoreboard title", t);
         }
     }
 
@@ -339,15 +329,6 @@ public class FastBoard
         }
 
         List<String> oldLines = new ArrayList<>(this.lines);
-        boolean cont = false;
-
-        for (int i = 0; i < lines.size(); i++)
-        {
-            if(!oldLines.get(i).contentEquals(((String[])lines.toArray())[i])) cont = true;
-        }
-
-        if(!cont) return;
-
         this.lines.clear();
         this.lines.addAll(lines);
 

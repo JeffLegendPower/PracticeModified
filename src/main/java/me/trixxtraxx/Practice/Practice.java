@@ -214,6 +214,9 @@ public final class Practice extends JavaPlugin
                 new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED}));
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
+                new BedLayerComponent(g.getLogic(), Material.ENDER_STONE, new Location(g.getLogic().getWorld(), 0, 101, 0), new Location(g.getLogic().getWorld(), 1, 101, 0), 1, true);
+                new BedLayerComponent(g.getLogic(), Material.WOOD, new Location(g.getLogic().getWorld(), 0, 101, 0), new Location(g.getLogic().getWorld(), 1, 101, 0), 2, false);
+                new BedLayerComponent(g.getLogic(), Material.WOOL, new Location(g.getLogic().getWorld(), 0, 101, 0), new Location(g.getLogic().getWorld(), 1, 101, 0), 3, false);
                 new DropToBlockinTimer(g.getLogic());
                 new DropToResetTimer(g.getLogic());
                 new DropToBreakTimer(g.getLogic(), Material.WOOL);
