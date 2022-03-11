@@ -5,6 +5,8 @@ import me.trixxtraxx.Practice.GameLogic.Components.Components.DisconnectStopComp
 import me.trixxtraxx.Practice.GameLogic.Components.Components.ScoreboardComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.StartInventoryComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.YKillComponent;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelSpawnComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogicListener;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToBlockinTimer;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToBreakTimer;
@@ -239,11 +241,12 @@ public final class Practice extends JavaPlugin
                 new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
                 new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
             }
-            else if(args[0].equalsIgnoreCase("Bridge")){
+            else if(args[0].equalsIgnoreCase("Bridge"))
+            {
                 Player p = (Player) s;
                 Map m = new Map("MapName", "BridgeTest", new SoloSpawnCmponent(new Location(p.getWorld(), 0, 100, 0)));
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), order);
+                Kit k = new Kit(Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), order);
                 Game g = new Game(new SoloGameLogic(m), Collections.singletonList(p), k);
                 new PressurePlateResetComponent(g.getLogic());
                 new MapResetComponent(g.getLogic());
@@ -254,6 +257,27 @@ public final class Practice extends JavaPlugin
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
                 new DropToResetTimer(g.getLogic());
+                new NoMapBreakComponent(m);
+            }
+            else if(args[0].equalsIgnoreCase("duels"))
+            {
+                Player p = (Player) s;
+                Player p2 = Bukkit.getPlayer(args[1]);
+                DuelSpawnComponent spawn = new DuelSpawnComponent();
+                Map m = new Map("MapName", "Practice1", spawn);
+                HashMap<Integer, Integer> order = new HashMap<>();
+                Kit k = new Kit(Arrays.asList(new ItemStack[]{}), order);
+                Game g = new Game(new DuelGameLogic(m), Arrays.asList(p,p2), k);
+                spawn.init(
+                        new Location(g.getLogic().getWorld(), 30,100,0),
+                        new Location(g.getLogic().getWorld(), -30,100,0),
+                        Arrays.asList(p),
+                        Arrays.asList(p2)
+                );
+                new YKillComponent(g.getLogic(), 90);
+                new DisconnectStopComponent(g.getLogic());
+                new DropItemComponent(g.getLogic(), Material.WOOL, Arrays.asList(new Material[]{Material.BED}));
+                new StartInventoryComponent(g.getLogic());
                 new NoMapBreakComponent(m);
             }
         }
