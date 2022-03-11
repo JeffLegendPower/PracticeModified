@@ -1,4 +1,4 @@
-package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
+package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers;
 
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
@@ -9,31 +9,34 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-public class DropToResetTimerComponent extends TimerComponent
+public class DropToResetTimer extends TimerComponent
 {
 
-    public DropToResetTimerComponent(GameLogic logic)
+    public DropToResetTimer(GameLogic logic)
     {
         super(logic);
     }
 
-    public void onEvent(GameEvent event){
+    @Override
+    public void onEvent(GameEvent event)
+    {
         if(event instanceof DropEvent) onDrop((DropEvent) event);
         if(event instanceof ResetEvent) onReset((ResetEvent) event);
     }
 
     public void onDrop(DropEvent e){
+        reset();
         start();
     }
 
+
     public void onReset(ResetEvent e){
         stop();
-        for (Player p:logic.getPlayers())
-        {
-            p.sendTitle(ChatColor.GREEN + "SUCESS","Time: " + getTime());
-        }
-        reset();
     }
 
-
+    @Override
+    public String applyPlaceholder(Player p, String s)
+    {
+        return s.replace("{TotalTimer}", getTime());
+    }
 }
