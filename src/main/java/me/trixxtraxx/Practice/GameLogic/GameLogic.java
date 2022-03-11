@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.GameLogic;
 
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.BedLayerComponent;
 import me.trixxtraxx.Practice.Kit.KitComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
@@ -22,15 +23,13 @@ public abstract class GameLogic
     public GameLogic() {}
 
     public List<GameComponent> getComponents()
-    {
-        return components;
-    }
-
+{
+    return components;
+}
     public void addComponent(GameComponent comp)
     {
         components.add(comp);
     }
-
     public void removeComponent(GameComponent comp)
     {
         components.remove(comp);

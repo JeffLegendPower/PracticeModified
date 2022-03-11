@@ -81,7 +81,7 @@ public class SoloGameLogic extends GameLogic
     {
         if(triggerEvent(new ToSpawnEvent(player)).isCanceled()) return;
         Location loc = map.getSpawn().getSpawn(this, player);
-        Practice.log(4, "TELEPORTING TO SPAWN :" + player.getName() + "," + loc);
+        Practice.log(4, "TELEPORTING TO SPAWN:" + player.getName() + "," + loc);
         player.teleport(loc);
     }
 

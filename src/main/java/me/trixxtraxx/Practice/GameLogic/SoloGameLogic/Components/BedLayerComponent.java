@@ -4,17 +4,19 @@ import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings.ISettingsComponent;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BedLayerComponent extends GameComponent
+public class BedLayerComponent extends GameComponent implements ISettingsComponent
 {
     private Material mat;
     private Location loc1;
@@ -99,5 +101,17 @@ public class BedLayerComponent extends GameComponent
     {
         if(face == BlockFace.SOUTH || face == BlockFace.NORTH) return BlockFace.EAST;
         else return BlockFace.SOUTH;
+    }
+
+    @Override
+    public int getSlot()
+    {
+        return 0;
+    }
+
+    @Override
+    public ItemStack getItem()
+    {
+        return null;
     }
 }
