@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic;
 
+import me.trixxtraxx.Practice.GameEvents.AllModes.StopEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Map.Map;
@@ -36,7 +37,7 @@ public class SoloGameLogic extends GameLogic
         player = players.get(0);
 
         loadWorld();
-        toSpawn();
+        toSpawn(null);
         GameLogic log = this;
         new BukkitRunnable(){
             @Override
@@ -48,8 +49,9 @@ public class SoloGameLogic extends GameLogic
     }
 
     @Override
-    public void stop()
+    public void stop(boolean dc)
     {
+        if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
         player.teleport(new Location(Bukkit.getWorld("world"),0,100,0));
         map.unload();
         game.stop(false);
@@ -77,11 +79,11 @@ public class SoloGameLogic extends GameLogic
         world = map.load();
     }
 
-    public void toSpawn()
+    @Override
+    public void toSpawn(Player p)
     {
-        if(triggerEvent(new ToSpawnEvent(player)).isCanceled()) return;
         Location loc = map.getSpawn().getSpawn(this, player);
-        Practice.log(4, "TELEPORTING TO SPAWN:" + player.getName() + "," + loc);
+        if(triggerEvent(new ToSpawnEvent(player, loc)).isCanceled()) return;
         player.teleport(loc);
     }
 
@@ -89,6 +91,6 @@ public class SoloGameLogic extends GameLogic
     {
         if(triggerEvent(new ResetEvent(this,sucess)).isCanceled()) return;
         Practice.log(4, "RESETING");
-        toSpawn();
+        toSpawn(null);
     }
 }

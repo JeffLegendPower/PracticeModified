@@ -1,14 +1,15 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
-import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Practice;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class DisconnectStopComponent extends GameComponent
+public class NoDieComponent extends GameComponent
 {
-    public DisconnectStopComponent(GameLogic logic)
+    public NoDieComponent(GameLogic logic)
     {
         super(logic);
     }
@@ -16,12 +17,11 @@ public class DisconnectStopComponent extends GameComponent
     @Override
     public void onEvent(Event event)
     {
-        if(event instanceof PlayerQuitEvent) onQuit((PlayerQuitEvent) event);
+        if(event instanceof PlayerDeathEvent) onQuit((PlayerDeathEvent) event);
     }
 
-    public void onQuit(PlayerQuitEvent e)
+    public void onQuit(PlayerDeathEvent e)
     {
-        Practice.log(3, "Stoping Game due to a disconnect");
-        logic.stop(true);
+        e.getEntity().setHealth(20);
     }
 }

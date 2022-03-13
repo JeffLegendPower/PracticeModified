@@ -21,5 +21,8 @@ public abstract class GameComponent
     public void onEventAfter(GameEvent e){}
     public void onEventAfter(Event e){}
 
+    public void onEventCancel(GameEvent e){}
+    public void onEventCancel(Event e){}
+
     public String applyPlaceholder(Player p, String s){return s;}
 }

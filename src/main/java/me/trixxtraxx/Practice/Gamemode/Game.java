@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.Gamemode;
 
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -24,6 +25,9 @@ public class Game
         {
             p.setNoDamageTicks(5);
             p.setHealth(p.getMaxHealth());
+            p.setFoodLevel(20);
+            p.setGameMode(GameMode.SURVIVAL);
+            p.getEnderChest().clear();
         }
         logic.start(this, players);
     }
@@ -34,7 +38,7 @@ public class Game
 
     public void stop(boolean stopLogic)
     {
-        if (stopLogic) logic.stop();
+        if (stopLogic) logic.stop(true);
         games.remove(this);
     }
 

@@ -1,10 +1,9 @@
 package me.trixxtraxx.Practice;
 
 import com.grinderwolf.swm.api.SlimePlugin;
-import me.trixxtraxx.Practice.GameLogic.Components.Components.DisconnectStopComponent;
-import me.trixxtraxx.Practice.GameLogic.Components.Components.ScoreboardComponent;
-import me.trixxtraxx.Practice.GameLogic.Components.Components.StartInventoryComponent;
-import me.trixxtraxx.Practice.GameLogic.Components.Components.YKillComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.PointComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelSpawnComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogicListener;
@@ -225,7 +224,7 @@ public final class Practice extends JavaPlugin
                 new DropToBreakTimer(g.getLogic(), Material.WOOD);
                 new DropToBreakTimer(g.getLogic(), Material.ENDER_STONE);
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.GOLD + "Blockin Practice",
+                        ChatColor.AQUA + "Blockin Practice",
                         Arrays.asList(
                                 "",
                                 ChatColor.BLUE + "Wool      " + ChatColor.AQUA + "{WOOLTimer}",
@@ -234,7 +233,7 @@ public final class Practice extends JavaPlugin
                                 ChatColor.BLUE + "Blockin:  " + ChatColor.AQUA + "{BlockinTimer}",
                                 ChatColor.BLUE + "Bed:      " + ChatColor.AQUA + "{TotalTimer}",
                                 "",
-                                ChatColor.GOLD + "Ranked.fun"
+                                ChatColor.BLUE + "Ranked.fun"
                         )
                 );
                 new NoMapBreakComponent(m);
@@ -259,26 +258,103 @@ public final class Practice extends JavaPlugin
                 new DropToResetTimer(g.getLogic());
                 new NoMapBreakComponent(m);
             }
-            else if(args[0].equalsIgnoreCase("duels"))
+            else if(args[0].equalsIgnoreCase("classic"))
             {
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[1]);
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
                 Map m = new Map("MapName", "Practice1", spawn);
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(Arrays.asList(new ItemStack[]{}), order);
+                Kit k = new Kit(Arrays.asList(new ItemStack[]{
+                        new ItemStack(Material.STONE_SWORD),
+                        new ItemStack(Material.BOW),
+                        new ItemStack(Material.ARROW, 8),
+                        new ItemStack(Material.GOLDEN_APPLE, 2),
+                        new ItemStack(Material.IRON_HELMET),
+                        new ItemStack(Material.IRON_CHESTPLATE),
+                        new ItemStack(Material.IRON_LEGGINGS),
+                        new ItemStack(Material.IRON_BOOTS),
+                }), order);
+                order.put(4,39);
+                order.put(5,38);
+                order.put(6,37);
+                order.put(7,36);
                 Game g = new Game(new DuelGameLogic(m), Arrays.asList(p,p2), k);
                 spawn.init(
-                        new Location(g.getLogic().getWorld(), 30,100,0),
-                        new Location(g.getLogic().getWorld(), -30,100,0),
+                        new Location(g.getLogic().getWorld(), 30,100,0, 90,0),
+                        new Location(g.getLogic().getWorld(), -30,100,0, -90,0),
                         Arrays.asList(p),
                         Arrays.asList(p2)
                 );
                 new YKillComponent(g.getLogic(), 90);
+                new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
-                new DropItemComponent(g.getLogic(), Material.WOOL, Arrays.asList(new Material[]{Material.BED}));
+                new DieStopComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
+                new SpawnProtComponent(g.getLogic(), 100,
+                        ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
+                        ChatColor.BLUE + "The Game started, go fight!"
+                );
+                new ScoreboardComponent(g.getLogic(),
+                        ChatColor.AQUA + "Classic",
+                        Arrays.asList(
+                                "",
+                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}",
+                                "",
+                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms",
+                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms",
+                                "",
+                                ChatColor.BLUE + "Ranked.fun"
+                        )
+                );
+                new PlayerPlaceholderComponent(g.getLogic());
+                new MapNamePlaceholderComponent(g.getLogic());
+                new OpponentPlaceholderComponent(g.getLogic());
                 new NoMapBreakComponent(m);
+            }
+            else if(args[0].equalsIgnoreCase("sumo"))
+            {
+                Player p = (Player) s;
+                Player p2 = Bukkit.getPlayer(args[1]);
+                DuelSpawnComponent spawn = new DuelSpawnComponent();
+                Map m = new Map("MapName", "Sumo1", spawn);
+                HashMap<Integer, Integer> order = new HashMap<>();
+                Kit k = new Kit(Arrays.asList(new ItemStack[]{}), order);
+                Game g = new Game(new DuelGameLogic(m), Arrays.asList(p,p2), k);
+                spawn.init(
+                        new Location(g.getLogic().getWorld(), 5.5,100,0.5, 90,0),
+                        new Location(g.getLogic().getWorld(), -4.5,100,0.5, -90,0),
+                        Arrays.asList(p),
+                        Arrays.asList(p2)
+                );
+                new YKillComponent(g.getLogic(), 97);
+                new NoDieComponent(g.getLogic());
+                new DisconnectStopComponent(g.getLogic());
+                new DieStopComponent(g.getLogic());
+                new StartInventoryComponent(g.getLogic());
+                new SpawnProtComponent(g.getLogic(), 100,
+                        ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
+                        ChatColor.BLUE + "The Game started, go fight!"
+                );
+                new ScoreboardComponent(g.getLogic(),
+                        ChatColor.AQUA + "Sumo",
+                        Arrays.asList(
+                                "",
+                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}",
+                                "",
+                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms",
+                                "{Points1}",
+                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms",
+                                "{Points2}",
+                                "",
+                                ChatColor.BLUE + "Ranked.fun"
+                        )
+                );
+                new PlayerPlaceholderComponent(g.getLogic());
+                new MapNamePlaceholderComponent(g.getLogic());
+                new OpponentPlaceholderComponent(g.getLogic());
+                new NoMapBreakComponent(m);
+                new PointComponent(g.getLogic(), 2, "⬤");
             }
         }
         return false;

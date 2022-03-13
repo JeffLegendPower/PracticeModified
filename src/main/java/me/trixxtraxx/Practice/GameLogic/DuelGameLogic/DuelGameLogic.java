@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.GameLogic.DuelGameLogic;
 
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Events.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Map.Map;
@@ -19,8 +20,8 @@ import java.util.List;
 
 public class DuelGameLogic extends GameLogic
 {
-    private List<Player> t1 = new ArrayList<>();
-    private List<Player> t2 = new ArrayList<>();
+    private Player p1;
+    private Player p2;
     private Game game;
     private Map map;
     private World world;
@@ -33,13 +34,10 @@ public class DuelGameLogic extends GameLogic
     @Override
     public void start(Game gm, List<Player> players)
     {
-        if(players.size() % 2 != 0) return;
+        if(players.size()!= 2) return;
         game = gm;
-        for(int i = 0; i < players.size() / 2; i++)
-        {
-            t1.add(players.get(i));
-            t2.add(players.get(players.size() - 1 - i));
-        }
+        p1 = players.get(0);
+        p2 = players.get(1);
 
         loadWorld();
         GameLogic log = this;
@@ -54,7 +52,7 @@ public class DuelGameLogic extends GameLogic
     }
 
     @Override
-    public void stop()
+    public void stop(boolean dc)
     {
         for (Player p:getPlayers())
         {
@@ -70,10 +68,7 @@ public class DuelGameLogic extends GameLogic
     @Override
     public List<Player> getPlayers()
     {
-        List<Player> ppl = new ArrayList<>();
-        ppl.addAll(t1);
-        ppl.addAll(t2);
-        return ppl;
+        return Arrays.asList(p1,p2);
     }
 
     @Override
@@ -87,15 +82,31 @@ public class DuelGameLogic extends GameLogic
         world = map.load();
     }
 
+    public Player getP1() {return p1;}
+    public Player getP2() {return p2;}
+
+    public void remove(Player p)
+    {
+        if(p == p1) win(p2);
+        if(p == p2) win(p1);
+    }
+
+    public void win(Player p)
+    {
+        if(triggerEvent(new WinEvent(this,p)).isCanceled()) return;
+        stop(false);
+    }
+
     public void everyoneToSpawn()
     {
         for (Player p:getPlayers()) toSpawn(p);
     }
 
+    @Override
     public void toSpawn(Player p)
     {
-        if(triggerEvent(new ToSpawnEvent(p)).isCanceled()) return;
         Location loc = map.getSpawn().getSpawn(this, p);
+        if(triggerEvent(new ToSpawnEvent(p, loc)).isCanceled()) return;
         p.teleport(loc);
     }
 }

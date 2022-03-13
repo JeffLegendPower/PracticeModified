@@ -63,10 +63,18 @@ public abstract class GameLogic
         for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
         for (GameComponent comp : getComponents()) comp.onEvent(e);
         for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);
-        for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
-        for (GameComponent comp : getComponents()) comp.onEventAfter(e);
-        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
-        if(e.isCanceled()) Practice.log(5, "Canceled");
+        if (e.isCanceled())
+        {
+            for (MapComponent comp : getMap().getComponents()) comp.onEventCancel(e);
+            for (GameComponent comp : getComponents()) comp.onEventCancel(e);
+            for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventCancel(e);
+        } else
+        {
+            for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
+            for (GameComponent comp : getComponents()) comp.onEventAfter(e);
+            for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
+        }
+        if (e.isCanceled()) Practice.log(5, "Canceled");
         return e;
     }
 
@@ -94,7 +102,8 @@ public abstract class GameLogic
 
 
     public abstract void start(Game gm, List<Player> players);
-    public abstract void stop();
+    public abstract void stop(boolean dc);
+    public abstract void toSpawn(Player p);
     public abstract World getWorld();
     public abstract List<Player> getPlayers();
     public abstract Game getGame();
