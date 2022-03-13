@@ -21,6 +21,7 @@ import me.trixxtraxx.Practice.Map.Components.ClearOnDropComponent;
 import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
 import me.trixxtraxx.Practice.Map.Components.PlaceRegion;
 import me.trixxtraxx.Practice.Map.Map;
+import me.trixxtraxx.Practice.SQL.CacheListener;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.Utils.Region;
 import me.trixxtraxx.Practice.worldloading.SlimeWorldLoader;
@@ -186,6 +187,7 @@ public final class Practice extends JavaPlugin
         );
 
         getServer().getPluginManager().registerEvents(new GameLogicListener(), this);
+        getServer().getPluginManager().registerEvents(new CacheListener(), this);
     }
 
     @Override
@@ -211,7 +213,7 @@ public final class Practice extends JavaPlugin
                 order.put(4, 7);
                 order.put(5, 1);
                 order.put(6, 4);
-                Kit k = new Kit(Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED),new ItemStack(Material.NETHER_STAR)}), order);
+                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED),new ItemStack(Material.NETHER_STAR)}), order);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
@@ -252,7 +254,7 @@ public final class Practice extends JavaPlugin
                 Player p = (Player) s;
                 Map m = new Map(1,"MapName", "BridgeTest", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 100, 0)));
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), order);
+                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), order);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
                 new PressurePlateResetComponent(g.getLogic());
                 new MapResetComponent(g.getLogic());
@@ -272,7 +274,7 @@ public final class Practice extends JavaPlugin
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
                 Map m = new Map(1,"MapName", "Practice1", spawn);
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(Arrays.asList(new ItemStack[]{
+                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{
                         new ItemStack(Material.STONE_SWORD),
                         new ItemStack(Material.BOW),
                         new ItemStack(Material.ARROW, 8),
@@ -320,7 +322,7 @@ public final class Practice extends JavaPlugin
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
                 Map m = new Map(1, "MapName", "Sumo1", spawn);
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(Arrays.asList(new ItemStack[]{}), order);
+                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{}), order);
                 Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k,m);
                 new YKillComponent(g.getLogic(), 97);
                 new NoDieComponent(g.getLogic());

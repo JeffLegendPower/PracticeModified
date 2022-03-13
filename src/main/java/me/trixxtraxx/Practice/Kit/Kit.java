@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.Kit;
 
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
+import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -13,10 +14,10 @@ import java.util.Map;
 
 public class Kit
 {
-    protected List<KitComponent> components = new ArrayList<>();
+    private int sqlId;
+    private List<KitComponent> components = new ArrayList<>();
     private List<ItemStack> items;
     private HashMap<Integer, Integer> defaultOrder;
-    private HashMap<Player, HashMap<Integer, Integer>> playerOrders = new HashMap<>();
 
     //- different Items (duh)
     //- double jump
@@ -32,10 +33,11 @@ public class Kit
     //- no Item Drops
     //- No Damage
 
-    public Kit(List<ItemStack> stacks, HashMap<Integer,Integer> defaultOrder)
+    public Kit(int sqlId, List<ItemStack> stacks, HashMap<Integer,Integer> defaultOrder)
     {
         items = stacks;
         this.defaultOrder = defaultOrder;
+        this.sqlId = sqlId;
     }
 
     public List<KitComponent> getComponents()
@@ -60,6 +62,8 @@ public class Kit
         return comps;
     }
 
+    public int getSqlId(){return sqlId;}
+
     public void setInventory(Player p)
     {
         clearInventory(p);
@@ -70,7 +74,9 @@ public class Kit
     {
         PlayerInventory inv = p.getInventory();
         HashMap<Integer, Integer> order = defaultOrder;
-        if(playerOrders.containsKey(p)) order = playerOrders.get(p);
+        PracticePlayer prac = PracticePlayer.getPlayer(p);
+        //add custom player order, unable to in the current state
+        //if(prac.) order = playerOrders.get(p);
 
         List<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) indexes.add(i);
