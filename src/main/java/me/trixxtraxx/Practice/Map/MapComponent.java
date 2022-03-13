@@ -14,6 +14,8 @@ public abstract class MapComponent
         map.addComponent(this);
     }
 
+    public abstract String getData();
+
     public void onEvent(GameEvent e){}
     public void onEvent(Event e){}
 

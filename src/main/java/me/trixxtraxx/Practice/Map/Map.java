@@ -11,18 +11,19 @@ import java.util.List;
 
 public class Map
 {
-    private static List<Map> maps;
+    private int id;
     private String Name;
     private String LoadName;
     private ISpawnComponent spawn;
     private World world;
     protected List<MapComponent> components = new ArrayList<>();
 
-    public Map(String name, String load, ISpawnComponent s)
+    public Map(int id, String name, String load, ISpawnComponent s)
     {
         Name = name;
         LoadName = load;
         spawn = s;
+        this.id = id;
     }
 
     public World load()
@@ -39,6 +40,14 @@ public class Map
     public String getName()
     {
         return Name;
+    }
+    public String getLoad()
+    {
+        return LoadName;
+    }
+    public int getSqlIndex()
+    {
+        return id;
     }
     public ISpawnComponent getSpawn(){return spawn;}
 

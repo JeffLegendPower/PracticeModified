@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Map.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Map.Map;
@@ -19,6 +20,17 @@ public class NoMapBreakComponent extends MapComponent
     public NoMapBreakComponent(Map map)
     {
         super(map);
+    }
+
+    public NoMapBreakComponent(Map map, String data)
+    {
+        super(map);
+    }
+
+    @Override
+    public String getData()
+    {
+        return new Gson().toJson("");
     }
 
     @Override

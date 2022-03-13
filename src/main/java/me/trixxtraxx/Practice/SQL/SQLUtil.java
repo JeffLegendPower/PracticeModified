@@ -1,6 +1,15 @@
 package me.trixxtraxx.Practice.SQL;
 
+import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Map.ISpawnComponent;
+import me.trixxtraxx.Practice.Map.Map;
+import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.Utils.Utils;
+
+import java.lang.reflect.Constructor;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLUtil
 {
@@ -46,33 +55,101 @@ public class SQLUtil
         }
     }
 
-    /*public List<Map> getMaps()
+    public Map getMap(String Name)
     {
-        PreparedStatement ps = null;
         try
         {
-            ps = con.prepareStatement("SELECT * FROM Map");
+            Map m = null;
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM Map WHERE Map.MapName = ?");
+            ps.setString(0, Name);
 
             ResultSet res = ps.executeQuery();
-            List<Map> maps = new ArrayList<>();
-            while (res.next())
+            if (res.next())
             {
-                maps.add(new Map(
-                        res.getString("Name"),
-                        res.getString("LoadName"),
-                        res.getString("GamemodeData"),
-                        res.getString("ImplementationClass"),
-                        res.getString("ImplementationData"),
-                        res.getString("SpecificClass"),
-                        res.getString("SpecificData")
-                ));
+                Class<?> clazz = Class.forName(res.getString("SpawnClass"));
+                ISpawnComponent spawn = (ISpawnComponent) clazz.newInstance();
+                spawn.applyData(res.getString("SpawnData"));
+                m = new Map(res.getInt("Map_ID"), res.getString("MapName"), res.getString("load"), spawn);
             }
-            return maps;
+            ps.close();
+            res.close();
+
+            return m;
         }
-        catch (SQLException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
         return null;
-    }*/
+    }
+
+    public void applyComponents(Map m, GameLogic logic)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM MapComponent INNER JOIN Map ON Map.Map_ID = MapComponent.Map_ID WHERE Map.Map_ID = ?");
+            ps.setInt(0, m.getSqlIndex());
+
+            ResultSet res = ps.executeQuery();
+            while (res.next())
+            {
+                Class<?> clazz = Class.forName(res.getString("Class"));
+                Constructor<?> constructor = clazz.getConstructor(GameLogic.class, String.class);
+                constructor.newInstance(logic, res.getString("Data"));
+            }
+            ps.close();
+            res.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteMap(Map m)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM Map WHERE Map.Map_ID = ?");
+            ps.setInt(0, m.getSqlIndex());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void addMap(Map m)
+    {
+        try
+        {
+            if(true)
+            {
+                PreparedStatement ps = con.prepareStatement("INSERT INTO Map (MapName, load, SpawnClass, SpawnData) VALUES (?,?,?,?)");
+                ps.setString(0, m.getName());
+                ps.setString(1, m.getLoad());
+                ps.setString(2, m.getSpawn().getClass().getName());
+                ps.setString(3, m.getSpawn().getData());
+
+                ps.executeUpdate();
+                ps.close();
+            }
+            if(true){
+                Statement s = con.createStatement();
+                for (MapComponent comp:m.getComponents())
+                {
+                    s.addBatch("INSERT INTO MapComponent (Map_ID, Class, Data) VALUES (" + m.getSqlIndex() + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
+                }
+                s.executeBatch();
+                s.close();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

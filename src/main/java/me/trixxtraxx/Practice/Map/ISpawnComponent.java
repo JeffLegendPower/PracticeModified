@@ -7,4 +7,6 @@ import org.bukkit.entity.Player;
 public interface ISpawnComponent
 {
     public Location getSpawn(GameLogic logic, Player p);
+    public String getData();
+    public void applyData(String s);
 }

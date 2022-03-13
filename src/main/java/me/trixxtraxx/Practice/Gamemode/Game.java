@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.Gamemode;
 
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Map.Map;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ public class Game
     private Kit kit;
 
 
-    public Game(GameLogic log, List<Player> players, Kit k)
+    public Game(GameLogic log, List<Player> players, Kit k, Map m)
     {
         games.add(this);
         kit = k;
@@ -29,7 +30,7 @@ public class Game
             p.setGameMode(GameMode.SURVIVAL);
             p.getEnderChest().clear();
         }
-        logic.start(this, players);
+        logic.start(this, players, m);
     }
 
     public GameLogic getLogic() {return logic;}

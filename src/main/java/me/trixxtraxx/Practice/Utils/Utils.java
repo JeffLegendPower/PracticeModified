@@ -5,7 +5,7 @@ public class Utils
     public static Class<?> getClass(String name)
     {
         try {
-            Class<?> act = Class.forName("com.bla.TestActivity");
+            Class<?> act = Class.forName(name);
             return act;
         }
         catch (ClassNotFoundException e) {

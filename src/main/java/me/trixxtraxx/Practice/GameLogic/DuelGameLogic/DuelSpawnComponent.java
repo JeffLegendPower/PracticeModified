@@ -1,6 +1,9 @@
 package me.trixxtraxx.Practice.GameLogic.DuelGameLogic;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCoponent;
 import me.trixxtraxx.Practice.Map.ISpawnComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,22 +13,38 @@ import java.util.List;
 
 public class DuelSpawnComponent implements ISpawnComponent
 {
-    private Location loc1;
-    private Location loc2;
+    private DuelSettings[] settings;
 
-    private HashMap<Player, Location> spawns = new HashMap<>();
-
-    public void init(Location loc1,Location loc2, List<Player> t1, List<Player> t2)
+    private class DuelSettings
     {
-        this.loc1 = loc1;
-        this.loc2 = loc2;
-        for (Player p:t1) spawns.put(p, this.loc1);
-        for (Player p:t2) spawns.put(p, this.loc2);
+        public double x;
+        public double y;
+        public double z;
+        public float yaw;
+        public float pitch;
     }
 
     @Override
     public Location getSpawn(GameLogic logic, Player p)
     {
-        return spawns.get(p);
+        DuelSettings set = settings[0];
+        if(logic instanceof  DuelGameLogic)
+        {
+            DuelGameLogic log = (DuelGameLogic) logic;
+            if(log.getP2() == p) set = settings[1];
+        }
+        return new Location(logic.getWorld(), set.x,set.y,set.z,set.yaw,set.pitch);
+    }
+
+    @Override
+    public String getData()
+    {
+        return new Gson().toJson(settings);
+    }
+
+    @Override
+    public void applyData(String s)
+    {
+        settings = new Gson().fromJson(s, DuelSettings[].class);
     }
 }

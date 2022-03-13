@@ -24,15 +24,11 @@ public class SoloGameLogic extends GameLogic
     private Map map;
     private World world;
 
-    public SoloGameLogic(Map m)
-    {
-        map = m;
-    }
-
     @Override
-    public void start(Game gm, List<Player> players)
+    public void start(Game gm, List<Player> players, Map m)
     {
         if(players.size() != 1) return;
+        map = m;
         game = gm;
         player = players.get(0);
 

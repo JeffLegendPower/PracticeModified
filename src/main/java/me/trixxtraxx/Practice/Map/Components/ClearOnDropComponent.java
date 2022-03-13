@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Map.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
@@ -32,6 +33,18 @@ public class ClearOnDropComponent extends MapComponent
     {
         super(m);
         this.remove = remove;
+    }
+
+    public ClearOnDropComponent(Map map, String data)
+    {
+        super(map);
+        remove = new Gson().fromJson(data, Region.class);
+    }
+
+    @Override
+    public String getData()
+    {
+        return new Gson().toJson(remove);
     }
 
     @Override

@@ -101,7 +101,7 @@ public abstract class GameLogic
     }
 
 
-    public abstract void start(Game gm, List<Player> players);
+    public abstract void start(Game gm, List<Player> players, Map m);
     public abstract void stop(boolean dc);
     public abstract void toSpawn(Player p);
     public abstract World getWorld();

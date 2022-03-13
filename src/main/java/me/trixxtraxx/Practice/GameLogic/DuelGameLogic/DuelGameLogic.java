@@ -26,15 +26,11 @@ public class DuelGameLogic extends GameLogic
     private Map map;
     private World world;
 
-    public DuelGameLogic(Map m)
-    {
-        map = m;
-    }
-
     @Override
-    public void start(Game gm, List<Player> players)
+    public void start(Game gm, List<Player> players, Map m)
     {
         if(players.size()!= 2) return;
+        map = m;
         game = gm;
         p1 = players.get(0);
         p2 = players.get(1);
