@@ -2,7 +2,6 @@ package me.trixxtraxx.Practice.GameLogic;
 
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
-import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.BedLayerComponent;
 import me.trixxtraxx.Practice.Kit.KitComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
@@ -11,6 +10,7 @@ import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
 import java.util.ArrayList;
@@ -23,13 +23,15 @@ public abstract class GameLogic
     public GameLogic() {}
 
     public List<GameComponent> getComponents()
-{
-    return components;
-}
+    {
+        return components;
+    }
+
     public void addComponent(GameComponent comp)
     {
         components.add(comp);
     }
+
     public void removeComponent(GameComponent comp)
     {
         components.remove(comp);
@@ -54,6 +56,14 @@ public abstract class GameLogic
         for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
         for (GameComponent comp : getComponents()) comp.onEventAfter(e);
         for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
+        if(e instanceof Cancellable){
+            Cancellable c = (Cancellable) e;
+            if(c.isCancelled()){
+                for (MapComponent comp : getMap().getComponents()) comp.onEventCancel(e);
+                for (GameComponent comp : getComponents()) comp.onEventCancel(e);
+                for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventCancel(e);
+            }
+        }
         return e;
     }
 

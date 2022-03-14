@@ -236,11 +236,11 @@ public final class Practice extends JavaPlugin
                         ChatColor.AQUA + "Blockin Practice",
                         Arrays.asList(
                                 "",
-                                ChatColor.BLUE + "Wool      " + ChatColor.AQUA + "{WOOLTimer}",
-                                ChatColor.BLUE + "Wood      " + ChatColor.AQUA + "{WOODTimer}",
+                                ChatColor.BLUE + "Wool          " + ChatColor.AQUA + "{WOOLTimer}",
+                                ChatColor.BLUE + "Wood         " + ChatColor.AQUA + "{WOODTimer}",
                                 ChatColor.BLUE + "Endstone: " + ChatColor.AQUA + "{ENDER_STONETimer}",
-                                ChatColor.BLUE + "Blockin:  " + ChatColor.AQUA + "{BlockinTimer}",
-                                ChatColor.BLUE + "Bed:      " + ChatColor.AQUA + "{TotalTimer}",
+                                ChatColor.BLUE + "Blockin:     " + ChatColor.AQUA + "{BlockinTimer}",
+                                ChatColor.BLUE + "Finish:       " + ChatColor.AQUA + "{TotalTimer}",
                                 "",
                                 ChatColor.BLUE + "Ranked.fun"
                         )
