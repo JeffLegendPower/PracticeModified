@@ -19,6 +19,8 @@ import java.util.List;
 public abstract class GameLogic
 {
     protected List<GameComponent> components = new ArrayList<>();
+    protected int id;
+    protected String name;
 
     public GameLogic() {}
 
@@ -110,6 +112,12 @@ public abstract class GameLogic
         return newStrings;
     }
 
+    public void setName(String s){name = s;}
+    public void setId(int id){this.id = id;}
+
+    public String getName(){return name;}
+    public int getId(){return id;}
+
 
     public abstract void start(Game gm, List<Player> players, Map m);
     public abstract void stop(boolean dc);
@@ -118,4 +126,5 @@ public abstract class GameLogic
     public abstract List<Player> getPlayers();
     public abstract Game getGame();
     public abstract Map getMap();
+    public abstract void applyData(String s);
 }

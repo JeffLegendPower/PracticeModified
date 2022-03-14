@@ -344,5 +344,57 @@ public class SQLUtil
         }
     }
 
+    public GameLogic getLogic(int logicId)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = ?");
+            ps.setString(0, logicId + "");
 
+            ResultSet res = ps.getResultSet();
+
+            GameLogic logic = null;
+            if(res.next())
+            {
+                Class clazz = Class.forName(res.getString("Class"));
+                logic = (GameLogic) clazz.newInstance();
+                logic.setName(res.getString("Name"));
+                logic.setId(logicId);
+            }
+
+            ps.close();
+            res.close();
+            return logic;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void applyComponents(GameLogic logic)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM GameComponent INNER JOIN Gamemode ON GameComponent.GameComponent_ID = Gamemode.GameComponent_ID WHERE GameComponent.GameComponent_ID = ?");
+            ps.setInt(0, logic.getId());
+
+            ResultSet res = ps.getResultSet();
+
+            while (res.next())
+            {
+                Class<?> clazz = Class.forName(res.getString("Class"));
+                Constructor<?> constructor = clazz.getConstructor(GameLogic.class, String.class);
+                constructor.newInstance(logic, res.getString("Data"));
+            }
+
+            ps.close();
+            res.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
