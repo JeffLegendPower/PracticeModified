@@ -1,11 +1,13 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -18,9 +20,14 @@ import java.util.List;
 
 public class SpawnProtComponent extends GameComponent
 {
-    private int spawnProt;
-    private String remaining;
-    private String starting;
+    private Settings settings = new Settings();
+
+    private class Settings
+    {
+        private int spawnProt;
+        private String remaining;
+        private String starting;
+    }
 
     private HashMap<Player, Location> prot = new HashMap<>();
     private List<Player> tped = new ArrayList<>();
@@ -28,10 +35,17 @@ public class SpawnProtComponent extends GameComponent
     public SpawnProtComponent(GameLogic logic, int spawnProt, String remaining, String starting)
     {
         super(logic);
-        this.spawnProt = spawnProt;
-        this.remaining = remaining;
-        this.starting = starting;
+        settings.spawnProt = spawnProt;
+        settings.remaining = remaining;
+        settings.starting = starting;
     }
+    public SpawnProtComponent(GameLogic logic, String s)
+    {
+        super(logic);
+        settings = new Gson().fromJson(s, Settings.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(settings);}
 
     @Override
     public void onEvent(GameEvent event){
@@ -48,22 +62,22 @@ public class SpawnProtComponent extends GameComponent
             {
                 prot.remove(e.getPlayer());
             }
-        }.runTaskLater(Practice.Instance, spawnProt);
+        }.runTaskLater(Practice.Instance, settings.spawnProt);
         new BukkitRunnable()
         {
-            int left = spawnProt;
+            int left = settings.spawnProt;
             @Override
             public void run()
             {
                 if(left == 0)
                 {
-                        e.getPlayer().sendMessage(logic.applyPlaceholders(e.getPlayer(), starting));
+                        e.getPlayer().sendMessage(logic.applyPlaceholders(e.getPlayer(), settings.starting));
                     cancel();
                     return;
                 }
                 if(left % 20 == 0)
                 {
-                    e.getPlayer().sendMessage(logic.applyPlaceholders(e.getPlayer(), remaining.replace("{Timer}", (left / 20) + "")));
+                    e.getPlayer().sendMessage(logic.applyPlaceholders(e.getPlayer(), settings.remaining.replace("{Timer}", (left / 20) + "")));
                 }
                 left--;
             }

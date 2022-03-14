@@ -2,8 +2,10 @@ package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Kit.KitComponent;
 import me.trixxtraxx.Practice.Map.ISpawnComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
@@ -134,6 +136,7 @@ public class SQLUtil
     {
         try
         {
+            int mapId = 0;
             if(true)
             {
                 PreparedStatement ps = con.prepareStatement("INSERT INTO Map (MapName, load, SpawnClass, SpawnData) VALUES (?,?,?,?)");
@@ -142,6 +145,11 @@ public class SQLUtil
                 ps.setString(2, m.getSpawn().getClass().getName());
                 ps.setString(3, m.getSpawn().getData());
 
+                ResultSet rs = ps.getGeneratedKeys();
+                rs.next();
+                mapId =  rs.getInt(1);
+                rs.close();
+
                 ps.executeUpdate();
                 ps.close();
             }
@@ -149,7 +157,7 @@ public class SQLUtil
                 Statement s = con.createStatement();
                 for (MapComponent comp:m.getComponents())
                 {
-                    s.addBatch("INSERT INTO MapComponent (Map_ID, Class, Data) VALUES (" + m.getSqlIndex() + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
+                    s.addBatch("INSERT INTO MapComponent (Map_ID, Class, Data) VALUES (" + mapId + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
                 }
                 s.executeBatch();
                 s.close();
@@ -277,10 +285,12 @@ public class SQLUtil
             //new Instance to get List class
             List<ItemStack> items= new ArrayList<>();
             int deforder = 0;
+            String name = "";
             if(res.next())
             {
                 items = new Gson().fromJson(res.getString("Items"), items.getClass());
                 deforder = res.getInt("defaultOrder");
+                name = res.getString("Name");
             }
             else
             {
@@ -310,7 +320,7 @@ public class SQLUtil
 
             ps.close();
             res.close();
-            return new Kit(KitId,items, defaultOrder);
+            return new Kit(name, KitId, items, deforder, defaultOrder);
         }
         catch (Exception e)
         {
@@ -344,6 +354,78 @@ public class SQLUtil
         }
     }
 
+    public void deleteKit(Kit k)
+    {
+        if(k.getSqlId() == -1) return;
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM Kit WHERE Kit.Kit_ID = ?");
+            ps.setInt(0, k.getSqlId());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void addKit(Kit k)
+    {
+        if(k.getSqlId() != -1) return;
+        try
+        {
+            int orderId = k.getDefaultOrderId();
+            int KitId = 0;
+            if(k.getDefaultOrderId() == -1)
+            {
+                PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (Order, Kit_ID) VALUES (?,?)");
+                ps.setString(0, k.getDefaultOrder());
+                ps.setInt(1, -1);
+
+
+                ResultSet rs = ps.getGeneratedKeys();
+                rs.next();
+                orderId =  rs.getInt(1);
+                rs.close();
+
+                ps.executeUpdate();
+                ps.close();
+            }
+            if(true)
+            {
+                PreparedStatement ps = con.prepareStatement("INSERT INTO Kit (Name, Items, defaultOrder) VALUES (?,?,?)");
+                ps.setString(0, k.getName());
+                ps.setString(1, k.getItems());
+                ps.setInt(2, orderId);
+
+                ResultSet rs = ps.getGeneratedKeys();
+                rs.next();
+                KitId =  rs.getInt(1);
+                rs.close();
+
+                ps.executeUpdate();
+                ps.close();
+            }
+            if(true){
+                Statement s = con.createStatement();
+                for (KitComponent comp:k.getComponents())
+                {
+                    s.addBatch("INSERT INTO KitComponent (Kit_ID, Class, Data) VALUES (" + KitId + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
+                }
+                s.executeBatch();
+                s.close();
+            }
+            k.setSqlId(KitId);
+            k.setDefaultOrderId(orderId);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public GameLogic getLogic(int logicId)
     {
         try
@@ -360,6 +442,7 @@ public class SQLUtil
                 logic = (GameLogic) clazz.newInstance();
                 logic.setName(res.getString("Name"));
                 logic.setId(logicId);
+                logic.applyData(res.getString("Data"));
             }
 
             ps.close();
@@ -391,6 +474,61 @@ public class SQLUtil
 
             ps.close();
             res.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteLogic(GameLogic logic)
+    {
+        if(logic.getId() == -1) return;
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM Kit WHERE Kit.Kit_ID = ?");
+            ps.setInt(0, logic.getId());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void addLogic(GameLogic logic)
+    {
+        if(logic.getId() != -1) return;
+        try
+        {
+            int logicId = 0;
+            if(true)
+            {
+                PreparedStatement ps = con.prepareStatement("INSERT INTO Gamemode (Name, Class, Data) VALUES (?,?,?)");
+                ps.setString(0, logic.getName());
+                ps.setString(1, logic.getClass().getName());
+                ps.setString(2, logic.getData());
+
+                ResultSet rs = ps.getGeneratedKeys();
+                rs.next();
+                logicId =  rs.getInt(1);
+                rs.close();
+
+                ps.executeUpdate();
+                ps.close();
+            }
+            if(true){
+                Statement s = con.createStatement();
+                for (GameComponent comp:logic.getComponents())
+                {
+                    s.addBatch("INSERT INTO GameComponent (Gamemode_ID, Class, Data) VALUES (" + logicId + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
+                }
+                s.executeBatch();
+                s.close();
+            }
+            logic.setId(logicId);
         }
         catch (Exception e)
         {

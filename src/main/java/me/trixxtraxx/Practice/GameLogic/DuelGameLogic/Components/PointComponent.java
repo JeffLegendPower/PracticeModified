@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
@@ -10,8 +11,12 @@ import org.bukkit.entity.Player;
 
 public class PointComponent extends GameComponent
 {
-    private int goal;
-    private String symb;
+    private Settings settings = new Settings();
+    private class Settings
+    {
+        private int goal;
+        private String symb;
+    }
 
     private int p1 = 0;
     private int p2 = 0;
@@ -19,9 +24,16 @@ public class PointComponent extends GameComponent
     public PointComponent(GameLogic logic, int goal, String symb)
     {
         super(logic);
-        this.goal = goal;
-        this.symb = symb;
+        settings.goal = goal;
+        settings.symb = symb;
     }
+    public PointComponent(GameLogic logic, String s)
+    {
+        super(logic);
+        settings = new Gson().fromJson(s, Settings.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(settings);}
 
     @Override
     public void onEvent(GameEvent e)
@@ -45,7 +57,7 @@ public class PointComponent extends GameComponent
             cur = p2;
         }
 
-        if (cur < goal)
+        if (cur < settings.goal)
         {
             e.setCanceled(true);
             for (Player p : logic.getPlayers()) logic.toSpawn(p);
@@ -60,21 +72,21 @@ public class PointComponent extends GameComponent
         String points2 = ChatColor.BLUE + "";
         for (int i = 0; i < p1; i++)
         {
-            points1 += symb;
+            points1 += settings.symb;
         }
         points1 += ChatColor.GRAY;
-        for (int i = 0; i < goal - p1; i++)
+        for (int i = 0; i < settings.goal - p1; i++)
         {
-            points1 += symb;
+            points1 += settings.symb;
         }
         for (int i = 0; i < p2; i++)
         {
-            points2 += symb;
+            points2 += settings.symb;
         }
         points2 += ChatColor.GRAY;
-        for (int i = 0; i < goal - p2; i++)
+        for (int i = 0; i < settings.goal - p2; i++)
         {
-            points2 += symb;
+            points2 += settings.symb;
         }
         if (((DuelGameLogic) logic).getP1() == p)
         {

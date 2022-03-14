@@ -1,8 +1,10 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings.SettingsComponent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Utils.Region;
@@ -18,15 +20,26 @@ import java.util.List;
 
 public class DropItemComponent extends GameComponent
 {
-    private Material drop;
-    private List<Material> removeItems;
+    private Settings settings = new Settings();
+    private class Settings{
+        private Material drop;
+        private List<Material> removeItems;
+    }
 
     public DropItemComponent(GameLogic logic, Material drop, List<Material> removeItems)
     {
         super(logic);
-        this.drop = drop;
-        this.removeItems = removeItems;
+        settings.drop = drop;
+        settings.removeItems = removeItems;
     }
+    public DropItemComponent(GameLogic logic, String s)
+    {
+        super(logic);
+        settings = new Gson().fromJson(s, Settings.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(settings);}
+
 
     @Override
     public void onEvent(Event event)
@@ -37,13 +50,13 @@ public class DropItemComponent extends GameComponent
     @SuppressWarnings("deprecation")
     public void onDrop(PlayerInteractEvent e)
     {
-        if(e.getItem() != null && e.getItem().getType() == drop)
+        if(e.getItem() != null && e.getItem().getType() == settings.drop)
         {
             if(logic.triggerEvent(new DropEvent(logic)).isCanceled()) return;
             e.setCancelled(true);
 
             PlayerInventory inv = e.getPlayer().getInventory();
-            for (Material mat:removeItems) inv.remove(mat);
+            for (Material mat:settings.removeItems) inv.remove(mat);
         }
     }
 }

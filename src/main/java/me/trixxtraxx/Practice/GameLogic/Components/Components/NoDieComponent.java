@@ -13,6 +13,12 @@ public class NoDieComponent extends GameComponent
     {
         super(logic);
     }
+    public NoDieComponent(GameLogic logic, String s)
+    {
+        super(logic);
+    }
+    @Override
+    public String getData() {return "";}
 
     @Override
     public void onEvent(Event event)

@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import org.bukkit.Material;
@@ -14,6 +15,13 @@ public class LeaveItemComponent extends GameComponent
         super(logic);
         this.mat = mat;
     }
+    public LeaveItemComponent(GameLogic logic, String s)
+    {
+        super(logic);
+        mat = new Gson().fromJson(s, Material.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(mat);}
 
     @Override
     public void onEvent(Event event){

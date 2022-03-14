@@ -68,6 +68,18 @@ public class SoloGameLogic extends GameLogic
     @Override
     public Map getMap() {return map;}
 
+    @Override
+    public void applyData(String s)
+    {
+
+    }
+
+    @Override
+    public String getData()
+    {
+        return "";
+    }
+
     public Player getPlayer(){return player;}
 
     public void loadWorld()

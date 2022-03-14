@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
@@ -25,6 +26,12 @@ public class DropToBlockinTimer extends TimerComponent
     {
         super(logic);
     }
+    public DropToBlockinTimer(GameLogic logic, String s)
+    {
+        super(logic);
+    }
+    @Override
+    public String getData() {return "";}
 
     @Override
     public void onEvent(Event event)

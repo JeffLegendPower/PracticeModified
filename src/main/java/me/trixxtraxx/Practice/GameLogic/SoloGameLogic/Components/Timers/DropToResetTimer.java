@@ -1,10 +1,13 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.BedLayerComponent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
+import me.trixxtraxx.Practice.Map.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -16,6 +19,12 @@ public class DropToResetTimer extends TimerComponent
     {
         super(logic);
     }
+    public DropToResetTimer(GameLogic logic, String s)
+    {
+        super(logic);
+    }
+    @Override
+    public String getData() {return "";}
 
     @Override
     public void onEvent(GameEvent event)

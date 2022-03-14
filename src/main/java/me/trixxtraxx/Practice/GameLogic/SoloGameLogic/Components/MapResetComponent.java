@@ -29,6 +29,12 @@ public class MapResetComponent extends GameComponent
     {
         super(logic);
     }
+    public MapResetComponent(GameLogic logic, String s)
+    {
+        super(logic);
+    }
+    @Override
+    public String getData() {return "";}
 
     @Override
     public void onEventAfter(Event event)

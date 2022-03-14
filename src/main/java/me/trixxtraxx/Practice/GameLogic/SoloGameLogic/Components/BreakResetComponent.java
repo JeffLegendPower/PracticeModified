@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
@@ -18,6 +19,13 @@ public class BreakResetComponent extends GameComponent
         super(logic);
         mat = material;
     }
+    public BreakResetComponent(GameLogic logic, String s)
+    {
+        super(logic);
+        mat = new Gson().fromJson(s, Material.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(mat);}
 
     @Override
     public void onEvent(GameEvent e) {}

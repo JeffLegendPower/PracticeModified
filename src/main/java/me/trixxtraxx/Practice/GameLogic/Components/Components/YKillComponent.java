@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import org.bukkit.GameMode;
@@ -15,6 +16,13 @@ public class YKillComponent extends GameComponent
         super(logic);
         ykillheight = killheight;
     }
+    public YKillComponent(GameLogic logic, String s)
+    {
+        super(logic);
+        new Gson().fromJson(s, int.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(ykillheight);}
 
     @Override
     public void onEvent(Event event){

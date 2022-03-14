@@ -127,4 +127,5 @@ public abstract class GameLogic
     public abstract Game getGame();
     public abstract Map getMap();
     public abstract void applyData(String s);
+    public abstract String getData();
 }

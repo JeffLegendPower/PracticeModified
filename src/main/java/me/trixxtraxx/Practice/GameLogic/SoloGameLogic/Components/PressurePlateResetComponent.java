@@ -15,6 +15,12 @@ public class PressurePlateResetComponent extends GameComponent
     {
         super(logic);
     }
+    public PressurePlateResetComponent(GameLogic logic, String s)
+    {
+        super(logic);
+    }
+    @Override
+    public String getData() {return "";}
 
     @Override
     public void onEvent(GameEvent e) {}

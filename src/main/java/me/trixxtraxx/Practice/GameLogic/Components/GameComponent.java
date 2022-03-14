@@ -25,4 +25,5 @@ public abstract class GameComponent
     public void onEventCancel(Event e){}
 
     public String applyPlaceholder(Player p, String s){return s;}
+    public abstract String getData();
 }

@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Kit;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.entity.Player;
@@ -15,6 +16,8 @@ import java.util.Map;
 public class Kit
 {
     private int sqlId;
+    private int defaultOrderId;
+    private String name;
     private List<KitComponent> components = new ArrayList<>();
     private List<ItemStack> items;
     private HashMap<Integer, Integer> defaultOrder;
@@ -33,11 +36,13 @@ public class Kit
     //- no Item Drops
     //- No Damage
 
-    public Kit(int sqlId, List<ItemStack> stacks, HashMap<Integer,Integer> defaultOrder)
+    public Kit(String name, int sqlId, List<ItemStack> stacks, int defaultOrderId, HashMap<Integer,Integer> defaultOrder)
     {
         items = stacks;
         this.defaultOrder = defaultOrder;
         this.sqlId = sqlId;
+        this.defaultOrderId = defaultOrderId;
+        this.name = name;
     }
 
     public List<KitComponent> getComponents()
@@ -63,6 +68,12 @@ public class Kit
     }
 
     public int getSqlId(){return sqlId;}
+    public int getDefaultOrderId(){return defaultOrderId;}
+    public String getName(){return name;}
+    public String getItems(){return new Gson().toJson(items);}
+    public String getDefaultOrder(){return new Gson().toJson(defaultOrder);}
+    public void setSqlId(int id){sqlId = id;}
+    public void setDefaultOrderId(int id){defaultOrderId = id;}
 
     public void setInventory(Player p)
     {

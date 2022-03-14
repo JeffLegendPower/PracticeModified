@@ -23,6 +23,7 @@ import me.trixxtraxx.Practice.Map.Components.PlaceRegion;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.CacheListener;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
+import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import me.trixxtraxx.Practice.Utils.Region;
 import me.trixxtraxx.Practice.worldloading.SlimeWorldLoader;
 import me.trixxtraxx.Practice.worldloading.WorldLoader;
@@ -213,20 +214,20 @@ public final class Practice extends JavaPlugin
                 order.put(4, 7);
                 order.put(5, 1);
                 order.put(6, 4);
-                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED),new ItemStack(Material.NETHER_STAR)}), order);
+                Kit k = new Kit("Blockin",-1,Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED),new ItemStack(Material.NETHER_STAR)}), -1, order);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
-                new SettingsComponent(g.getLogic(),Material.NETHER_STAR);
+                new SettingsComponent(g.getLogic(),Material.NETHER_STAR,  ChatColor.AQUA + "Settings");
                 new YKillComponent(g.getLogic(), 50);
                 new KillResetComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
                 new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED}));
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
-                new BedLayerComponent(g.getLogic(), Material.ENDER_STONE, new Location(g.getLogic().getWorld(), 0, 101, 0), new Location(g.getLogic().getWorld(), 1, 101, 0), 1, true);
-                new BedLayerComponent(g.getLogic(), Material.WOOD, new Location(g.getLogic().getWorld(), 0, 101, 0), new Location(g.getLogic().getWorld(), 1, 101, 0), 2, false);
-                new BedLayerComponent(g.getLogic(), Material.WOOL, new Location(g.getLogic().getWorld(), 0, 101, 0), new Location(g.getLogic().getWorld(), 1, 101, 0), 3, false);
+                new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
+                new BedLayerComponent(m, Material.WOOD, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 2, false);
+                new BedLayerComponent(m, Material.WOOL, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 3, false);
                 new DropToBlockinTimer(g.getLogic());
                 new DropToResetTimer(g.getLogic());
                 new DropToBreakTimer(g.getLogic(), Material.WOOL);
@@ -254,7 +255,7 @@ public final class Practice extends JavaPlugin
                 Player p = (Player) s;
                 Map m = new Map(1,"MapName", "BridgeTest", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 100, 0)));
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), order);
+                Kit k = new Kit("Bridge", -1,Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), -1, order);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
                 new PressurePlateResetComponent(g.getLogic());
                 new MapResetComponent(g.getLogic());
@@ -274,7 +275,7 @@ public final class Practice extends JavaPlugin
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
                 Map m = new Map(1,"MapName", "Practice1", spawn);
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{
+                Kit k = new Kit("Classic", -1,Arrays.asList(new ItemStack[]{
                         new ItemStack(Material.STONE_SWORD),
                         new ItemStack(Material.BOW),
                         new ItemStack(Material.ARROW, 8),
@@ -283,7 +284,7 @@ public final class Practice extends JavaPlugin
                         new ItemStack(Material.IRON_CHESTPLATE),
                         new ItemStack(Material.IRON_LEGGINGS),
                         new ItemStack(Material.IRON_BOOTS),
-                }), order);
+                }), -1, order);
                 order.put(4,39);
                 order.put(5,38);
                 order.put(6,37);
@@ -322,7 +323,7 @@ public final class Practice extends JavaPlugin
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
                 Map m = new Map(1, "MapName", "Sumo1", spawn);
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit(1,Arrays.asList(new ItemStack[]{}), order);
+                Kit k = new Kit("Sumo", -1,Arrays.asList(new ItemStack[]{}), -1,order);
                 Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k,m);
                 new YKillComponent(g.getLogic(), 97);
                 new NoDieComponent(g.getLogic());

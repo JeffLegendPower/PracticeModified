@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
@@ -18,6 +19,14 @@ public class DropToBreakTimer extends TimerComponent
         super(logic);
         this.mat = mat;
     }
+    public DropToBreakTimer(GameLogic logic, String s)
+    {
+        super(logic);
+        this.mat = new Gson().fromJson(s, Material.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(mat);}
+
 
     @Override
     public void onEvent(Event event)

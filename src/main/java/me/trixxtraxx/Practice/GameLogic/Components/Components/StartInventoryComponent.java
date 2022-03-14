@@ -13,6 +13,12 @@ public class StartInventoryComponent extends GameComponent
     {
         super(logic);
     }
+    public StartInventoryComponent(GameLogic logic, String s)
+    {
+        super(logic);
+    }
+    @Override
+    public String getData() {return "";}
 
     @Override
     public void onEvent(GameEvent event){

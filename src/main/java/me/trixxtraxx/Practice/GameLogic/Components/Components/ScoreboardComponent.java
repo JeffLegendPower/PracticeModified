@@ -1,11 +1,13 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
+import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.libs.Fastboard.FastBoard;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,8 +18,12 @@ import java.util.Map;
 
 public class ScoreboardComponent extends GameComponent
 {
-    private String title;
-    private List<String> lines;
+    private Settings settings = new Settings();
+    private class Settings
+    {
+        private String title;
+        private List<String> lines;
+    }
 
     private BukkitRunnable run;
     private HashMap<Player, FastBoard> boards = new HashMap<>();
@@ -25,9 +31,16 @@ public class ScoreboardComponent extends GameComponent
     public ScoreboardComponent(GameLogic logic, String title, List<String> lines)
     {
         super(logic);
-        this.title = title;
-        this.lines = lines;
+        settings.title = title;
+        settings.lines = lines;
     }
+    public ScoreboardComponent(GameLogic logic, String s)
+    {
+        super(logic);
+        settings = new Gson().fromJson(s, Settings.class);
+    }
+    @Override
+    public String getData() {return new Gson().toJson(settings);}
 
     @Override
     public void onEvent(GameEvent event)
@@ -41,8 +54,8 @@ public class ScoreboardComponent extends GameComponent
         for (Player p:e.getlogic().getPlayers())
         {
             FastBoard board = new FastBoard(p);
-            board.updateTitle(e.getlogic().applyPlaceholders(p,title));
-            board.updateLines(e.getlogic().applyPlaceholders(p,lines));
+            board.updateTitle(e.getlogic().applyPlaceholders(p,settings.title));
+            board.updateLines(e.getlogic().applyPlaceholders(p,settings.lines));
             boards.put(p, board);
         }
         run = new BukkitRunnable()
@@ -52,8 +65,8 @@ public class ScoreboardComponent extends GameComponent
             {
                 for (Map.Entry<Player, FastBoard> entry:boards.entrySet())
                 {
-                    entry.getValue().updateTitle(e.getlogic().applyPlaceholders(entry.getKey(),title));
-                    entry.getValue().updateLines(e.getlogic().applyPlaceholders(entry.getKey(),lines));
+                    entry.getValue().updateTitle(e.getlogic().applyPlaceholders(entry.getKey(),settings.title));
+                    entry.getValue().updateLines(e.getlogic().applyPlaceholders(entry.getKey(),settings.lines));
                 }
             }
         };

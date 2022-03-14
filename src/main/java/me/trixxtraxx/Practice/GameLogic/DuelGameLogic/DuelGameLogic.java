@@ -73,6 +73,18 @@ public class DuelGameLogic extends GameLogic
     @Override
     public Map getMap() {return map;}
 
+    @Override
+    public void applyData(String s)
+    {
+
+    }
+
+    @Override
+    public String getData()
+    {
+        return "";
+    }
+
     public void loadWorld()
     {
         world = map.load();

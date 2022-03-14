@@ -41,15 +41,20 @@ public class Map
     {
         return Name;
     }
+
     public String getLoad()
     {
         return LoadName;
     }
+
     public int getSqlIndex()
     {
         return id;
     }
-    public ISpawnComponent getSpawn(){return spawn;}
+
+    public ISpawnComponent getSpawn() {return spawn;}
+
+    public World getWorld() {return world;}
 
     public static void init()
     {
@@ -60,20 +65,23 @@ public class Map
     {
         return components;
     }
+
     public void addComponent(MapComponent comp)
     {
         components.add(comp);
     }
+
     public void removeComponent(MapComponent comp)
     {
         components.remove(comp);
     }
+
     public List<MapComponent> getComponents(Class<?> c)
     {
         List<MapComponent> comps = new ArrayList<>();
-        for (MapComponent comp:components)
+        for (MapComponent comp : components)
         {
-            if(c.isInstance(comp) || c.isAssignableFrom(comp.getClass())) comps.add(comp);
+            if (c.isInstance(comp) || c.isAssignableFrom(comp.getClass())) comps.add(comp);
         }
         return comps;
     }
