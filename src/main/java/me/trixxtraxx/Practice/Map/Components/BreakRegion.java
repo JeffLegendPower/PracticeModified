@@ -46,7 +46,7 @@ public class BreakRegion extends MapComponent
     {
         if (settings.region.contains(e.getBlock().getLocation()))
         {
-            e.setCancelled(settings.canBreak);
+            e.setCancelled(!settings.canBreak);
         }
     }
 }

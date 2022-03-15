@@ -41,7 +41,7 @@ public class NoMapBreakComponent extends MapComponent
     }
 
     @Override
-    public void onEventAfter(Event event)
+    public void onEventCancel(Event event)
     {
         if(event instanceof BlockPlaceEvent) onBlockPlace2((BlockPlaceEvent) event);
     }
@@ -64,6 +64,7 @@ public class NoMapBreakComponent extends MapComponent
     public void onBlockBreak(BlockBreakEvent e)
     {
         if(!blocksPlaced.contains(e.getBlock().getLocation())) e.setCancelled(true);
+        else blocksPlaced.remove(e.getBlock().getLocation());
     }
 
     public void onReset(ResetEvent e)

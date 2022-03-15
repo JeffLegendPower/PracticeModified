@@ -16,10 +16,7 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCoponent;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Kit.Kit;
-import me.trixxtraxx.Practice.Map.Components.BreakRegion;
-import me.trixxtraxx.Practice.Map.Components.ClearOnDropComponent;
-import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
-import me.trixxtraxx.Practice.Map.Components.PlaceRegion;
+import me.trixxtraxx.Practice.Map.Components.*;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.CacheListener;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
@@ -36,11 +33,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 public final class Practice extends JavaPlugin
 {
@@ -206,15 +202,17 @@ public final class Practice extends JavaPlugin
             {
                 Player p = (Player) s;
                 Map m = new Map(1,"MapName", "TestMap", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 108, 0)));
-                HashMap<Integer, Integer> order = new HashMap<>();
-                order.put(0, 2);
-                order.put(1, 3);
-                order.put(2, 8);
-                order.put(3, 6);
-                order.put(4, 7);
-                order.put(5, 1);
-                order.put(6, 4);
-                Kit k = new Kit("Blockin",-1,Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED),new ItemStack(Material.NETHER_STAR)}), -1, order);
+                //HashMap<Integer, Integer> order = new HashMap<>();
+                //order.put(0, 2);
+                //order.put(1, 3);
+                //order.put(2, 8);
+                //order.put(3, 6);
+                //order.put(4, 7);
+                //order.put(5, 1);
+                //order.put(6, 4);
+                //Kit k = new Kit("Blockin",-1,Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED),new ItemStack(Material.NETHER_STAR)}), -1, order);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
@@ -254,8 +252,10 @@ public final class Practice extends JavaPlugin
             {
                 Player p = (Player) s;
                 Map m = new Map(1,"MapName", "BridgeTest", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 100, 0)));
-                HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit("Bridge", -1,Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), -1, order);
+                //HashMap<Integer, Integer> order = new HashMap<>();
+                //Kit k = new Kit("Bridge", -1,Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), -1, order);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
                 new PressurePlateResetComponent(g.getLogic());
                 new MapResetComponent(g.getLogic());
@@ -274,8 +274,8 @@ public final class Practice extends JavaPlugin
                 Player p2 = Bukkit.getPlayer(args[1]);
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
                 Map m = new Map(1,"MapName", "Practice1", spawn);
-                HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit("Classic", -1,Arrays.asList(new ItemStack[]{
+                //HashMap<Integer, Integer> order = new HashMap<>();
+                /*Kit k = new Kit("Classic", -1,Arrays.asList(new ItemStack[]{
                         new ItemStack(Material.STONE_SWORD),
                         new ItemStack(Material.BOW),
                         new ItemStack(Material.ARROW, 8),
@@ -288,7 +288,9 @@ public final class Practice extends JavaPlugin
                 order.put(4,39);
                 order.put(5,38);
                 order.put(6,37);
-                order.put(7,36);
+                order.put(7,36);*/
+                Kit k = SQLUtil.Instance.getKit(args[2]);
+                SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k,m);
                 new YKillComponent(g.getLogic(), 90);
                 new NoDieComponent(g.getLogic());
@@ -323,8 +325,10 @@ public final class Practice extends JavaPlugin
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
                 Map m = new Map(1, "MapName", "Sumo1", spawn);
                 HashMap<Integer, Integer> order = new HashMap<>();
-                Kit k = new Kit("Sumo", -1,Arrays.asList(new ItemStack[]{}), -1,order);
-                Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k,m);
+                //Kit k = new Kit("Sumo", -1,Arrays.asList(new ItemStack[]{}), -1,order);
+                Kit k = SQLUtil.Instance.getKit(args[2]);
+                SQLUtil.Instance.applyComponents(k);
+                Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k, m);
                 new YKillComponent(g.getLogic(), 97);
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -353,6 +357,26 @@ public final class Practice extends JavaPlugin
                 new OpponentPlaceholderComponent(g.getLogic());
                 new NoMapBreakComponent(m);
                 new PointComponent(g.getLogic(), 2, "⬤");
+            }
+            else if(args[0].equalsIgnoreCase("saveKit"))
+            {
+                Player p = (Player) s;
+                PlayerInventory inv = p.getInventory();
+                HashMap<Integer, Integer> defaultOrder = new HashMap<>();
+                List<ItemStack> items = new ArrayList<>();
+                for(int i = 0; i < 40; i++)
+                {
+                    ItemStack item = inv.getItem(i);
+                    if(item == null) continue;
+                    defaultOrder.put(items.size(), i);
+                    items.add(item);
+                }
+                Kit k = new Kit(args[1], -1, items, -1, defaultOrder);
+                SQLUtil.Instance.addKit(k);
+            }
+            else if(args[0].equalsIgnoreCase("deleteKit"))
+            {
+                SQLUtil.Instance.deleteKit(SQLUtil.Instance.getKit(args[1]));
             }
         }
         return false;

@@ -50,7 +50,7 @@ public class ClearOnDropComponent extends MapComponent
     @Override
     public void onEvent(GameEvent event)
     {
-        if(event instanceof ResetEvent) onReset((ResetEvent) event);
+        if(event instanceof ResetEvent) onResetAfter((ResetEvent) event);
         if(event instanceof DropEvent) onDrop((DropEvent) event);
     }
 
@@ -69,7 +69,7 @@ public class ClearOnDropComponent extends MapComponent
     }
 
     @SuppressWarnings("deprecation")
-    public void onReset(ResetEvent e)
+    public void onResetAfter(ResetEvent e)
     {
         if(stored.size() == 0) return;
         int i = 0;

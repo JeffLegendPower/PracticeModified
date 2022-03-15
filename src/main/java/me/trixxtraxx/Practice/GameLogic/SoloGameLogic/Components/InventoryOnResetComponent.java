@@ -21,10 +21,10 @@ public class InventoryOnResetComponent extends GameComponent
 
     @Override
     public void onEvent(GameEvent event){
-        if(event instanceof ResetEvent) onStart((ResetEvent) event);
+        if(event instanceof ResetEvent) onReset((ResetEvent) event);
     }
 
-    public void onStart(ResetEvent e)
+    public void onReset(ResetEvent e)
     {
         for (Player p:logic.getPlayers()) e.getlogic().getGame().getKit().setInventory(p);
     }

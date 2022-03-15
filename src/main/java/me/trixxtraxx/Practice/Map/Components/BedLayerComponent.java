@@ -1,4 +1,4 @@
-package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
+package me.trixxtraxx.Practice.Map.Components;
 
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
@@ -23,7 +23,7 @@ import java.util.List;
 
 public class BedLayerComponent extends MapComponent implements ISettingsComponent
 {
-    private Settings settings;
+    private Settings settings = new Settings();
     private class Settings
     {
         private Material mat;

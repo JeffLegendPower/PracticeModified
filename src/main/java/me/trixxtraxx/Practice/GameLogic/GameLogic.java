@@ -55,9 +55,6 @@ public abstract class GameLogic
         for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
         for (GameComponent comp : getComponents()) comp.onEvent(e);
         for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);
-        for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
-        for (GameComponent comp : getComponents()) comp.onEventAfter(e);
-        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
         if(e instanceof Cancellable){
             Cancellable c = (Cancellable) e;
             if(c.isCancelled()){
@@ -65,13 +62,23 @@ public abstract class GameLogic
                 for (GameComponent comp : getComponents()) comp.onEventCancel(e);
                 for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventCancel(e);
             }
+            else{
+                for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
+                for (GameComponent comp : getComponents()) comp.onEventAfter(e);
+                for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
+            }
+        }
+        else{
+            for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
+            for (GameComponent comp : getComponents()) comp.onEventAfter(e);
+            for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
         }
         return e;
     }
 
     public GameEvent triggerEvent(GameEvent e)
     {
-        Practice.log(5, "Event triggered: " + e.getClass().getName());
+        Practice.log(4, "Game Event triggered: " + e.getClass().getName());
         for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
         for (GameComponent comp : getComponents()) comp.onEvent(e);
         for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);

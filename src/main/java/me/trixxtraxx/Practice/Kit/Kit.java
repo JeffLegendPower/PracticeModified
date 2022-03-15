@@ -2,6 +2,8 @@ package me.trixxtraxx.Practice.Kit;
 
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
+import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.SQL.ConfigItem;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -20,6 +22,7 @@ public class Kit
     private String name;
     private List<KitComponent> components = new ArrayList<>();
     private List<ItemStack> items;
+    //This is rly a hashmap of String, Double lmao
     private HashMap<Integer, Integer> defaultOrder;
 
     //- different Items (duh)
@@ -70,7 +73,17 @@ public class Kit
     public int getSqlId(){return sqlId;}
     public int getDefaultOrderId(){return defaultOrderId;}
     public String getName(){return name;}
-    public String getItems(){return new Gson().toJson(items);}
+    public String getItems()
+    {
+        List<ConfigItem> Items = new ArrayList<>();
+        for (ItemStack i:items)
+        {
+            ConfigItem i2 = new ConfigItem();
+            i2.stack = new Gson().toJson(i.serialize());
+            Items.add(i2);
+        }
+        return new Gson().toJson(Items);
+    }
     public String getDefaultOrder(){return new Gson().toJson(defaultOrder);}
     public void setSqlId(int id){sqlId = id;}
     public void setDefaultOrderId(int id){defaultOrderId = id;}
@@ -92,20 +105,32 @@ public class Kit
         List<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) indexes.add(i);
 
+        //Practice.log(4, "Default Order: " + order.size() + "," + order.entrySet() + "," + (order.size() == defaultOrder.size()) );
+
         for (Map.Entry<Integer, Integer> entry: order.entrySet())
         {
             try
             {
-                ItemStack stack = items.get(entry.getKey());
-                inv.setItem(entry.getValue(), stack.clone());
-                indexes.remove(entry.getKey());
+                int key = Integer.parseInt((String) String.valueOf(entry.getKey()));
+                //Practice.log(4, "Key: " + key);
+                //SOME SHITTY BUG WITH HASHMAP JSON SERIALIZATION "CANT CAST STRING TO INT"
+                ItemStack stack = items.get(key);
+                //SOME SHITTY BUG WITH HASHMAP JSON SERIALIZATION "CANT CAST DOUBLE TO INT"
+                int slot = (int) Double.parseDouble(String.valueOf(entry.getValue()));
+                //Practice.log(4, "Now Setting: " + slot + "," + stack );
+                inv.setItem(slot, stack.clone());
+                indexes.remove((Integer) key);
             }
-            catch (Exception ex){}
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
 
         for (int index:indexes)
         {
             ItemStack stack = items.get(index);
+            Practice.log(4, "Seting remaining stack: " + index + "," + stack);
             inv.addItem(stack.clone());
         }
     }

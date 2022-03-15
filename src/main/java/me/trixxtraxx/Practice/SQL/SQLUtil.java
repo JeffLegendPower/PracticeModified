@@ -71,7 +71,7 @@ public class SQLUtil
         {
             Map m = null;
             PreparedStatement ps = con.prepareStatement("SELECT * FROM Map WHERE Map.MapName = ?");
-            ps.setString(0, Name);
+            ps.setString(1, Name);
 
             ResultSet res = ps.executeQuery();
             if (res.next())
@@ -98,7 +98,7 @@ public class SQLUtil
         try
         {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM MapComponent INNER JOIN Map ON Map.Map_ID = MapComponent.Map_ID WHERE Map.Map_ID = ?");
-            ps.setInt(0, m.getSqlIndex());
+            ps.setInt(1, m.getSqlIndex());
 
             ResultSet res = ps.executeQuery();
             while (res.next())
@@ -121,7 +121,7 @@ public class SQLUtil
         try
         {
             PreparedStatement ps = con.prepareStatement("DELETE FROM Map WHERE Map.Map_ID = ?");
-            ps.setInt(0, m.getSqlIndex());
+            ps.setInt(1, m.getSqlIndex());
 
             ps.executeUpdate();
             ps.close();
@@ -139,18 +139,19 @@ public class SQLUtil
             int mapId = 0;
             if(true)
             {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO Map (MapName, load, SpawnClass, SpawnData) VALUES (?,?,?,?)");
-                ps.setString(0, m.getName());
-                ps.setString(1, m.getLoad());
-                ps.setString(2, m.getSpawn().getClass().getName());
-                ps.setString(3, m.getSpawn().getData());
+                PreparedStatement ps = con.prepareStatement("INSERT INTO Map (MapName, load, SpawnClass, SpawnData) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, m.getName());
+                ps.setString(2, m.getLoad());
+                ps.setString(3, m.getSpawn().getClass().getName());
+                ps.setString(4, m.getSpawn().getData());
+
+                ps.executeUpdate();
 
                 ResultSet rs = ps.getGeneratedKeys();
                 rs.next();
                 mapId =  rs.getInt(1);
                 rs.close();
 
-                ps.executeUpdate();
                 ps.close();
             }
             if(true){
@@ -177,8 +178,8 @@ public class SQLUtil
             if (true)
             {
                 PreparedStatement ps = con.prepareStatement("SELECT * FROM Player WHERE Name = ? OR UUID = ?");
-                ps.setString(0, p.getName());
-                ps.setString(1, p.getUniqueId().toString());
+                ps.setString(1, p.getName());
+                ps.setString(2, p.getUniqueId().toString());
 
                 ResultSet res = ps.executeQuery();
                 if (res.next())
@@ -195,7 +196,7 @@ public class SQLUtil
             if(true)
             {
                 PreparedStatement ps = con.prepareStatement("SELECT * FROM KitOrder INNER JOIN PlayerKitOrder ON KitOrder.KitOrder_ID = PlayerKitOrder.KitOrder_ID INNER JOIN Player ON PlayerKitOrder.Player_ID = Player.Player_ID WHERE Player.Player_ID = ?");
-                ps.setString(0, PlayerId + "");
+                ps.setString(1, PlayerId + "");
 
                 HashMap<Integer, HashMap<Integer, Integer>> orders = new HashMap<>();
 
@@ -225,9 +226,9 @@ public class SQLUtil
     {
         try
         {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO Player (UUID, Name) VALUES (?,?)");
-            ps.setString(0, p.getUniqueId() + "");
-            ps.setString(1, p.getName());
+            PreparedStatement ps = con.prepareStatement("INSERT INTO Player (UUID, Name) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, p.getUniqueId() + "");
+            ps.setString(2, p.getName());
 
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
@@ -249,10 +250,10 @@ public class SQLUtil
     {
         try
         {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (Order, Kit_ID) VALUES (?,?)");
-            ps.setString(0, new Gson().toJson(order));
-            if(nullkitid) ps.setNull(1, Types.NULL);
-            else ps.setInt(1, kitId);
+            PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, new Gson().toJson(order));
+            if(nullkitid) ps.setNull(2, Types.NULL);
+            else ps.setInt(2, kitId);
 
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
@@ -261,8 +262,8 @@ public class SQLUtil
             ps.close();
 
             ps = con.prepareStatement("INSERT INTO PlayerKitOrder (Player_ID, KitOrder_ID) VALUES (?,?)");
-            ps.setInt(0, prac.getPlayerId());
-            ps.setInt(1, id);
+            ps.setInt(1, prac.getPlayerId());
+            ps.setInt(2, id);
 
             ps.close();
             rs.close();
@@ -275,22 +276,36 @@ public class SQLUtil
 
     public Kit getKit(int KitId)
     {
+        return getKitFromQuery("SELECT * FROM Kit WHERE Kit.Kit_ID = " + KitId);
+    }
+
+    public Kit getKit(String name)
+    {
+        return getKitFromQuery("SELECT * FROM Kit WHERE Kit.Name = '" + name + "'");
+    }
+
+    private Kit getKitFromQuery(String query)
+    {
         try
         {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM Kit WHERE Kit.Kit_ID = ?");
-            ps.setString(0, KitId + "");
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.executeQuery();
 
             ResultSet res = ps.getResultSet();
 
             //new Instance to get List class
-            List<ItemStack> items= new ArrayList<>();
+            ConfigItem[] items= null;
             int deforder = 0;
             String name = "";
+            int kitId = 0;
             if(res.next())
             {
-                items = new Gson().fromJson(res.getString("Items"), items.getClass());
+                java.util.Map<String, Object> map = new HashMap<>();
+                items = new Gson().fromJson(res.getString("Items"), ConfigItem[].class);
                 deforder = res.getInt("defaultOrder");
                 name = res.getString("Name");
+                kitId = res.getInt("Kit_ID");
             }
             else
             {
@@ -302,7 +317,9 @@ public class SQLUtil
             ps.close();
             res.close();
             ps = con.prepareStatement("SELECT * FROM KitOrder INNER JOIN Kit ON Kit.defaultOrder = KitOrder.KitOrder_ID WHERE Kit.defaultOrder = ?");
-            ps.setInt(0, deforder);
+            ps.setInt(1, deforder);
+
+            ps.executeQuery();
 
             res = ps.getResultSet();
 
@@ -320,7 +337,13 @@ public class SQLUtil
 
             ps.close();
             res.close();
-            return new Kit(name, KitId, items, deforder, defaultOrder);
+            List<ItemStack> stacks = new ArrayList<>();
+            for (ConfigItem i:items)
+            {
+                java.util.Map<String, Object> map = new HashMap<>();
+                stacks.add(ItemStack.deserialize(new Gson().fromJson(i.stack, map.getClass())));
+            }
+            return new Kit(name, kitId, stacks, deforder, defaultOrder);
         }
         catch (Exception e)
         {
@@ -334,7 +357,9 @@ public class SQLUtil
         try
         {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM KitComponent INNER JOIN Kit ON Kit.Kit_ID = KitComponent.Kit_ID WHERE KitComponent.Kit_ID = ?");
-            ps.setInt(0, k.getSqlId());
+            ps.setInt(1, k.getSqlId());
+
+            ps.executeQuery();
 
             ResultSet res = ps.getResultSet();
 
@@ -360,7 +385,7 @@ public class SQLUtil
         try
         {
             PreparedStatement ps = con.prepareStatement("DELETE FROM Kit WHERE Kit.Kit_ID = ?");
-            ps.setInt(0, k.getSqlId());
+            ps.setInt(1, k.getSqlId());
 
             ps.executeUpdate();
             ps.close();
@@ -380,32 +405,32 @@ public class SQLUtil
             int KitId = 0;
             if(k.getDefaultOrderId() == -1)
             {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (Order, Kit_ID) VALUES (?,?)");
-                ps.setString(0, k.getDefaultOrder());
-                ps.setInt(1, -1);
+                PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, k.getDefaultOrder());
+                ps.setInt(2, -1);
 
+                ps.executeUpdate();
 
                 ResultSet rs = ps.getGeneratedKeys();
                 rs.next();
                 orderId =  rs.getInt(1);
                 rs.close();
 
-                ps.executeUpdate();
                 ps.close();
             }
             if(true)
             {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO Kit (Name, Items, defaultOrder) VALUES (?,?,?)");
-                ps.setString(0, k.getName());
-                ps.setString(1, k.getItems());
-                ps.setInt(2, orderId);
+                PreparedStatement ps = con.prepareStatement("INSERT INTO Kit (Name, Items, defaultOrder) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, k.getName());
+                ps.setString(2, k.getItems());
+                ps.setInt(3, orderId);
 
+                ps.executeUpdate();
                 ResultSet rs = ps.getGeneratedKeys();
                 rs.next();
                 KitId =  rs.getInt(1);
                 rs.close();
 
-                ps.executeUpdate();
                 ps.close();
             }
             if(true){
@@ -431,7 +456,9 @@ public class SQLUtil
         try
         {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = ?");
-            ps.setString(0, logicId + "");
+            ps.setString(1, logicId + "");
+
+            ps.executeQuery();
 
             ResultSet res = ps.getResultSet();
 
@@ -461,7 +488,9 @@ public class SQLUtil
         try
         {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM GameComponent INNER JOIN Gamemode ON GameComponent.GameComponent_ID = Gamemode.GameComponent_ID WHERE GameComponent.GameComponent_ID = ?");
-            ps.setInt(0, logic.getId());
+            ps.setInt(1, logic.getId());
+
+            ps.executeQuery();
 
             ResultSet res = ps.getResultSet();
 
@@ -487,7 +516,7 @@ public class SQLUtil
         try
         {
             PreparedStatement ps = con.prepareStatement("DELETE FROM Kit WHERE Kit.Kit_ID = ?");
-            ps.setInt(0, logic.getId());
+            ps.setInt(1, logic.getId());
 
             ps.executeUpdate();
             ps.close();
@@ -506,17 +535,18 @@ public class SQLUtil
             int logicId = 0;
             if(true)
             {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO Gamemode (Name, Class, Data) VALUES (?,?,?)");
-                ps.setString(0, logic.getName());
-                ps.setString(1, logic.getClass().getName());
-                ps.setString(2, logic.getData());
+                PreparedStatement ps = con.prepareStatement("INSERT INTO Gamemode (Name, Class, Data) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, logic.getName());
+                ps.setString(2, logic.getClass().getName());
+                ps.setString(3, logic.getData());
+
+                ps.executeUpdate();
 
                 ResultSet rs = ps.getGeneratedKeys();
                 rs.next();
                 logicId =  rs.getInt(1);
                 rs.close();
 
-                ps.executeUpdate();
                 ps.close();
             }
             if(true){

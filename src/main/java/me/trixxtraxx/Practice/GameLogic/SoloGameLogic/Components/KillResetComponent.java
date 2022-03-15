@@ -28,11 +28,14 @@ public class KillResetComponent extends GameComponent
 
     public void onDeath(PlayerDeathEvent e)
     {
+        Practice.log(4, "Death Reset Triggered!");
         if(logic instanceof SoloGameLogic)
         {
             SoloGameLogic log = (SoloGameLogic) logic;
             if(log.getPlayer() != e.getEntity()) return;
             e.getEntity().setHealth(20);
+            //tried 1 and 2 and 10 didnt work :C
+            e.getEntity().setNoDamageTicks(20);
             new BukkitRunnable()
             {
                 @Override

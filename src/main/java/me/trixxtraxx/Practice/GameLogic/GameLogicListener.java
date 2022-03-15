@@ -19,7 +19,7 @@ public class GameLogicListener implements Listener
     public void onEvent(Event e, World w, Player p)
     {
         Game g = Game.getGame(w);
-        if( g== null) return;
+        if(g== null) return;
         if(p == null)
         {
             g.getLogic().triggerEvent(e);
@@ -108,7 +108,7 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(EntityDamageEvent   e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
-    public void onEventList(EntityDeathEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
+    public void onEventList(EntityDeathEvent  e) {if(!(e.getEntity() instanceof Player)) onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
     public void onEventList(EntityExplodeEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler

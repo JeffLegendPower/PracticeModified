@@ -24,7 +24,7 @@ public class Game
         logic = log;
         for (Player p : players)
         {
-            p.setNoDamageTicks(5);
+            p.setNoDamageTicks(20);
             p.setHealth(p.getMaxHealth());
             p.setFoodLevel(20);
             p.setGameMode(GameMode.SURVIVAL);
