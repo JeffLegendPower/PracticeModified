@@ -9,6 +9,7 @@ import me.trixxtraxx.Practice.Kit.KitComponent;
 import me.trixxtraxx.Practice.Map.ISpawnComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.Utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -93,7 +94,7 @@ public class SQLUtil
         return null;
     }
 
-    public void applyComponents(Map m, GameLogic logic)
+    public void applyComponents(Map m)
     {
         try
         {
@@ -104,8 +105,8 @@ public class SQLUtil
             while (res.next())
             {
                 Class<?> clazz = Class.forName(res.getString("Class"));
-                Constructor<?> constructor = clazz.getConstructor(GameLogic.class, String.class);
-                constructor.newInstance(logic, res.getString("Data"));
+                Constructor<?> constructor = clazz.getConstructor(Map.class, String.class);
+                constructor.newInstance(m, res.getString("Data"));
             }
             ps.close();
             res.close();
@@ -139,7 +140,7 @@ public class SQLUtil
             int mapId = 0;
             if(true)
             {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO Map (MapName, load, SpawnClass, SpawnData) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = con.prepareStatement("INSERT INTO Map (MapName, `load`, SpawnClass, SpawnData) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, m.getName());
                 ps.setString(2, m.getLoad());
                 ps.setString(3, m.getSpawn().getClass().getName());
@@ -154,7 +155,9 @@ public class SQLUtil
 
                 ps.close();
             }
-            if(true){
+            if(true)
+            {
+                Practice.log(4,"new Map Id = " + mapId);
                 Statement s = con.createStatement();
                 for (MapComponent comp:m.getComponents())
                 {
@@ -453,10 +456,18 @@ public class SQLUtil
 
     public GameLogic getLogic(int logicId)
     {
+        return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = " + logicId);
+    }
+
+    public GameLogic getLogic(String name)
+    {
+        return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Name = '" + name + "'");
+    }
+
+    private GameLogic getLogicFromQuery(String query){
         try
         {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = ?");
-            ps.setString(1, logicId + "");
+            PreparedStatement ps = con.prepareStatement(query);
 
             ps.executeQuery();
 
@@ -468,7 +479,7 @@ public class SQLUtil
                 Class clazz = Class.forName(res.getString("Class"));
                 logic = (GameLogic) clazz.newInstance();
                 logic.setName(res.getString("Name"));
-                logic.setId(logicId);
+                logic.setId(res.getInt("Gamemode_ID"));
                 logic.applyData(res.getString("Data"));
             }
 
@@ -487,7 +498,7 @@ public class SQLUtil
     {
         try
         {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM GameComponent INNER JOIN Gamemode ON GameComponent.GameComponent_ID = Gamemode.GameComponent_ID WHERE GameComponent.GameComponent_ID = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM GameComponent INNER JOIN Gamemode ON GameComponent.Gamemode_ID = Gamemode.Gamemode_ID WHERE GameComponent.Gamemode_ID = ?");
             ps.setInt(1, logic.getId());
 
             ps.executeQuery();

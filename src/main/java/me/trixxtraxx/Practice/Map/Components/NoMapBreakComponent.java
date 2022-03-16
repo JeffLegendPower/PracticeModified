@@ -27,11 +27,7 @@ public class NoMapBreakComponent extends MapComponent
         super(map);
     }
 
-    @Override
-    public String getData()
-    {
-        return new Gson().toJson("");
-    }
+    public String getData() {return "{}";}
 
     @Override
     public void onEvent(Event event)

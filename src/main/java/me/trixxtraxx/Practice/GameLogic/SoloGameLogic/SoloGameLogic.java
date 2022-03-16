@@ -74,11 +74,7 @@ public class SoloGameLogic extends GameLogic
 
     }
 
-    @Override
-    public String getData()
-    {
-        return "";
-    }
+    public String getData() {return "{}";}
 
     public Player getPlayer(){return player;}
 

@@ -19,7 +19,7 @@ import java.util.List;
 public abstract class GameLogic
 {
     protected List<GameComponent> components = new ArrayList<>();
-    protected int id;
+    protected int id = -1;
     protected String name;
 
     public GameLogic() {}

@@ -1,14 +1,15 @@
 package me.trixxtraxx.Practice.Utils;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Region
 {
-    private Location loc1;
-    private Location loc2;
+    private ConfigLocation loc1;
+    private ConfigLocation loc2;
 
     public Region(Location location1, Location location2)
     {
@@ -37,29 +38,29 @@ public class Region
             maxz = location1.getBlockZ();
         }
 
-        loc1 = new Location(location1.getWorld(), minx, miny, minz);
-        loc2 = new Location(location1.getWorld(), maxx, maxy, maxz);
+        loc1 = new ConfigLocation(minx, miny, minz);
+        loc2 = new ConfigLocation( maxx, maxy, maxz);
     }
 
     public boolean contains(Location loc)
     {
-        if (loc.getBlockX() >= loc1.getBlockX() && loc.getBlockY() >= loc1.getBlockY() && loc.getBlockZ() >= loc1.getBlockZ() && loc.getBlockX() <= loc2.getBlockX() && loc.getBlockY() <= loc2.getBlockY() && loc.getBlockZ() <= loc2.getBlockZ())
+        if (loc.getBlockX() >= loc1.getLocation(loc.getWorld()).getBlockX() && loc.getBlockY() >= loc1.getLocation(loc.getWorld()).getBlockY() && loc.getBlockZ() >= loc1.getLocation(loc.getWorld()).getBlockZ() && loc.getBlockX() <= loc2.getLocation(loc.getWorld()).getBlockX() && loc.getBlockY() <= loc2.getLocation(loc.getWorld()).getBlockY() && loc.getBlockZ() <= loc2.getLocation(loc.getWorld()).getBlockZ())
         {
             return true;
         }
         return false;
     }
 
-    public List<Location> getLocations()
+    public List<Location> getLocations(World w)
     {
         List<Location> locs = new ArrayList<>();
-        for (int x = loc1.getBlockX(); x < loc2.getBlockX(); x++)
+        for (int x = loc1.getLocation(w).getBlockX(); x < loc2.getLocation(w).getBlockX(); x++)
         {
-            for (int y = loc1.getBlockY(); y < loc2.getBlockY(); y++)
+            for (int y = loc1.getLocation(w).getBlockY(); y < loc2.getLocation(w).getBlockY(); y++)
             {
-                for (int z = loc1.getBlockZ(); z < loc2.getBlockZ(); z++)
+                for (int z = loc1.getLocation(w).getBlockZ(); z < loc2.getLocation(w).getBlockZ(); z++)
                 {
-                    locs.add(new Location(loc1.getWorld(), x, y, z));
+                    locs.add(new Location(w, x, y, z));
                 }
             }
         }

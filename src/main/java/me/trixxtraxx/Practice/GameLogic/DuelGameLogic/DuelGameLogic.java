@@ -79,11 +79,7 @@ public class DuelGameLogic extends GameLogic
 
     }
 
-    @Override
-    public String getData()
-    {
-        return "";
-    }
+    public String getData() {return "{}";}
 
     public void loadWorld()
     {

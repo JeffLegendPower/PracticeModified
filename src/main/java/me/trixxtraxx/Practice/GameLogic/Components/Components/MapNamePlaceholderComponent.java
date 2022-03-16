@@ -16,7 +16,7 @@ public class MapNamePlaceholderComponent extends GameComponent
         super(logic);
     }
     @Override
-    public String getData() {return "";}
+    public String getData() {return "{}";}
 
     @Override
     public String applyPlaceholder(Player p, String s)

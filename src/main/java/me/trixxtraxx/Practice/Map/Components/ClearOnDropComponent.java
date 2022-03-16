@@ -57,7 +57,7 @@ public class ClearOnDropComponent extends MapComponent
     @SuppressWarnings("deprecation")
     public void onDrop(DropEvent e)
     {
-        for (Location loc:remove.getLocations())
+        for (Location loc:remove.getLocations(e.getlogic().getWorld()))
         {
             ItemStorage store = new ItemStorage();
             Block b = loc.getBlock();
@@ -73,7 +73,7 @@ public class ClearOnDropComponent extends MapComponent
     {
         if(stored.size() == 0) return;
         int i = 0;
-        for (Location loc:remove.getLocations())
+        for (Location loc:remove.getLocations(e.getlogic().getWorld()))
         {
             ItemStorage store = stored.get(i);
             loc.getBlock().setType(store.mat);

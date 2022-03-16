@@ -22,7 +22,7 @@ public class DisconnectStopComponent extends GameComponent
     }
 
     @Override
-    public String getData() {return "";}
+    public String getData() {return "{}";}
 
     public void onQuit(PlayerQuitEvent e)
     {

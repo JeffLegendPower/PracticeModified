@@ -29,6 +29,8 @@ public class SoloSpawnCoponent implements ISpawnComponent
         settings.pitch = loc.getPitch();
     }
 
+    public SoloSpawnCoponent() {}
+
     @Override
     public Location getSpawn(GameLogic logic, Player p)
     {

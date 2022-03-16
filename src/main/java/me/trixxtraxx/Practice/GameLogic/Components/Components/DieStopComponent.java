@@ -22,11 +22,7 @@ public class DieStopComponent extends GameComponent
         if(event instanceof PlayerDeathEvent) onQuit((PlayerDeathEvent) event);
     }
 
-    @Override
-    public String getData()
-    {
-        return "";
-    }
+    public String getData() {return "{}";}
 
     public void onQuit(PlayerDeathEvent e)
     {

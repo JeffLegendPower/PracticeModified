@@ -19,7 +19,7 @@ public class DropToResetTimer extends TimerComponent
         super(logic);
     }
     @Override
-    public String getData() {return "";}
+    public String getData() {return "{}";}
 
     @Override
     public void onEvent(GameEvent event)

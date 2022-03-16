@@ -201,19 +201,13 @@ public final class Practice extends JavaPlugin
             if(args[0].equalsIgnoreCase("Blockin"))
             {
                 Player p = (Player) s;
-                Map m = new Map(1,"MapName", "TestMap", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 108, 0)));
-                //HashMap<Integer, Integer> order = new HashMap<>();
-                //order.put(0, 2);
-                //order.put(1, 3);
-                //order.put(2, 8);
-                //order.put(3, 6);
-                //order.put(4, 7);
-                //order.put(5, 1);
-                //order.put(6, 4);
-                //Kit k = new Kit("Blockin",-1,Arrays.asList(new ItemStack[]{new ItemStack(Material.IRON_AXE), new ItemStack(Material.WOOL, 64), new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.SHEARS), new ItemStack(Material.ANVIL), new ItemStack(Material.BED),new ItemStack(Material.NETHER_STAR)}), -1, order);
+                //Map m = new Map(1,"Blockin1", "TestMap", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 108, 0)));
+                Map m = SQLUtil.Instance.getMap("Blockin1");
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
+                SQLUtil.Instance.applyComponents(m);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
+                g.getLogic().setName("BlockinPractice");
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
                 new SettingsComponent(g.getLogic(),Material.NETHER_STAR,  ChatColor.AQUA + "Settings");
@@ -223,9 +217,6 @@ public final class Practice extends JavaPlugin
                 new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED}));
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
-                new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
-                new BedLayerComponent(m, Material.WOOD, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 2, false);
-                new BedLayerComponent(m, Material.WOOL, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 3, false);
                 new DropToBlockinTimer(g.getLogic());
                 new DropToResetTimer(g.getLogic());
                 new DropToBreakTimer(g.getLogic(), Material.WOOL);
@@ -244,19 +235,22 @@ public final class Practice extends JavaPlugin
                                 ChatColor.BLUE + "Ranked.fun"
                         )
                 );
-                new NoMapBreakComponent(m);
-                new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
-                new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
+
+                //new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
+                //new BedLayerComponent(m, Material.WOOD, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 2, false);
+                //new BedLayerComponent(m, Material.WOOL, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 3, false);
+                //new NoMapBreakComponent(m);
+                //new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
+                //new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
             }
             else if(args[0].equalsIgnoreCase("Bridge"))
             {
                 Player p = (Player) s;
-                Map m = new Map(1,"MapName", "BridgeTest", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 100, 0)));
-                //HashMap<Integer, Integer> order = new HashMap<>();
-                //Kit k = new Kit("Bridge", -1,Arrays.asList(new ItemStack[]{new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.WOOL, 64), new ItemStack(Material.BED)}), -1, order);
+                Map m = new Map(-1,"BridgeTest", "BridgeTest", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 100, 0)));
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
+                g.getLogic().setName("BridgePractice");
                 new PressurePlateResetComponent(g.getLogic());
                 new MapResetComponent(g.getLogic());
                 new YKillComponent(g.getLogic(), 90);
@@ -266,6 +260,7 @@ public final class Practice extends JavaPlugin
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
                 new DropToResetTimer(g.getLogic());
+
                 new NoMapBreakComponent(m);
             }
             else if(args[0].equalsIgnoreCase("classic"))
@@ -273,25 +268,11 @@ public final class Practice extends JavaPlugin
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[1]);
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
-                Map m = new Map(1,"MapName", "Practice1", spawn);
-                //HashMap<Integer, Integer> order = new HashMap<>();
-                /*Kit k = new Kit("Classic", -1,Arrays.asList(new ItemStack[]{
-                        new ItemStack(Material.STONE_SWORD),
-                        new ItemStack(Material.BOW),
-                        new ItemStack(Material.ARROW, 8),
-                        new ItemStack(Material.GOLDEN_APPLE, 2),
-                        new ItemStack(Material.IRON_HELMET),
-                        new ItemStack(Material.IRON_CHESTPLATE),
-                        new ItemStack(Material.IRON_LEGGINGS),
-                        new ItemStack(Material.IRON_BOOTS),
-                }), -1, order);
-                order.put(4,39);
-                order.put(5,38);
-                order.put(6,37);
-                order.put(7,36);*/
+                Map m = new Map(-1,"Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[2]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k,m);
+                g.getLogic().setName("Classic");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -316,6 +297,7 @@ public final class Practice extends JavaPlugin
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
+
                 new NoMapBreakComponent(m);
             }
             else if(args[0].equalsIgnoreCase("sumo"))
@@ -323,12 +305,11 @@ public final class Practice extends JavaPlugin
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[1]);
                 DuelSpawnComponent spawn = new DuelSpawnComponent();
-                Map m = new Map(1, "MapName", "Sumo1", spawn);
-                HashMap<Integer, Integer> order = new HashMap<>();
-                //Kit k = new Kit("Sumo", -1,Arrays.asList(new ItemStack[]{}), -1,order);
+                Map m = new Map(-1, "Sumo1", "Sumo1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[2]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k, m);
+                g.getLogic().setName("Sumo");
                 new YKillComponent(g.getLogic(), 97);
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -355,8 +336,9 @@ public final class Practice extends JavaPlugin
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
-                new NoMapBreakComponent(m);
                 new PointComponent(g.getLogic(), 2, "⬤");
+
+                new NoMapBreakComponent(m);
             }
             else if(args[0].equalsIgnoreCase("saveKit"))
             {
@@ -374,9 +356,41 @@ public final class Practice extends JavaPlugin
                 Kit k = new Kit(args[1], -1, items, -1, defaultOrder);
                 SQLUtil.Instance.addKit(k);
             }
+            else if(args[0].equalsIgnoreCase("saveMap"))
+            {
+                Player p = (Player) s;
+                Game g = Game.getGame(p);
+                SQLUtil.Instance.addMap(g.getLogic().getMap());
+            }
+            else if(args[0].equalsIgnoreCase("saveGamemode"))
+            {
+                Player p = (Player) s;
+                Game g = Game.getGame(p);
+                SQLUtil.Instance.addLogic(g.getLogic());
+            }
             else if(args[0].equalsIgnoreCase("deleteKit"))
             {
                 SQLUtil.Instance.deleteKit(SQLUtil.Instance.getKit(args[1]));
+            }
+            else if(args[0].equalsIgnoreCase("loadGamemode"))
+            {
+                Player p = (Player) s;
+                Map m = SQLUtil.Instance.getMap(args[2]);
+                Kit k = SQLUtil.Instance.getKit(args[3]);
+                SQLUtil.Instance.applyComponents(k);
+                SQLUtil.Instance.applyComponents(m);
+
+                List<Player> ppl = new ArrayList<>();
+
+                ppl.add(p);
+
+                for (int i = 4;i < args.length; i++)
+                {
+                    ppl.add(Bukkit.getPlayer(args[i]));
+                }
+
+                Game g = new Game(SQLUtil.Instance.getLogic(args[1]), ppl,k,m);
+                SQLUtil.Instance.applyComponents(g.getLogic());
             }
         }
         return false;

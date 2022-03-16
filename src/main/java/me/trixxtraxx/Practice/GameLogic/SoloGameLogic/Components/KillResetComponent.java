@@ -19,7 +19,7 @@ public class KillResetComponent extends GameComponent
         super(logic);
     }
     @Override
-    public String getData() {return "";}
+    public String getData() {return "{}";}
 
     @Override
     public void onEvent(Event event){
