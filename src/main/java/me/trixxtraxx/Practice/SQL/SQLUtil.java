@@ -178,6 +178,7 @@ public class SQLUtil
         try
         {
             int PlayerId = -1;
+            HashMap<Integer, HashMap<Integer, Integer>> orders = new HashMap<>();
             if (true)
             {
                 PreparedStatement ps = con.prepareStatement("SELECT * FROM Player WHERE Name = ? OR UUID = ?");
@@ -201,8 +202,6 @@ public class SQLUtil
                 PreparedStatement ps = con.prepareStatement("SELECT * FROM KitOrder INNER JOIN PlayerKitOrder ON KitOrder.KitOrder_ID = PlayerKitOrder.KitOrder_ID INNER JOIN Player ON PlayerKitOrder.Player_ID = Player.Player_ID WHERE Player.Player_ID = ?");
                 ps.setString(1, PlayerId + "");
 
-                HashMap<Integer, HashMap<Integer, Integer>> orders = new HashMap<>();
-
                 ResultSet res = ps.executeQuery();
                 Gson gson = new Gson();
                 //new instance for the getClass(), didnt find another way
@@ -214,7 +213,22 @@ public class SQLUtil
 
                 ps.close();
                 res.close();
-                return new PracticePlayer(PlayerId, p, orders);
+            }
+            PracticePlayer pl = new PracticePlayer(PlayerId, p,orders);
+            if(true){
+                PreparedStatement ps = con.prepareStatement("SELECT * FROM PlayerComponent INNER JOIN Player ON Player.Player_ID = PlayerComponent.Player_ID WHERE PlayerComponent.Player_ID = ?");
+                ps.setInt(1, PlayerId);
+
+                ps.executeQuery();
+
+                ResultSet res = ps.getResultSet();
+
+                while (res.next())
+                {
+                    Class<?> clazz = Class.forName(res.getString("Class"));
+                    Constructor<?> constructor = clazz.getConstructor(Player.class, String.class);
+                    constructor.newInstance(pl, res.getString("Data"));
+                }
             }
             return null;
         }
@@ -223,6 +237,31 @@ public class SQLUtil
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void saveComponents(PracticePlayer p)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM PlayerComponent INNER JOIN Player ON Player.Player_ID = PlayerComponent.Player_ID WHERE PlayerComponent.Player_ID = ?");
+            ps.setInt(1, p.getPlayerId());
+
+            ps.executeUpdate();
+            ps.close();
+
+
+            Statement s = con.createStatement();
+            for (GameComponent comp : p.getComponents())
+            {
+                s.addBatch("INSERT INTO PlayerComponent (Player_ID, Class, Data) VALUES (" + p.getPlayerId() + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
+            }
+            s.executeBatch();
+            s.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private int createPlayer(Player p)

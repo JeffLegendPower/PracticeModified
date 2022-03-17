@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.SQL;
 
+import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.entity.Player;
 
@@ -46,4 +47,31 @@ public class PracticePlayer
 
     public int getPlayerId(){return playerId;}
     public HashMap<Integer, Integer> getCustomOrder(int kitId){return customKitOrders.get(kitId);}
+
+    protected List<GameComponent> components = new ArrayList<>();
+
+    public List<GameComponent> getComponents()
+    {
+        return components;
+    }
+
+    public void addComponent(GameComponent comp)
+    {
+        components.add(comp);
+    }
+
+    public void removeComponent(GameComponent comp)
+    {
+        components.remove(comp);
+    }
+
+    public List<GameComponent> getComponents(Class<?> c)
+    {
+        List<GameComponent> comps = new ArrayList<>();
+        for (GameComponent comp:components)
+        {
+            if(c.isInstance(comp)) comps.add(comp);
+        }
+        return comps;
+    }
 }

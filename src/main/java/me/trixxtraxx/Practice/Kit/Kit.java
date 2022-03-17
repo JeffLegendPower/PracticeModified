@@ -99,8 +99,7 @@ public class Kit
         PlayerInventory inv = p.getInventory();
         HashMap<Integer, Integer> order = defaultOrder;
         PracticePlayer prac = PracticePlayer.getPlayer(p);
-        //add custom player order, unable to in the current state
-        //if(prac.) order = playerOrders.get(p);
+        if(prac.getCustomOrder(sqlId) != null) order = prac.getCustomOrder(sqlId);
 
         List<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) indexes.add(i);
