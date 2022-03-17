@@ -8,3 +8,7 @@ SQL:
   Password: myCoolPassword
 
 SlimeLoader: "mysql"
+
+KitEditor:
+  enabled: true
+  Region: '{"loc1":{"x":20.0,"y":0.0,"z":20.0,"yaw":0.0,"pitch":90.0},"loc2":{"x":-20.0,"y":100.0,"z":40.0,"yaw":0.0,"pitch":90.0}}'
