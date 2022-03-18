@@ -29,6 +29,9 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     {
         private ItemStack mat;
         private String title = ChatColor.AQUA + "Settings";
+        private String difficultyTitle = ChatColor.AQUA + "Difficulty";
+        private String toolsTitle = "unset";
+        private String defenceTitle = "unset";
     }
 
 
@@ -75,12 +78,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         Player p = e.getPlayer();
         if(e.getItem() != null && e.getItem() == settings.mat)
         {
-            Inventory setting = Bukkit.createInventory(p,45,settings.title);
-            setting.setItem(4,new ItemBuilder(Material.BOOK).setName(ChatColor.GOLD + "Setting").setLore(ChatColor.YELLOW + "By changing settings here you can", ChatColor.YELLOW + "customised the gamemode to your likings").addEnchant(Enchantment.DAMAGE_ALL,1).itemFlags(ItemFlag.HIDE_ENCHANTS).toItemStack());
-            setting.setItem(20,new ItemBuilder(Material.WOOL).setName(ChatColor.RED + "Defence Setting").setLore(ChatColor.RED + "Customise Your Bed Defence Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
-            setting.setItem(22,new ItemBuilder(Material.REDSTONE).setName(ChatColor.RED + "Difficulty Setting").setLore(ChatColor.RED + "Change Your Gamemode Difficulty Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
-            setting.setItem(24,new ItemBuilder(Material.WOOD_PICKAXE).setName(ChatColor.RED + "Tool Setting").setLore(ChatColor.RED + "Setup Your Tool Setting Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
-            p.openInventory(setting);
+            settingmenu(p);
         }
     }
 
@@ -95,10 +93,52 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
                     p.sendMessage("defence");
                     return;
                 case REDSTONE:
+                    difficultyMenu(p);
                     p.sendMessage("difficulty");
                     return;
                 case WOOD_PICKAXE:
+                    toolsMenu(p);
                     p.sendMessage("tool setting");
+                    return;
+                case BARRIER:
+                    p.closeInventory();
+                    return;
+            }
+        }else if (title.equalsIgnoreCase(settings.difficultyTitle)){
+            e.setCancelled(true);
+            switch (e.getCurrentItem().getType()){
+                case COAL:
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case IRON_INGOT:
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case GOLD_INGOT:
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case DIAMOND:
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case BARRIER:
+                    settingmenu(p);
+                    return;
+            }
+        }else if (title.equalsIgnoreCase(settings.toolsTitle)){
+            switch (e.getCurrentItem().getType()){
+                case WOOD_PICKAXE:
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case STONE_PICKAXE:
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case IRON_PICKAXE:
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case DIAMOND_PICKAXE:
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    return;
+                case BARRIER:
+                    settingmenu(p);
                     return;
             }
         }
@@ -107,11 +147,46 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     public void onInventoryOpen(InventoryOpenEvent e){
         if (e.getInventory().getTitle() != null && e.getInventory().getTitle() == ChatColor.AQUA + "Settings"){
             for(int i = 0; i < e.getInventory().getSize(); i++){
-                if (e.getInventory().getItem(i).getType() == Material.AIR){
-                    e.getInventory().setItem(i,new ItemBuilder(Material.STAINED_GLASS_PANE).setName(" ").setDyeColor(DyeColor.RED).toItemStack());
+                if (e.getInventory().getItem(i) == null){
+                    e.getInventory().setItem(i,new ItemBuilder(Material.STAINED_GLASS_PANE).setName(" ").setDyeColor(DyeColor.WHITE).toItemStack());
                 }
             }
         }
     }
+
+    private void settingmenu(Player p){
+        Inventory setting = Bukkit.createInventory(p,45,settings.title);
+        setting.setItem(4,new ItemBuilder(Material.BOOK).setName(ChatColor.GOLD + "Setting").setLore(ChatColor.YELLOW + "By changing settings here you can", ChatColor.YELLOW + "customised the gamemode to your likings").addEnchant(Enchantment.DAMAGE_ALL,1).itemFlags(ItemFlag.HIDE_ENCHANTS).toItemStack());
+        setting.setItem(20,new ItemBuilder(Material.WOOL).setName(ChatColor.RED + "Defence Setting").setLore(ChatColor.RED + "Customise Your Bed Defence Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
+        setting.setItem(22,new ItemBuilder(Material.REDSTONE).setName(ChatColor.RED + "Difficulty Setting").setLore(ChatColor.RED + "Change Your Gamemode Difficulty Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
+        setting.setItem(24,new ItemBuilder(Material.WOOD_PICKAXE).setName(ChatColor.RED + "Tool Setting").setLore(ChatColor.RED + "Setup Your Tool Setting Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
+        setting.setItem(40,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Close Menu").setLore(ChatColor.YELLOW + "Close This Menu Setting").toItemStack());
+        p.openInventory(setting);
+    }
+
+    private void difficultyMenu(Player p){
+        Inventory difficuly = Bukkit.createInventory(p,27,settings.difficultyTitle);
+        difficuly.setItem(10,new ItemBuilder(Material.COAL).setName(ChatColor.GREEN + "Easy").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.RED + ChatColor.BOLD +  "EASY " + ChatColor.YELLOW + "Mode").toItemStack());
+        difficuly.setItem(12,new ItemBuilder(Material.IRON_INGOT).setName(ChatColor.BLUE + "Normal").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.RED + ChatColor.BOLD +  "NORMAL " + ChatColor.YELLOW + "Mode").toItemStack());
+        difficuly.setItem(14,new ItemBuilder(Material.GOLD_INGOT).setName(ChatColor.RED + "Hard").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.RED + ChatColor.BOLD +  "HARD " + ChatColor.YELLOW + "Mode").toItemStack());
+        difficuly.setItem(16,new ItemBuilder(Material.DIAMOND).setName(ChatColor.DARK_PURPLE + "Impossible").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.DARK_PURPLE + ChatColor.BOLD +  "IMPOSSIBLE " + ChatColor.YELLOW + "Mode").toItemStack());
+        difficuly.setItem(22,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Return To Main Setting").setLore(ChatColor.YELLOW + "Return To Main Setting").toItemStack());
+        p.openInventory(difficuly);
+    }
+
+    private void toolsMenu(Player p){
+        Inventory tools = Bukkit.createInventory(p,27,settings.toolsTitle);
+        tools.setItem(10,new ItemBuilder(Material.WOOD_PICKAXE).setName(ChatColor.YELLOW + "Wooden Tools").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.GOLD + ChatColor.BOLD +  "WOODEN TOOLS " + ChatColor.YELLOW + "To Block In").toItemStack());
+        tools.setItem(12,new ItemBuilder(Material.STONE_PICKAXE).setName(ChatColor.YELLOW + "Stone Tools").setLore(ChatColor.YELLOW + "Click This To Pick" + ChatColor.GOLD + ChatColor.BOLD +  "STONE TOOLS " + ChatColor.YELLOW + "To Block In").toItemStack());
+        tools.setItem(14,new ItemBuilder(Material.IRON_PICKAXE).setName(ChatColor.YELLOW + "Iron Tools").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.GOLD + ChatColor.BOLD +  "IRON TOOLS" + ChatColor.YELLOW + "To Block In").toItemStack());
+        tools.setItem(16,new ItemBuilder(Material.DIAMOND_PICKAXE).setName(ChatColor.YELLOW + "Diamond Tools").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.GOLD + ChatColor.BOLD +  "DIAMOND TOOLS" + ChatColor.YELLOW + "To Block In").toItemStack());
+        tools.setItem(22,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Return To Main Setting").setLore(ChatColor.YELLOW + "Return To Main Setting").toItemStack());
+        p.openInventory(tools);
+    }
+
+    private void defenceMenu(){
+
+    }
+
 }
 
