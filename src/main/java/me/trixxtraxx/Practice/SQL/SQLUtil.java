@@ -230,7 +230,7 @@ public class SQLUtil
                     constructor.newInstance(pl, res.getString("Data"));
                 }
             }
-            return null;
+            return pl;
         }
         catch (Exception e)
         {
