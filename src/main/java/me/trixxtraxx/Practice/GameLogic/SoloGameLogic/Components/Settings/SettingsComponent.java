@@ -27,7 +27,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     private List<StoredInventory> inv = new ArrayList<>();
     private class Settings
     {
-        private ItemStack mat;
+        private Material mat;
         private String title = ChatColor.AQUA + "Settings";
         private String difficultyTitle = ChatColor.AQUA + "Difficulty";
         private String toolsTitle = "unset";
@@ -51,7 +51,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         List<ISettingsComponent> comps;
     }
 
-    public SettingsComponent(GameLogic logic, ItemStack open, String title)
+    public SettingsComponent(GameLogic logic, Material open, String title)
     {
         super(logic);
         settings.mat = open;
@@ -76,7 +76,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     public void onInteract(PlayerInteractEvent e)
     {
         Player p = e.getPlayer();
-        if(e.getItem() != null && e.getItem() == settings.mat)
+        if(e.getItem() != null && e.getItem().getType() == settings.mat)
         {
             settingmenu(p);
         }
