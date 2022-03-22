@@ -1,7 +1,8 @@
 package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
@@ -10,17 +11,14 @@ import me.trixxtraxx.Practice.Map.ISpawnComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.Practice;
-import me.trixxtraxx.Practice.Utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.jar.JarEntry;
 
 public class SQLUtil
 {
@@ -609,6 +607,27 @@ public class SQLUtil
                 s.close();
             }
             logic.setId(logicId);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void createStatTable(GameLogic logic)
+    {
+        if(logic.getComponents(StatComponent.class).size() == 0) return;
+        try
+        {
+            Statement statement = con.createStatement();
+            statement.addBatch("CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Games` (\n" + "    `BlockinPracticeGames_ID` INT NOT NULL AUTO_INCREMENT,\n" + "    `Gamemode_ID` INT NOT NULL DEFAULT '0',\n" + "    `Player_ID` INT NOT NULL DEFAULT '0',\n" + "    PRIMARY KEY (`BlockinPracticeGames_ID`),\n" + "    CONSTRAINT `GamemodeStats` FOREIGN KEY (`Gamemode_ID`) REFERENCES `Gamemode` (`Gamemode_ID`) ON UPDATE NO ACTION ON DELETE CASCADE,\n" + "    CONSTRAINT `StatPlayer` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON UPDATE NO ACTION ON DELETE CASCADE\n" + ")\n" + "COLLATE='utf8mb4_general_ci'\n" + ";\n");
+            int count = 0;
+            for (GameComponent component:logic.getComponents(IStatComponent.class))
+            {
+                count++;
+                IStatComponent comp = (IStatComponent) component;
+                statement.addBatch("ALTER TABLE `BlockinPracticeGames`\n" + "    ADD COLUMN IF NOT EXISTS `" + count + comp.getSQLName() + "` "+comp.getSQLType()+" NOT NULL;");
+            }
         }
         catch (Exception e)
         {

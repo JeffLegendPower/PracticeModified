@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components.Stats;
 
+import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StopEvent;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
@@ -24,7 +25,8 @@ public class StatComponent extends GameComponent
     public String getData() {return "{}";}
 
     @Override
-    public void onEvent(GameEvent event){
+    public void onEvent(GameEvent event)
+    {
         if(event instanceof StopEvent)
         {
             if(!(logic instanceof SoloGameLogic)) store();
@@ -33,11 +35,19 @@ public class StatComponent extends GameComponent
         {
             store();
         }
+        if(event instanceof StartEvent)
+        {
+            store();
+        }
+    }
+
+    public void createTable()
+    {
+
     }
 
     public void store()
     {
-        List<GameComponent> comps = logic.getComponents(StatCountingComponent.class);
-
+        List<GameComponent> comps = logic.getComponents(IStatComponent.class);
     }
 }

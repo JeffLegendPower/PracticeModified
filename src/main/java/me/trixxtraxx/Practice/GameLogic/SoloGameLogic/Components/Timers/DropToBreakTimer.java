@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers;
 
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
@@ -11,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 
-public class DropToBreakTimer extends TimerComponent
+public class DropToBreakTimer extends TimerComponent implements IStatComponent
 {
     private Material mat;
     public DropToBreakTimer(GameLogic logic, Material mat)

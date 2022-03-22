@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers;
 
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DropToBlockinTimer extends TimerComponent
+public class DropToBlockinTimer extends TimerComponent implements IStatComponent
 {
 
     public DropToBlockinTimer(GameLogic logic)
