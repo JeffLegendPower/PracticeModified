@@ -13,4 +13,6 @@ public class ResetEvent extends GameEvent
         super(logic);
         this.sucess = sucess;
     }
+
+    public boolean wasSuccess(){return sucess;}
 }

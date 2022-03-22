@@ -83,6 +83,7 @@ public class DropToBlockinTimer extends TimerComponent
 
     public void onReset(ResetEvent e){
         stop();
+        if(!e.wasSuccess()) reset();
     }
 
     @Override
