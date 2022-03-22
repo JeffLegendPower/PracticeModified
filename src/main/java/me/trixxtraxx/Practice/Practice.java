@@ -209,7 +209,7 @@ public final class Practice extends JavaPlugin
                 g.getLogic().setName("BlockinPractice");
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
-                new SettingsComponent(g.getLogic(),new ItemBuilder(Material.NETHER_STAR).setName(ChatColor.AQUA + "Settings").setLore(ChatColor.YELLOW + "Right Click To Open Settings Menu").toItemStack(),ChatColor.AQUA + "Settings");
+                new SettingsComponent(g.getLogic(),Material.NETHER_STAR,ChatColor.AQUA + "Settings");
                 new YKillComponent(g.getLogic(), 50);
                 new KillResetComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
