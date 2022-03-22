@@ -30,8 +30,8 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         private Material mat;
         private String title = ChatColor.AQUA + "Settings";
         private String difficultyTitle = ChatColor.AQUA + "Difficulty";
-        private String toolsTitle = "unset";
-        private String defenceTitle = "unset";
+        private String toolsTitle = ChatColor.AQUA + "Tools";
+        private String defenceTitle = ChatColor.AQUA + "Defence";
     }
 
 
@@ -90,15 +90,13 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case WOOL:
-                    p.sendMessage("defence");
+                    defenceMenu(p);
                     return;
                 case REDSTONE:
                     difficultyMenu(p);
-                    p.sendMessage("difficulty");
                     return;
                 case WOOD_PICKAXE:
                     toolsMenu(p);
-                    p.sendMessage("tool setting");
                     return;
                 case BARRIER:
                     p.closeInventory();
@@ -124,6 +122,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
                     return;
             }
         }else if (title.equalsIgnoreCase(settings.toolsTitle)){
+            e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case WOOD_PICKAXE:
                     p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
@@ -137,6 +136,13 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
                 case DIAMOND_PICKAXE:
                     p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
                     return;
+                case BARRIER:
+                    settingmenu(p);
+                    return;
+            }
+        }else if (title.equalsIgnoreCase(settings.defenceTitle)){
+            e.setCancelled(true);
+            switch (e.getCurrentItem().getType()){
                 case BARRIER:
                     settingmenu(p);
                     return;
@@ -184,8 +190,10 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         p.openInventory(tools);
     }
 
-    private void defenceMenu(){
-
+    private void defenceMenu(Player p){
+        Inventory defence = Bukkit.createInventory(p,54,settings.defenceTitle);
+        defence.setItem(49,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Return To Main Setting").setLore(ChatColor.YELLOW + "Return To Main Setting").toItemStack());
+        p.openInventory(defence);
     }
 
 }
