@@ -12,7 +12,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -32,6 +31,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         private String difficultyTitle = ChatColor.AQUA + "Difficulty";
         private String toolsTitle = ChatColor.AQUA + "Tools";
         private String defenceTitle = ChatColor.AQUA + "Defence";
+        private String customDefenceTitle = ChatColor.AQUA + "Custom Defence";
     }
 
 
@@ -70,7 +70,6 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     {
         if(event instanceof PlayerInteractEvent) onInteract((PlayerInteractEvent) event);
         if(event instanceof InventoryClickEvent) onClick((InventoryClickEvent) event);
-        if(event instanceof InventoryOpenEvent) onInventoryOpen((InventoryOpenEvent) event);
     }
 
     public void onInteract(PlayerInteractEvent e)
@@ -106,16 +105,16 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case COAL:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
                     return;
                 case IRON_INGOT:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
                     return;
                 case GOLD_INGOT:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
                     return;
                 case DIAMOND:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to" + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
                     return;
                 case BARRIER:
                     settingmenu(p);
@@ -143,19 +142,26 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         }else if (title.equalsIgnoreCase(settings.defenceTitle)){
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
+                case STAINED_GLASS:
+                    if (e.getCurrentItem().getDurability() == DyeColor.RED.getData()){
+                        p.sendMessage("You have choosen the typical Ranked Bedwars Defence! (Endstone and Clay)");
+                    }else if (e.getCurrentItem().getDurability() == DyeColor.LIGHT_BLUE.getData()){
+                        p.sendMessage("You have choosen the typical Ranked Bedwars Defence (Endstone And Wood)");
+                    }
+                    return;
+                case REDSTONE_TORCH_ON:
+                    customdefenceMenu(p);
+                    return;
                 case BARRIER:
                     settingmenu(p);
                     return;
             }
-        }
-    }
-
-    public void onInventoryOpen(InventoryOpenEvent e){
-        if (e.getInventory().getTitle() != null && e.getInventory().getTitle() == ChatColor.AQUA + "Settings"){
-            for(int i = 0; i < e.getInventory().getSize(); i++){
-                if (e.getInventory().getItem(i) == null){
-                    e.getInventory().setItem(i,new ItemBuilder(Material.STAINED_GLASS_PANE).setName(" ").setDyeColor(DyeColor.WHITE).toItemStack());
-                }
+        }else if (title.equalsIgnoreCase(settings.customDefenceTitle)){
+            e.setCancelled(true);
+            switch (e.getCurrentItem().getType()){
+                case BARRIER:
+                    defenceMenu(p);
+                    return;
             }
         }
     }
@@ -191,9 +197,18 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     }
 
     private void defenceMenu(Player p){
-        Inventory defence = Bukkit.createInventory(p,54,settings.defenceTitle);
-        defence.setItem(49,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Return To Main Setting").setLore(ChatColor.YELLOW + "Return To Main Setting").toItemStack());
+        Inventory defence = Bukkit.createInventory(p,27,settings.defenceTitle);
+        defence.setItem(11,new ItemBuilder(Material.STAINED_GLASS).setDyeColor(DyeColor.RED).setName(ChatColor.YELLOW + "Ranked Bedwars Defence (Clay)").setLore(ChatColor.YELLOW + "The typical Endstone Clay Bed Defence that is used in Ranked Bedwars").toItemStack());
+        defence.setItem(13,new ItemBuilder(Material.STAINED_GLASS).setDyeColor(DyeColor.LIGHT_BLUE).setName(ChatColor.YELLOW + "Ranked Bedwars Defence (Wood)").setLore(ChatColor.YELLOW + "The Endstone Wood Bed defence that is used in Ranked Bedwars").toItemStack());
+        defence.setItem(15,new ItemBuilder(Material.REDSTONE_TORCH_ON).setName(ChatColor.RED + "Custom Bed Defence").toItemStack());
+        defence.setItem(22,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Return To Main Setting").setLore(ChatColor.YELLOW + "Return To Main Setting").toItemStack());
         p.openInventory(defence);
+    }
+
+    private void customdefenceMenu(Player p){
+        Inventory customdefence = Bukkit.createInventory(p,54,settings.customDefenceTitle);
+        customdefence.setItem(53,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Return To Previous Menu").setLore(ChatColor.YELLOW + "Return To Previous Menu").toItemStack());
+        p.openInventory(customdefence);
     }
 
 }
