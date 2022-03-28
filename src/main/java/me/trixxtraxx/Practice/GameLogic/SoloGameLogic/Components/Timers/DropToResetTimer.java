@@ -45,4 +45,19 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
     {
         return s.replace("{TotalTimer}", getTime());
     }
+
+    @Override
+    public String getStat(Player p) {
+        return null;
+    }
+
+    @Override
+    public String getSQLName() {
+        return null;
+    }
+
+    @Override
+    public String getSQLType() {
+        return null;
+    }
 }
