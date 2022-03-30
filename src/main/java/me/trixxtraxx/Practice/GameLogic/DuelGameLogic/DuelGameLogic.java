@@ -54,7 +54,7 @@ public class DuelGameLogic extends GameLogic
         {
             p.teleport(new Location(Bukkit.getWorld("world"),0,100,0));
         }
-        map.unload();
+        map.unload(false);
         game.stop(false);
     }
 

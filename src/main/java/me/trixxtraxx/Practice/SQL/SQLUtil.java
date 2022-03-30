@@ -171,11 +171,14 @@ public class SQLUtil
         }
     }
 
+    //MERGE THE QUERIES FROM getPlayer2 Into one query
+
     public PracticePlayer getPlayer(Player p)
     {
         try
         {
             int PlayerId = -1;
+            int kitId = -1;
             HashMap<Integer, HashMap<Integer, Integer>> orders = new HashMap<>();
             if (true)
             {
@@ -187,6 +190,7 @@ public class SQLUtil
                 if (res.next())
                 {
                     PlayerId = res.getInt("Player_ID");
+                    kitId = res.getInt("Kit_ID");
                 }
                 else
                 {
@@ -212,7 +216,9 @@ public class SQLUtil
                 ps.close();
                 res.close();
             }
-            PracticePlayer pl = new PracticePlayer(PlayerId, p,orders);
+            Kit k = null;
+            if(kitId != -1) k = getKit(kitId);
+            PracticePlayer pl = new PracticePlayer(PlayerId, p,orders, k);
             if(true){
                 PreparedStatement ps = con.prepareStatement("SELECT * FROM PlayerComponent INNER JOIN Player ON Player.Player_ID = PlayerComponent.Player_ID WHERE PlayerComponent.Player_ID = ?");
                 ps.setInt(1, PlayerId);

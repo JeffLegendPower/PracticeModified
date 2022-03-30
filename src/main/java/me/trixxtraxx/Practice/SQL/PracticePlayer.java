@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.SQL;
 
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
+import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.entity.Player;
 
@@ -14,12 +15,14 @@ public class PracticePlayer
     private Player player;
     private int playerId;
     private HashMap<Integer, HashMap<Integer, Integer>> customKitOrders;
+    private Kit kit;
 
-    public PracticePlayer(int playerId, Player p, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders)
+    public PracticePlayer(int playerId, Player p, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, Kit kit)
     {
         player = p;
         this.customKitOrders = customKitOrders;
         this.playerId = playerId;
+        this.kit = kit;
     }
 
     public static PracticePlayer generatePlayer(Player p)
@@ -45,6 +48,7 @@ public class PracticePlayer
         return null;
     }
 
+    public Kit getKit(){return kit;}
     public int getPlayerId(){return playerId;}
     public HashMap<Integer, Integer> getCustomOrder(int kitId){return customKitOrders.get(kitId);}
 

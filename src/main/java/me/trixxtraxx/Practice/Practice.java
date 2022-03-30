@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice;
 
+import com.google.gson.Gson;
 import com.grinderwolf.swm.api.SlimePlugin;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
@@ -15,12 +16,15 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToRe
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCoponent;
 import me.trixxtraxx.Practice.Gamemode.Game;
+import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
+import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.CacheListener;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.Utils.ItemBuilder;
+import me.trixxtraxx.Practice.Utils.Region;
 import me.trixxtraxx.Practice.worldloading.SlimeWorldLoader;
 import me.trixxtraxx.Practice.worldloading.WorldLoader;
 import org.bukkit.Bukkit;
@@ -184,6 +188,10 @@ public final class Practice extends JavaPlugin
 
         getServer().getPluginManager().registerEvents(new GameLogicListener(), this);
         getServer().getPluginManager().registerEvents(new CacheListener(), this);
+        if (conf.getBoolean("KitEditor.Enabled")){
+            getServer().getPluginManager().registerEvents(new KitEditorListener(), this);
+            KitEditor.init(new Gson().fromJson(conf.getString("KitEditor.Region"), Region.class));
+        }
     }
 
     @Override

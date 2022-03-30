@@ -49,7 +49,7 @@ public class SoloGameLogic extends GameLogic
     {
         if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
         player.teleport(new Location(Bukkit.getWorld("world"),0,100,0));
-        map.unload();
+        map.unload(false);
         game.stop(false);
     }
 

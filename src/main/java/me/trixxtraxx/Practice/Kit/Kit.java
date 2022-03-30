@@ -5,6 +5,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.ConfigItem;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
+import me.trixxtraxx.Practice.SQL.SQLUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -143,5 +144,11 @@ public class Kit
         inv.setLeggings(null);
         inv.setBoots(null);
         if(p.getOpenInventory() != null && p.getOpenInventory().getType() == InventoryType.PLAYER) p.closeInventory();
+    }
+
+    public void save(PracticePlayer p)
+    {
+        SQLUtil.Instance.deleteKit(this);
+        SQLUtil.Instance.addKit(this);
     }
 }

@@ -32,9 +32,9 @@ public class Map
         return world;
     }
 
-    public void unload()
+    public void unload(boolean save)
     {
-        Bukkit.unloadWorld(world, false);
+        Bukkit.unloadWorld(world, save);
     }
 
     public String getName()
