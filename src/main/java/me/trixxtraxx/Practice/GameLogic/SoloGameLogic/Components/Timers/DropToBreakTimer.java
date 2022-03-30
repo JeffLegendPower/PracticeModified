@@ -61,4 +61,19 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
     {
         return s.replace("{" + mat + "Timer}", getTime());
     }
+
+    @Override
+    public String getStat(Player p) {
+        return null;
+    }
+
+    @Override
+    public String getSQLName() {
+        return null;
+    }
+
+    @Override
+    public String getSQLType() {
+        return null;
+    }
 }
