@@ -614,20 +614,45 @@ public class SQLUtil
         }
     }
 
-    public void createStatTable(GameLogic logic)
+    public void addStatsTable(GameLogic logic)
     {
-        if(logic.getComponents(StatComponent.class).size() == 0) return;
         try
         {
             Statement statement = con.createStatement();
-            statement.addBatch("CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Games` (\n" + "    `BlockinPracticeGames_ID` INT NOT NULL AUTO_INCREMENT,\n" + "    `Gamemode_ID` INT NOT NULL DEFAULT '0',\n" + "    `Player_ID` INT NOT NULL DEFAULT '0',\n" + "    PRIMARY KEY (`BlockinPracticeGames_ID`),\n" + "    CONSTRAINT `GamemodeStats` FOREIGN KEY (`Gamemode_ID`) REFERENCES `Gamemode` (`Gamemode_ID`) ON UPDATE NO ACTION ON DELETE CASCADE,\n" + "    CONSTRAINT `StatPlayer` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON UPDATE NO ACTION ON DELETE CASCADE\n" + ")\n" + "COLLATE='utf8mb4_general_ci'\n" + ";\n");
-            int count = 0;
+            statement.addBatch("CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Stats` (" + logic.getName() + "Stats_ID` int(11) NOT NULL, `Player_ID` int(11) NOT NULL, CONSTRAINT `Player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON UPDATE NO ACTION ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1");
             for (GameComponent component:logic.getComponents(IStatComponent.class))
             {
-                count++;
                 IStatComponent comp = (IStatComponent) component;
-                statement.addBatch("ALTER TABLE `BlockinPracticeGames`\n" + "    ADD COLUMN IF NOT EXISTS `" + count + comp.getSQLName() + "` "+comp.getSQLType()+" NOT NULL;");
+                statement.addBatch("ALTER TABLE `" + logic.getName() + "Stats`\n" + "    ADD COLUMN IF NOT EXISTS `" + comp.getSQLName() + "` "+comp.getSQLType()+" NOT NULL;");
             }
+            statement.executeBatch();
+            statement.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void storeStats(GameLogic logic)
+    {
+        try
+        {
+            Statement statement = con.createStatement();
+            for (Player p : logic.getPlayers())
+            {
+                String extraProperties = "";
+                String extraValues = "";
+                for (GameComponent component:logic.getComponents(IStatComponent.class))
+                {
+                    IStatComponent comp = (IStatComponent) component;
+                    extraProperties += ",`" + comp.getSQLName() + "`";
+                    extraValues += ",`" + comp.getStat(p) + "`";
+                }
+                String sql = "INSERT INTO `" + logic.getName() + "Stats` (`Player_ID`" + extraProperties + ") VALUES (`" + PracticePlayer.getPlayer(p).getPlayerId() + "`" + extraValues + ")";
+                statement.addBatch(sql);
+            }
+            statement.executeBatch();
         }
         catch (Exception e)
         {

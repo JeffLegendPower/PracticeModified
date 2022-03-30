@@ -7,7 +7,9 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
+import me.trixxtraxx.Practice.SQL.SQLUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatComponent extends GameComponent
@@ -37,17 +39,17 @@ public class StatComponent extends GameComponent
         }
         if(event instanceof StartEvent)
         {
-            store();
+            createTable();
         }
     }
 
     public void createTable()
     {
-
+        SQLUtil.Instance.addStatsTable(logic);
     }
 
     public void store()
     {
-        List<GameComponent> comps = logic.getComponents(IStatComponent.class);
+        SQLUtil.Instance.storeStats(logic);
     }
 }

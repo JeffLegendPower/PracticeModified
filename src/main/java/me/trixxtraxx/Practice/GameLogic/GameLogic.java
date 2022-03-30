@@ -49,30 +49,49 @@ public abstract class GameLogic
         return comps;
     }
 
+    //trigger ALL functions using reflections that have a single parameter as Event
+    public Event triggerEvent2(Event event)
+    {
+        for (GameComponent comp:components)
+        {
+            Class<?>[] params = comp.getClass().getDeclaredMethods()[0].getParameterTypes();
+            if (params.length == 1 && params[0].isInstance(event))
+            {
+                try
+                {
+                    comp.getClass().getDeclaredMethods()[0].invoke(comp, event);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return event;
+    }
+
     public Event triggerEvent(Event e)
     {
         Practice.log(5, "Event triggered: " + e.getEventName());
         for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
         for (GameComponent comp : getComponents()) comp.onEvent(e);
         for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);
-        if(e instanceof Cancellable){
+        if (e instanceof Cancellable)
+        {
             Cancellable c = (Cancellable) e;
-            if(c.isCancelled()){
+            if (c.isCancelled())
+            {
                 for (MapComponent comp : getMap().getComponents()) comp.onEventCancel(e);
                 for (GameComponent comp : getComponents()) comp.onEventCancel(e);
                 for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventCancel(e);
-            }
-            else{
-                for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
-                for (GameComponent comp : getComponents()) comp.onEventAfter(e);
-                for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
+                return e;
             }
         }
-        else{
-            for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
-            for (GameComponent comp : getComponents()) comp.onEventAfter(e);
-            for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
-        }
+
+        for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
+        for (GameComponent comp : getComponents()) comp.onEventAfter(e);
+        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
+
         return e;
     }
 
