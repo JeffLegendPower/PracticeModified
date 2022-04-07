@@ -218,6 +218,7 @@ public class SQLUtil
             }
             Kit k = null;
             if(kitId != -1) k = getKit(kitId);
+            Practice.log(4, "KitId = " + kitId + "," + (k == null));
             PracticePlayer pl = new PracticePlayer(PlayerId, p,orders, k);
             if(true){
                 PreparedStatement ps = con.prepareStatement("SELECT * FROM PlayerComponent INNER JOIN Player ON Player.Player_ID = PlayerComponent.Player_ID WHERE PlayerComponent.Player_ID = ?");
@@ -378,7 +379,19 @@ public class SQLUtil
             {
                 ps.close();
                 res.close();
-                return null;
+                //add a new KitOrder with Order = '{}'
+                ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES ('{}',?)", Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, kitId);
+                ps.executeUpdate();
+                ResultSet rs = ps.getGeneratedKeys();
+                rs.next();
+                int id =  rs.getInt(1);
+                ps.close();
+                ps = con.prepareStatement("UPDATE Kit SET defaultOrder = ? WHERE Kit_ID = ?");
+                ps.setInt(1, id);
+                ps.setInt(2, kitId);
+                ps.executeUpdate();
+                ps.close();
             }
 
             ps.close();
@@ -487,6 +500,14 @@ public class SQLUtil
                 }
                 s.executeBatch();
                 s.close();
+            }
+            if(true){
+                //Update Kit_ID of default Order
+                PreparedStatement ps = con.prepareStatement("UPDATE KitOrder SET Kit_ID = ? WHERE KitOrder_ID = ?");
+                ps.setInt(1, KitId);
+                ps.setInt(2, orderId);
+                ps.executeUpdate();
+                ps.close();
             }
             k.setSqlId(KitId);
             k.setDefaultOrderId(orderId);
@@ -659,6 +680,43 @@ public class SQLUtil
                 statement.addBatch(sql);
             }
             statement.executeBatch();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void updatePlayerKit(PracticePlayer player, Kit kit)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("UPDATE Player SET Player.Kit_ID = ? WHERE Player.Player_ID = ?");
+            ps.setInt(1, kit.getSqlId());
+            ps.setInt(2, player.getPlayerId());
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateKit(Kit kit)
+    {
+        try
+        {
+            String sql = "UPDATE KitOrder SET `Order` = '" + kit.getDefaultOrder() + "' WHERE KitOrder_ID = " + kit.getDefaultOrderId();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+            ps.close();
+            //now update the kit parameter Items
+            ps = con.prepareStatement("UPDATE Kit SET Items = ? WHERE Kit_ID = ?");
+            ps.setString(1, kit.getItems());
+            ps.setInt(2, kit.getSqlId());
+            ps.executeUpdate();
+            ps.close();
         }
         catch (Exception e)
         {

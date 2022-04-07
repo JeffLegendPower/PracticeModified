@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,6 +29,24 @@ public class MapEditingSession
     private Player player;
     private Map map;
     private World world;
+    private ComponentInventoryState invState;
+    private int invPage;
+    
+    private enum ComponentInventoryState
+    {
+        NONE,
+        OVERVIEW,
+        COMPONENT_LIST,
+        COMPONENT_SETTINGS,
+        SET_INT,
+        SET_STRING,
+        SET_BOOLEAN,
+        SET_MATERIAL,
+        SET_LOCATION,
+        SET_REGION,
+        SET_ITEMSTACK,
+        
+    }
 
     public MapEditingSession(Player player, Map m)
     {
@@ -44,12 +63,16 @@ public class MapEditingSession
         NextArrow = conf.getItemStack("MapEditor.NextArrowItem");
         RemoveComponent = conf.getItemStack("MapEditor.RemoveComponentItem");
         AddComponent = conf.getItemStack("MapEditor.AddComponentItem");
-        for (ConfigurationSection section : conf.getConfigurationSection("MapEditor.Components").getKeys(false))
+        ConfigurationSection componentSection = conf.getConfigurationSection("MapEditor.Components");
+        for (String key : componentSection.getKeys(false))
         {
+            if(!componentSection.isConfigurationSection(key)) continue;
+            ConfigurationSection section = componentSection.getConfigurationSection(key);
             try
             {
-                componentItems.put(Class.forName(key).asSubclass(MapComponent.class), conf.getItemStack("MapEditor.Components." + key));
-                componentClasses.add(Class.forName(key).asSubclass(MapComponent.class));
+                componentItems.put(Class.forName(section.getString("ComponentClass")).asSubclass(MapComponent.class),
+                                   section.getItemStack("Item"));
+                componentClasses.add(Class.forName(section.getString("ComponentClass")).asSubclass(MapComponent.class));
             }
             catch (ClassNotFoundException e)
             {
@@ -93,24 +116,45 @@ public class MapEditingSession
 
     //Create a inventory with the following items:
     //Slot 4 = Book that has a title of "What is This" and a lore of "Components are a important part of a map!"
-    //Slots 10,11,12,13,14,15,16,17,20,21,22,23,24,25,26,29,30,31,32,33,34,35, 38,39,40,41,42,43,44 the maps components, make components a Compass
+    //Slots 10-44 excluding 18  19 27  28  36 37 the maps components, make components a Compass
     //Slot 45,36 arrows for pagnation
     //Slot 50 Green wool for adding a component
     //Slot 48 Red wool for removing a component
+    //fill up every empty slot thats not for map components with gray glass
 
     public void openComponentGui()
     {
         Inventory inventory = Bukkit.createInventory(player, 54, "Components");
-        inventory.setItem(4, );
-        for (int i = 10; i < 45; i++)
+        int index = 0;
+        for (int i = 10; i < 44; i++)
         {
-            if(i == 18 || i == 19 || i == 27 || i == 28 || i == 36 || i == 37) continue;
-            inventory.setItem(i, );
+            if (!(index >= map.getComponents().size()))
+            {
+                if (i == 17 || i == 18 || i == 26 || i == 27 || i == 35 || i == 36) continue;
+                inventory.setItem(i, componentItems.get(map.getComponents().get(index).getClass()));
+            }
+            index++;
         }
-        inventory.setItem(45, );
-        inventory.setItem(36, );
-        inventory.setItem(50, );
-        inventory.setItem(48, );
+        for (int i = 0; i < 10; i++)
+        {
+            inventory.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7));
+        }
+        for (int i = 45; i < 54; i++)
+        {
+            inventory.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7));
+        }
+        //set gray glass at the excluded Component slots
+        inventory.setItem(17, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7));
+        inventory.setItem(18, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7));
+        inventory.setItem(26, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7));
+        inventory.setItem(27, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7));
+        inventory.setItem(35, new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7));
+        
+        inventory.setItem(4, Description);
+        inventory.setItem(36, BackArrow);
+        inventory.setItem(44, NextArrow);
+        inventory.setItem(48, RemoveComponent);
+        inventory.setItem(50, AddComponent);
         player.openInventory(inventory);
     }
 }

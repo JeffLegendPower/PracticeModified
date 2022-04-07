@@ -20,6 +20,8 @@ import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
+import me.trixxtraxx.Practice.Map.Editor.MapEditingSession;
+import me.trixxtraxx.Practice.Map.Editor.MapEditorListener;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.CacheListener;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
@@ -39,6 +41,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.*;
 
 public final class Practice extends JavaPlugin
@@ -179,6 +182,7 @@ public final class Practice extends JavaPlugin
                 conf.getString("SQL.Username"),
                 conf.getString("SQL.Password")
         );
+        
         SlimePlugin slime = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
 
         worldLoader = new SlimeWorldLoader(
@@ -188,9 +192,20 @@ public final class Practice extends JavaPlugin
 
         getServer().getPluginManager().registerEvents(new GameLogicListener(), this);
         getServer().getPluginManager().registerEvents(new CacheListener(), this);
-        if (conf.getBoolean("KitEditor.Enabled")){
+        if (conf.getBoolean("KitEditor.enabled"))
+        {
+            log(3, "enabled kit editor");
             getServer().getPluginManager().registerEvents(new KitEditorListener(), this);
-            KitEditor.init(new Gson().fromJson(conf.getString("KitEditor.Region"), Region.class));
+            //init kit editor
+            KitEditor.init(new Region(new Location(Bukkit.getWorld("world"), conf.getInt("KitEditor.Region.x1"), conf.getInt("KitEditor.Region.y1"), conf.getInt("KitEditor.Region.z1")), new Location(Bukkit.getWorld("world"), conf.getInt("KitEditor.Region.x2"), conf.getInt("KitEditor.Region.y2"), conf.getInt("KitEditor.Region.z2"))));
+        }
+        else log(3, "disabled kit editor");
+        
+        if(conf.getBoolean("MapEditor.enabled")){
+            log(3, "enabled map editor");
+            getServer().getPluginManager().registerEvents(new MapEditorListener(), this);
+            //init map editor
+            MapEditingSession.init(conf);
         }
     }
 
@@ -398,6 +413,33 @@ public final class Practice extends JavaPlugin
 
                 Game g = new Game(SQLUtil.Instance.getLogic(args[1]), ppl,k,m);
                 SQLUtil.Instance.applyComponents(g.getLogic());
+            }
+            else if(args[0].equalsIgnoreCase("editMap"))
+            {
+                if(!(s instanceof Player)) return false;
+                MapEditingSession.addSession(new MapEditingSession(((Player) s), SQLUtil.Instance.getMap(args[1])));
+            }
+            else if(args[0].equalsIgnoreCase("openMapComponents"))
+            {
+                if(!(s instanceof Player)) return false;
+                MapEditingSession session = MapEditingSession.getSession(((Player) s));
+                if(session == null) return false;
+                session.openComponentGui();
+            }
+            else if(args[0].equalsIgnoreCase("setConfigItem"))
+            {
+                if(!(s instanceof Player)) return false;
+                log(4, "Setting config item: " + args[1] + " to " + ((Player)s).getInventory().getItemInHand());
+                getConfig().set(args[1], ((Player)s).getInventory().getItemInHand());
+                MapEditingSession.init(getConfig());
+                try
+                {
+                    getConfig().save("./plugins/"+ getPlugin(Practice.class).getName() +"/config.yml");
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
         return false;

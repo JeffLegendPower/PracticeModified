@@ -4,6 +4,8 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,5 +79,32 @@ public class PracticePlayer
             if(c.isInstance(comp)) comps.add(comp);
         }
         return comps;
+    }
+    
+    public void saveKit()
+    {
+        PlayerInventory inv = player.getInventory();
+        HashMap<Integer, Integer> defaultOrder = new HashMap<>();
+        List<ItemStack> items = new ArrayList<>();
+        for(int i = 0; i < 40; i++)
+        {
+            ItemStack item = inv.getItem(i);
+            if(item == null) continue;
+            defaultOrder.put(items.size(), i);
+            items.add(item);
+        }
+        if(kit == null){
+            kit = new Kit(player.getName(), -1, items, -1, defaultOrder);
+            kit.setNewItems(items);
+            kit.setNewDefaultOrder(defaultOrder);
+            SQLUtil.Instance.addKit(kit);
+            SQLUtil.Instance.updatePlayerKit(this, kit);
+            return;
+        }
+        kit.setNewItems(items);
+        kit.setNewDefaultOrder(defaultOrder);
+        
+        SQLUtil.Instance.updateKit(kit);
+        SQLUtil.Instance.updatePlayerKit(this, kit);
     }
 }

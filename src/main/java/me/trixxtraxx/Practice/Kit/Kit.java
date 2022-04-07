@@ -94,6 +94,9 @@ public class Kit
         clearInventory(p);
         setItems(p);
     }
+    
+    public void setNewItems(List<ItemStack> stacks){items = stacks;}
+    public void setNewDefaultOrder(HashMap<Integer,Integer> defaultOrder){this.defaultOrder = defaultOrder;}
 
     private void setItems(Player p)
     {
@@ -144,11 +147,5 @@ public class Kit
         inv.setLeggings(null);
         inv.setBoots(null);
         if(p.getOpenInventory() != null && p.getOpenInventory().getType() == InventoryType.PLAYER) p.closeInventory();
-    }
-
-    public void save(PracticePlayer p)
-    {
-        SQLUtil.Instance.deleteKit(this);
-        SQLUtil.Instance.addKit(this);
     }
 }

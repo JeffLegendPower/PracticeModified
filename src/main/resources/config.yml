@@ -11,4 +11,10 @@ SlimeLoader: "mysql"
 
 KitEditor:
   enabled: true
-  Region: '{"loc1":{"x":20.0,"y":0.0,"z":20.0,"yaw":0.0,"pitch":90.0},"loc2":{"x":-20.0,"y":100.0,"z":40.0,"yaw":0.0,"pitch":90.0}}'
+  Region:
+    x1: 30
+    x2: 30
+    y1: 0
+    y2: 100
+    z1: -30
+    z2: -30

@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Utils;
 
+import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -13,42 +14,27 @@ public class Region
 
     public Region(Location location1, Location location2)
     {
-        int minx = location1.getBlockX();
-        int maxx = location2.getBlockX();
-        int miny = location1.getBlockY();
-        int maxy = location2.getBlockY();
-        int minz = location1.getBlockZ();
-        int maxz = location2.getBlockZ();
+        //get min and max of x y z of both locations
+        int minX = Math.min(location1.getBlockX(), location2.getBlockX());
+        int maxX = Math.max(location1.getBlockX(), location2.getBlockX());
+        int minY = Math.min(location1.getBlockY(), location2.getBlockY());
+        int maxY = Math.max(location1.getBlockY(), location2.getBlockY());
+        int minZ = Math.min(location1.getBlockZ(), location2.getBlockZ());
+        int maxZ = Math.max(location1.getBlockZ(), location2.getBlockZ());
 
-        if (minx > maxx)
-        {
-            minx = location2.getBlockX();
-            maxx = location1.getBlockX();
-        }
-
-        if (miny > maxy)
-        {
-            miny = location2.getBlockY();
-            maxy = location1.getBlockY();
-        }
-
-        if (minz > maxz)
-        {
-            minz = location2.getBlockZ();
-            maxz = location1.getBlockZ();
-        }
-
-        loc1 = new ConfigLocation(minx, miny, minz);
-        loc2 = new ConfigLocation( maxx, maxy, maxz);
+        Practice.log(4, "Region: minX" + minX + " maxX" + maxX + " minY" + minY + " maxY" + maxY + " minZ" + minZ + " maxZ" + maxZ);
+        
+        //set locations
+        loc1 = new ConfigLocation(minX, minY, minZ);
+        loc2 = new ConfigLocation(maxX, maxY, maxZ);
     }
 
     public boolean contains(Location loc)
     {
-        if (loc.getBlockX() >= loc1.getLocation(loc.getWorld()).getBlockX() && loc.getBlockY() >= loc1.getLocation(loc.getWorld()).getBlockY() && loc.getBlockZ() >= loc1.getLocation(loc.getWorld()).getBlockZ() && loc.getBlockX() <= loc2.getLocation(loc.getWorld()).getBlockX() && loc.getBlockY() <= loc2.getLocation(loc.getWorld()).getBlockY() && loc.getBlockZ() <= loc2.getLocation(loc.getWorld()).getBlockZ())
-        {
-            return true;
-        }
-        return false;
+        //check if loc is contain within the 2 locations
+        return (loc.getBlockX() >= loc1.getLocation(loc.getWorld()).getBlockX() && loc.getBlockX() <= loc2.getLocation(loc.getWorld()).getBlockX()) &&
+                (loc.getBlockY() >= loc1.getLocation(loc.getWorld()).getBlockY() && loc.getBlockY() <= loc2.getLocation(loc.getWorld()).getBlockY()) &&
+                (loc.getBlockZ() >= loc1.getLocation(loc.getWorld()).getBlockZ() && loc.getBlockZ() <= loc2.getLocation(loc.getWorld()).getBlockZ());
     }
 
     public List<Location> getLocations(World w)
@@ -65,5 +51,15 @@ public class Region
             }
         }
         return locs;
+    }
+    
+    public Location getLocation1(World w)
+    {
+        return loc1.getLocation(w);
+    }
+    
+    public Location getLocation2(World w)
+    {
+        return loc2.getLocation(w);
     }
 }
