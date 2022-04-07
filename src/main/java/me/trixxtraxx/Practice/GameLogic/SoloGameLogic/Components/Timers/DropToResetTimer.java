@@ -15,12 +15,6 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
     {
         super(logic);
     }
-    public DropToResetTimer(GameLogic logic, String s)
-    {
-        super(logic);
-    }
-    @Override
-    public String getData() {return "{}";}
 
     @Override
     public void onEvent(GameEvent event)

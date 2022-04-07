@@ -15,13 +15,7 @@ public class LeaveItemComponent extends GameComponent
         super(logic);
         this.mat = mat;
     }
-    public LeaveItemComponent(GameLogic logic, String s)
-    {
-        super(logic);
-        mat = new Gson().fromJson(s, Material.class);
-    }
-    @Override
-    public String getData() {return new Gson().toJson(mat);}
+    public LeaveItemComponent(GameLogic logic){super(logic);}
 
     @Override
     public void onEvent(Event event){

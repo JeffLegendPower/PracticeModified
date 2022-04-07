@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings;
 
 import com.google.gson.Gson;
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Utils.ItemBuilder;
@@ -22,29 +23,21 @@ import java.util.List;
 
 public class SettingsComponent extends GameComponent implements ISettingsComponent
 {
-    private  Settings settings = new Settings();
+    @Config
+    private Material mat;
+    @Config
+    private String title = ChatColor.AQUA + "Settings";
+    @Config
+    private String difficultyTitle = ChatColor.AQUA + "Difficulty";
+    @Config
+    private String toolsTitle = ChatColor.AQUA + "Tools";
+    @Config
+    private String defenceTitle = ChatColor.AQUA + "Defence";
+    @Config
+    private String customDefenceTitle = ChatColor.AQUA + "Custom Defence";
+    
     private List<StoredInventory> inv = new ArrayList<>();
-    private class Settings
-    {
-        private Material mat;
-        private String title = ChatColor.AQUA + "Settings";
-        private String difficultyTitle = ChatColor.AQUA + "Difficulty";
-        private String toolsTitle = ChatColor.AQUA + "Tools";
-        private String defenceTitle = ChatColor.AQUA + "Defence";
-        private String customDefenceTitle = ChatColor.AQUA + "Custom Defence";
-    }
-
-
-    @Override
-    public int getSlot() {
-        return 0;
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return null;
-    }
-
+    
     private class StoredInventory
     {
         Player p;
@@ -54,16 +47,10 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     public SettingsComponent(GameLogic logic, Material open, String title)
     {
         super(logic);
-        settings.mat = open;
-        settings.title = title;
+        mat = open;
+        title = title;
     }
-    public SettingsComponent(GameLogic logic, String s)
-{
-    super(logic);
-    settings = new Gson().fromJson(s, Settings.class);
-}
-    @Override
-    public String getData() {return new Gson().toJson(settings);}
+    public SettingsComponent(GameLogic logic){super(logic);}
 
     @Override
     public void onEvent(Event event)
@@ -75,17 +62,28 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     public void onInteract(PlayerInteractEvent e)
     {
         Player p = e.getPlayer();
-        if(e.getItem() != null && e.getItem().getType() == settings.mat)
+        if(e.getItem() != null && e.getItem().getType() == mat)
         {
             settingmenu(p);
         }
     }
-
-    public void onClick(InventoryClickEvent e){
+    
+    @Override
+    public int getSlot() {
+        return 0;
+    }
+    
+    @Override
+    public ItemStack getItem() {
+        return null;
+    }
+    
+    public void onClick(InventoryClickEvent e)
+    {
         if (e.getClickedInventory() == null){}
         String title = e.getClickedInventory().getTitle();
         Player p = (Player) e.getWhoClicked();
-        if (title.equalsIgnoreCase(settings.title)){
+        if (title.equalsIgnoreCase(title)){
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case WOOL:
@@ -101,7 +99,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
                     p.closeInventory();
                     return;
             }
-        }else if (title.equalsIgnoreCase(settings.difficultyTitle)){
+        }else if (title.equalsIgnoreCase(difficultyTitle)){
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case COAL:
@@ -120,7 +118,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
                     settingmenu(p);
                     return;
             }
-        }else if (title.equalsIgnoreCase(settings.toolsTitle)){
+        }else if (title.equalsIgnoreCase(toolsTitle)){
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case WOOD_PICKAXE:
@@ -139,7 +137,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
                     settingmenu(p);
                     return;
             }
-        }else if (title.equalsIgnoreCase(settings.defenceTitle)){
+        }else if (title.equalsIgnoreCase(defenceTitle)){
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case STAINED_GLASS:
@@ -156,7 +154,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
                     settingmenu(p);
                     return;
             }
-        }else if (title.equalsIgnoreCase(settings.customDefenceTitle)){
+        }else if (title.equalsIgnoreCase(customDefenceTitle)){
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case BARRIER:
@@ -167,7 +165,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     }
 
     private void settingmenu(Player p){
-        Inventory setting = Bukkit.createInventory(p,45,settings.title);
+        Inventory setting = Bukkit.createInventory(p,45,title);
         setting.setItem(4,new ItemBuilder(Material.BOOK).setName(ChatColor.GOLD + "Setting").setLore(ChatColor.YELLOW + "By changing settings here you can", ChatColor.YELLOW + "customised the gamemode to your likings").addEnchant(Enchantment.DAMAGE_ALL,1).itemFlags(ItemFlag.HIDE_ENCHANTS).toItemStack());
         setting.setItem(20,new ItemBuilder(Material.WOOL).setName(ChatColor.RED + "Defence Setting").setLore(ChatColor.RED + "Customise Your Bed Defence Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
         setting.setItem(22,new ItemBuilder(Material.REDSTONE).setName(ChatColor.RED + "Difficulty Setting").setLore(ChatColor.RED + "Change Your Gamemode Difficulty Here!", "",ChatColor.YELLOW + "Click Me!").toItemStack());
@@ -177,7 +175,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     }
 
     private void difficultyMenu(Player p){
-        Inventory difficuly = Bukkit.createInventory(p,27,settings.difficultyTitle);
+        Inventory difficuly = Bukkit.createInventory(p,27,difficultyTitle);
         difficuly.setItem(10,new ItemBuilder(Material.COAL).setName(ChatColor.GREEN + "Easy").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.RED + ChatColor.BOLD +  "EASY " + ChatColor.YELLOW + "Mode").toItemStack());
         difficuly.setItem(12,new ItemBuilder(Material.IRON_INGOT).setName(ChatColor.BLUE + "Normal").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.RED + ChatColor.BOLD +  "NORMAL " + ChatColor.YELLOW + "Mode").toItemStack());
         difficuly.setItem(14,new ItemBuilder(Material.GOLD_INGOT).setName(ChatColor.RED + "Hard").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.RED + ChatColor.BOLD +  "HARD " + ChatColor.YELLOW + "Mode").toItemStack());
@@ -187,7 +185,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     }
 
     private void toolsMenu(Player p){
-        Inventory tools = Bukkit.createInventory(p,27,settings.toolsTitle);
+        Inventory tools = Bukkit.createInventory(p,27,toolsTitle);
         tools.setItem(10,new ItemBuilder(Material.WOOD_PICKAXE).setName(ChatColor.YELLOW + "Wooden Tools").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.GOLD + ChatColor.BOLD +  "WOODEN TOOLS " + ChatColor.YELLOW + "To Block In").toItemStack());
         tools.setItem(12,new ItemBuilder(Material.STONE_PICKAXE).setName(ChatColor.YELLOW + "Stone Tools").setLore(ChatColor.YELLOW + "Click This To Pick" + ChatColor.GOLD + ChatColor.BOLD +  "STONE TOOLS " + ChatColor.YELLOW + "To Block In").toItemStack());
         tools.setItem(14,new ItemBuilder(Material.IRON_PICKAXE).setName(ChatColor.YELLOW + "Iron Tools").setLore(ChatColor.YELLOW + "Click This To Pick " + ChatColor.GOLD + ChatColor.BOLD +  "IRON TOOLS" + ChatColor.YELLOW + "To Block In").toItemStack());
@@ -197,7 +195,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     }
 
     private void defenceMenu(Player p){
-        Inventory defence = Bukkit.createInventory(p,27,settings.defenceTitle);
+        Inventory defence = Bukkit.createInventory(p,27,defenceTitle);
         defence.setItem(11,new ItemBuilder(Material.STAINED_GLASS).setDyeColor(DyeColor.RED).setName(ChatColor.YELLOW + "Ranked Bedwars Defence (Clay)").setLore(ChatColor.YELLOW + "The typical Endstone Clay Bed Defence that is used in Ranked Bedwars").toItemStack());
         defence.setItem(13,new ItemBuilder(Material.STAINED_GLASS).setDyeColor(DyeColor.LIGHT_BLUE).setName(ChatColor.YELLOW + "Ranked Bedwars Defence (Wood)").setLore(ChatColor.YELLOW + "The Endstone Wood Bed defence that is used in Ranked Bedwars").toItemStack());
         defence.setItem(15,new ItemBuilder(Material.REDSTONE_TORCH_ON).setName(ChatColor.RED + "Custom Bed Defence").toItemStack());
@@ -206,7 +204,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     }
 
     private void customdefenceMenu(Player p){
-        Inventory customdefence = Bukkit.createInventory(p,54,settings.customDefenceTitle);
+        Inventory customdefence = Bukkit.createInventory(p,54,customDefenceTitle);
         customdefence.setItem(53,new ItemBuilder(Material.BARRIER).setName(ChatColor.RED + "Return To Previous Menu").setLore(ChatColor.YELLOW + "Return To Previous Menu").toItemStack());
         p.openInventory(customdefence);
     }

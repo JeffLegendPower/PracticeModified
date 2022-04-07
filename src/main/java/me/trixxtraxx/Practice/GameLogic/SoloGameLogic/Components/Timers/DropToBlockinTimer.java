@@ -23,12 +23,6 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
     {
         super(logic);
     }
-    public DropToBlockinTimer(GameLogic logic, String s)
-    {
-        super(logic);
-    }
-    @Override
-    public String getData() {return "{}";}
 
     @Override
     public void onEvent(Event event)

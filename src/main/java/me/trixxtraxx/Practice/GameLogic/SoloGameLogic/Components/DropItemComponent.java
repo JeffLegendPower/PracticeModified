@@ -32,13 +32,7 @@ public class DropItemComponent extends GameComponent
         settings.drop = drop;
         settings.removeItems = removeItems;
     }
-    public DropItemComponent(GameLogic logic, String s)
-    {
-        super(logic);
-        settings = new Gson().fromJson(s, Settings.class);
-    }
-    @Override
-    public String getData() {return new Gson().toJson(settings);}
+    public DropItemComponent(GameLogic logic){super(logic);}
 
 
     @Override

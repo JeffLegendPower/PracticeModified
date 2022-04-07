@@ -12,12 +12,6 @@ public class ResetHealComponent extends GameComponent
     {
         super(logic);
     }
-    public ResetHealComponent(GameLogic logic, String s)
-    {
-        super(logic);
-    }
-    @Override
-    public String getData() {return "{}";}
 
     public void onEvent(GameEvent event)
     {

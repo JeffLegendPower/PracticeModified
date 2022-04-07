@@ -19,13 +19,7 @@ public class BreakResetComponent extends GameComponent
         super(logic);
         mat = material;
     }
-    public BreakResetComponent(GameLogic logic, String s)
-    {
-        super(logic);
-        mat = new Gson().fromJson(s, Material.class);
-    }
-    @Override
-    public String getData() {return new Gson().toJson(mat);}
+    public BreakResetComponent(GameLogic logic){super(logic);}
 
     @Override
     public void onEvent(GameEvent e) {}

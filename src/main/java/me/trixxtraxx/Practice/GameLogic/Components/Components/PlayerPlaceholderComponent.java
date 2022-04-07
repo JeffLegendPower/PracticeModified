@@ -12,12 +12,6 @@ public class PlayerPlaceholderComponent extends GameComponent
     {
         super(logic);
     }
-    public PlayerPlaceholderComponent(GameLogic logic, String s)
-    {
-        super(logic);
-    }
-    @Override
-    public String getData() {return "{}";}
 
     @Override
     public String applyPlaceholder(Player p, String s)

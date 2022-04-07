@@ -20,14 +20,8 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
         super(logic);
         this.mat = mat;
     }
-    public DropToBreakTimer(GameLogic logic, String s)
-    {
-        super(logic);
-        this.mat = new Gson().fromJson(s, Material.class);
-    }
-    @Override
-    public String getData() {return new Gson().toJson(mat);}
-
+    public DropToBreakTimer(GameLogic logic){super(logic);}
+    
 
     @Override
     public void onEvent(Event event)

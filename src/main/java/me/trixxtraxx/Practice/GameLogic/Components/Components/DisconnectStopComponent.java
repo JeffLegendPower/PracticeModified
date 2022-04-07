@@ -13,16 +13,11 @@ public class DisconnectStopComponent extends GameComponent
         super(logic);
     }
 
-    public DisconnectStopComponent(GameLogic logic, String s) {super(logic);}
-
     @Override
     public void onEvent(Event event)
     {
         if(event instanceof PlayerQuitEvent) onQuit((PlayerQuitEvent) event);
     }
-
-    @Override
-    public String getData() {return "{}";}
 
     public void onQuit(PlayerQuitEvent e)
     {

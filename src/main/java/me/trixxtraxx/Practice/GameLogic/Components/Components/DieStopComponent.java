@@ -14,15 +14,12 @@ public class DieStopComponent extends GameComponent
     {
         super(logic);
     }
-    public DieStopComponent(GameLogic logic, String s) {super(logic);}
 
     @Override
     public void onEvent(Event event)
     {
         if(event instanceof PlayerDeathEvent) onQuit((PlayerDeathEvent) event);
     }
-
-    public String getData() {return "{}";}
 
     public void onQuit(PlayerDeathEvent e)
     {

@@ -19,12 +19,6 @@ public class StatComponent extends GameComponent
     {
         super(logic);
     }
-    public StatComponent(GameLogic logic, String data)
-    {
-        super(logic);
-    }
-    @Override
-    public String getData() {return "{}";}
 
     @Override
     public void onEvent(GameEvent event)
