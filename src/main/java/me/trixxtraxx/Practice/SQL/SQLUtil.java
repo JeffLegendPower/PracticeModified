@@ -315,7 +315,7 @@ public class SQLUtil
         }
         return -1;
     }
-    public void addOrder(PracticePlayer prac, HashMap<Integer, Integer> order, int kitId, boolean nullkitid)
+    public void addPlayerKitOrder(PracticePlayer prac, HashMap<Integer, Integer> order, int kitId, boolean nullkitid)
     {
         try
         {
@@ -357,7 +357,7 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-    public void saveComponents(PracticePlayer p)
+    public void updatePlayerComponents(PracticePlayer p)
     {
         try
         {
@@ -572,14 +572,8 @@ public class SQLUtil
     }
     
 
-    public GameLogic getLogic(int logicId)
-    {
-        return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = " + logicId);
-    }
-    public GameLogic getLogic(String name)
-    {
-        return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Name = '" + name + "'");
-    }
+    public GameLogic getLogic(int logicId){return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = " + logicId);}
+    public GameLogic getLogic(String name){return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Name = '" + name + "'");}
     private GameLogic getLogicFromQuery(String query){
         try
         {

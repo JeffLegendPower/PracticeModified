@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.Map.Components;
 
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
@@ -21,13 +22,6 @@ public class NoMapBreakComponent extends MapComponent
     {
         super(map);
     }
-
-    public NoMapBreakComponent(Map map, String data)
-    {
-        super(map);
-    }
-
-    public String getData() {return "{}";}
 
     @Override
     public void onEvent(Event event)

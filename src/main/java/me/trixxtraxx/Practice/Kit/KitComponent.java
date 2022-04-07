@@ -1,10 +1,14 @@
 package me.trixxtraxx.Practice.Kit;
 
+import me.trixxtraxx.Practice.Component;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-public abstract class KitComponent
+import java.lang.reflect.Field;
+
+public abstract class KitComponent extends Component
 {
     protected Kit kit;
 
@@ -13,17 +17,4 @@ public abstract class KitComponent
         this.kit = kit;
         kit.addComponent(this);
     }
-
-    public abstract String getData();
-
-    public void onEvent(GameEvent e){}
-    public void onEvent(Event e){}
-
-    public void onEventAfter(GameEvent e){}
-    public void onEventAfter(Event e){}
-
-    public void onEventCancel(GameEvent e){}
-    public void onEventCancel(Event e){}
-
-    public String applyPlaceholder(Player p, String s){return s;}
 }

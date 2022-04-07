@@ -1,11 +1,14 @@
 package me.trixxtraxx.Practice.GameLogic.Components;
 
+import me.trixxtraxx.Practice.Component;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 
-public abstract class GameComponent
+import java.lang.reflect.Field;
+
+public abstract class GameComponent extends Component
 {
     protected GameLogic logic;
 
@@ -14,16 +17,4 @@ public abstract class GameComponent
         this.logic = logic;
         logic.addComponent(this);
     }
-
-    public void onEvent(GameEvent e){}
-    public void onEvent(Event e){}
-
-    public void onEventAfter(GameEvent e){}
-    public void onEventAfter(Event e){}
-
-    public void onEventCancel(GameEvent e){}
-    public void onEventCancel(Event e){}
-
-    public String applyPlaceholder(Player p, String s){return s;}
-    public abstract String getData();
 }
