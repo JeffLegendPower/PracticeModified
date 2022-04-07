@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic;
 
+import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Kit.KitComponent;
@@ -13,130 +14,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GameLogic
+public abstract class GameLogic extends ComponentClass<GameComponent>
 {
-    protected List<GameComponent> components = new ArrayList<>();
     protected int id = -1;
     protected String name;
 
     public GameLogic() {}
-
-    public List<GameComponent> getComponents()
-    {
-        return components;
-    }
-
-    public void addComponent(GameComponent comp)
-    {
-        components.add(comp);
-    }
-
-    public void removeComponent(GameComponent comp)
-    {
-        components.remove(comp);
-    }
-
-    public List<GameComponent> getComponents(Class<?> c)
-    {
-        List<GameComponent> comps = new ArrayList<>();
-        for (GameComponent comp:components)
-        {
-            if(c.isInstance(comp)) comps.add(comp);
-        }
-        return comps;
-    }
-
-    //trigger ALL functions using reflections that have a single parameter as Event
-    public Event triggerEvent2(Event event)
-    {
-        for (GameComponent comp:components)
-        {
-            Class<?>[] params = comp.getClass().getDeclaredMethods()[0].getParameterTypes();
-            if (params.length == 1 && params[0].isInstance(event))
-            {
-                try
-                {
-                    comp.getClass().getDeclaredMethods()[0].invoke(comp, event);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return event;
-    }
-
-    public Event triggerEvent(Event e)
-    {
-        Practice.log(5, "Event triggered: " + e.getEventName());
-        for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
-        for (GameComponent comp : getComponents()) comp.onEvent(e);
-        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);
-        if (e instanceof Cancellable)
-        {
-            Cancellable c = (Cancellable) e;
-            if (c.isCancelled())
-            {
-                for (MapComponent comp : getMap().getComponents()) comp.onEventCancel(e);
-                for (GameComponent comp : getComponents()) comp.onEventCancel(e);
-                for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventCancel(e);
-                return e;
-            }
-        }
-
-        for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
-        for (GameComponent comp : getComponents()) comp.onEventAfter(e);
-        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
-
-        return e;
-    }
-
-    public GameEvent triggerEvent(GameEvent e)
-    {
-        Practice.log(4, "Game Event triggered: " + e.getClass().getName());
-        for (MapComponent comp : getMap().getComponents()) comp.onEvent(e);
-        for (GameComponent comp : getComponents()) comp.onEvent(e);
-        for (KitComponent comp : getGame().getKit().getComponents()) comp.onEvent(e);
-        if (e.isCanceled())
-        {
-            for (MapComponent comp : getMap().getComponents()) comp.onEventCancel(e);
-            for (GameComponent comp : getComponents()) comp.onEventCancel(e);
-            for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventCancel(e);
-        } else
-        {
-            for (MapComponent comp : getMap().getComponents()) comp.onEventAfter(e);
-            for (GameComponent comp : getComponents()) comp.onEventAfter(e);
-            for (KitComponent comp : getGame().getKit().getComponents()) comp.onEventAfter(e);
-        }
-        if (e.isCanceled()) Practice.log(5, "Canceled");
-        return e;
-    }
-
-    public String applyPlaceholders(Player p, String s)
-    {
-        for (MapComponent comp : getMap().getComponents()) s = comp.applyPlaceholder(p, s);
-        for (GameComponent comp : getComponents()) s = comp.applyPlaceholder(p, s);
-        for (KitComponent comp : getGame().getKit().getComponents()) s = comp.applyPlaceholder(p, s);
-        return s;
-    }
-
-    public List<String> applyPlaceholders(Player p, List<String> list)
-    {
-        List<String> newStrings = new ArrayList<>();
-        for (String string:list)
-        {
-            String s = string;
-            for (MapComponent comp : getMap().getComponents()) s = comp.applyPlaceholder(p, s);
-            for (GameComponent comp : getComponents()) s = comp.applyPlaceholder(p, s);
-            for (KitComponent comp : getGame().getKit().getComponents()) s = comp.applyPlaceholder(p, s);
-            newStrings.add(s);
-        }
-        return newStrings;
-    }
 
     public void setName(String s){name = s;}
     public void setId(int id){this.id = id;}

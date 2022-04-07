@@ -7,6 +7,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,13 +40,9 @@ public class SpawnProtComponent extends GameComponent
         starting = starting;
     }
     public SpawnProtComponent(GameLogic logic){super(logic);}
-
-    @Override
-    public void onEvent(GameEvent event){
-        if(event instanceof ToSpawnEvent) onSpawn((ToSpawnEvent) event);
-    }
-
-    public void onSpawn(ToSpawnEvent e)
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(ToSpawnEvent e)
     {
         prot.put(e.getPlayer(), e.getLoc());
         new BukkitRunnable(){
@@ -76,14 +73,9 @@ public class SpawnProtComponent extends GameComponent
             }
         }.runTaskTimer(Practice.Instance, 0,1);
     }
-
-    @Override
-    public void onEvent(Event event){
-        if(event instanceof PlayerMoveEvent) onMove((PlayerMoveEvent) event);
-        if(event instanceof EntityDamageEvent) onDamage((EntityDamageEvent) event);
-    }
-
-    public void onMove(PlayerMoveEvent e)
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(PlayerMoveEvent e)
     {
         if(prot.get(e.getPlayer()) != null)
         {
@@ -95,8 +87,9 @@ public class SpawnProtComponent extends GameComponent
             tped.remove(e.getPlayer());
         }
     }
-
-    public void onDamage(EntityDamageEvent e)
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
+    public void onEvent(EntityDamageEvent e)
     {
         if(e.getEntity() instanceof Player)
         {

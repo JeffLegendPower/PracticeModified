@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerCompone
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
 
 public class DropToResetTimer extends TimerComponent implements IStatComponent
@@ -15,20 +16,15 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
     {
         super(logic);
     }
-
-    @Override
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof DropEvent) onDrop((DropEvent) event);
-        if(event instanceof ResetEvent) onReset((ResetEvent) event);
-    }
-
+    
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onDrop(DropEvent e){
         reset();
         start();
     }
-
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onReset(ResetEvent e){
         stop();
         if(!e.wasSuccess()) reset();

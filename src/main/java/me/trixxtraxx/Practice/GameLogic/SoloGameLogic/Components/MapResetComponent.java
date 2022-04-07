@@ -5,6 +5,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -29,24 +30,12 @@ public class MapResetComponent extends GameComponent
     {
         super(logic);
     }
-
-    @Override
-    public void onEventAfter(Event event)
-    {
-        if(event instanceof BlockPlaceEvent) onBlockPlaceAfter((BlockPlaceEvent) event);
-        if(event instanceof BlockBreakEvent) onBlockBreakAfter((BlockBreakEvent) event);
-    }
-
-    @Override
-    public void onEventAfter(GameEvent event)
-    {
-        if(event instanceof ResetEvent) onResetAfter((ResetEvent) event);
-    }
-
+    
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
-    public void onBlockPlaceAfter(BlockPlaceEvent e)
+    public void onBlockPlace(BlockPlaceEvent e)
     {
-        if(e.isCancelled()) return;
         for (BlockStorage b:blocks)
         {
             if(b.loc.distance(e.getBlock().getLocation()) < 1) return;
@@ -56,11 +45,11 @@ public class MapResetComponent extends GameComponent
         store.mat = Material.AIR;
         blocks.add(store);
     }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
-    public void onBlockBreakAfter(BlockBreakEvent e)
+    public void onBlockBreak(BlockBreakEvent e)
     {
-        if(e.isCancelled()) return;
         for (BlockStorage b:blocks)
         {
             if(b.loc.distance(e.getBlock().getLocation()) < 1) return;
@@ -71,11 +60,11 @@ public class MapResetComponent extends GameComponent
         store.mat = e.getBlock().getType();
         blocks.add(store);
     }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
     public void onResetAfter(ResetEvent e)
     {
-        if(e.isCanceled()) return;
         for (BlockStorage store:blocks)
         {
             store.loc.getBlock().setType(store.mat);

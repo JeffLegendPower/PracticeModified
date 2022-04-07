@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -14,12 +15,8 @@ public class KillResetComponent extends GameComponent
     {
         super(logic);
     }
-
-    @Override
-    public void onEvent(Event event){
-        if(event instanceof PlayerDeathEvent) onDeath((PlayerDeathEvent) event);
-    }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onDeath(PlayerDeathEvent e)
     {
         Practice.log(4, "Death Reset Triggered!");

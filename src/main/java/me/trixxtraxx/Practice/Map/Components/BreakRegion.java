@@ -24,13 +24,7 @@ public class BreakRegion extends MapComponent
 
     public BreakRegion(Map map){super(map);}
 
-    @Override
-    public void onEvent(Event event)
-    {
-        if (event instanceof BlockBreakEvent) onBreak((BlockBreakEvent) event);
-    }
-
-    public void onBreak(BlockBreakEvent e)
+    public void onEvent(BlockBreakEvent e)
     {
         if (region.contains(e.getBlock().getLocation()))
         {

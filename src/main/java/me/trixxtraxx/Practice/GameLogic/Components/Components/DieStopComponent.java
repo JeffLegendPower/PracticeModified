@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -14,14 +15,9 @@ public class DieStopComponent extends GameComponent
     {
         super(logic);
     }
-
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof PlayerDeathEvent) onQuit((PlayerDeathEvent) event);
-    }
-
-    public void onQuit(PlayerDeathEvent e)
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(PlayerDeathEvent e)
     {
         if (logic instanceof DuelGameLogic) ((DuelGameLogic) logic).remove(e.getEntity());
         else logic.stop(false);

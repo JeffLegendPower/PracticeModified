@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Map;
 
+import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Practice;
 
@@ -9,14 +10,13 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map
+public class Map extends ComponentClass<MapComponent>
 {
     private int id;
     private String Name;
     private String LoadName;
     private ISpawnComponent spawn;
     private World world;
-    protected List<MapComponent> components = new ArrayList<>();
 
     public Map(int id, String name, String load, ISpawnComponent s)
     {
@@ -55,34 +55,4 @@ public class Map
     public ISpawnComponent getSpawn() {return spawn;}
 
     public World getWorld() {return world;}
-
-    public static void init()
-    {
-
-    }
-
-    public List<MapComponent> getComponents()
-    {
-        return components;
-    }
-
-    public void addComponent(MapComponent comp)
-    {
-        components.add(comp);
-    }
-
-    public void removeComponent(MapComponent comp)
-    {
-        components.remove(comp);
-    }
-
-    public List<MapComponent> getComponents(Class<?> c)
-    {
-        List<MapComponent> comps = new ArrayList<>();
-        for (MapComponent comp : components)
-        {
-            if (c.isInstance(comp) || c.isAssignableFrom(comp.getClass())) comps.add(comp);
-        }
-        return comps;
-    }
 }

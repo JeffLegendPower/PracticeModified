@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.GameMode;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -19,13 +20,9 @@ public class YKillComponent extends GameComponent
         ykillheight = killheight;
     }
     public YKillComponent(GameLogic logic){super(logic);}
-
-    @Override
-    public void onEvent(Event event){
-        if(event instanceof PlayerMoveEvent) onMove((PlayerMoveEvent) event);
-    }
-
-    public void onMove(PlayerMoveEvent e)
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(PlayerMoveEvent e)
     {
         if(e.getTo().getY() < ykillheight)
         {

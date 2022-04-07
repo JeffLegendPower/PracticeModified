@@ -60,14 +60,14 @@ public abstract class Component
         }
     }
     
-    public void onEvent(GameEvent e){}
-    public void onEvent(Event e){}
+    //public void onEvent(GameEvent e){}
+    //public void onEvent(Event e){}
     
-    public void onEventAfter(GameEvent e){}
-    public void onEventAfter(Event e){}
+    //public void onEventAfter(GameEvent e){}
+    //public void onEventAfter(Event e){}
     
-    public void onEventCancel(GameEvent e){}
-    public void onEventCancel(Event e){}
+    //public void onEventCancel(GameEvent e){}
+    //public void onEventCancel(Event e){}
     
     public String applyPlaceholder(Player p, String s){return s;}
 }

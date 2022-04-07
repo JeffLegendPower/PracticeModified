@@ -7,6 +7,7 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings.SettingsComponent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
+import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.Utils.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,14 +34,9 @@ public class DropItemComponent extends GameComponent
         settings.removeItems = removeItems;
     }
     public DropItemComponent(GameLogic logic){super(logic);}
-
-
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof PlayerInteractEvent) onDrop((PlayerInteractEvent) event);
-    }
-
+    
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
     @SuppressWarnings("deprecation")
     public void onDrop(PlayerInteractEvent e)
     {

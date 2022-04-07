@@ -47,13 +47,7 @@ public class BedLayerComponent extends MapComponent implements ISettingsComponen
     }
     public BedLayerComponent(Map m){super(m);}
 
-    @Override
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof StartEvent) onStart((StartEvent) event);
-    }
-
-    public void onStart(StartEvent e)
+    public void onEvent(StartEvent e)
     {
         List<Block> blocks = getDefenceBlocks();
         Practice.log(4, "Now placing: " + blocks.size() + " blocks");

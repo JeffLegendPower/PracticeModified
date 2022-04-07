@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -15,19 +16,10 @@ public class PressurePlateResetComponent extends GameComponent
     {
         super(logic);
     }
-
-    @Override
+    
     public void onEvent(GameEvent e) {}
-
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof BlockRedstoneEvent)
-        {
-            onPlateStep((BlockRedstoneEvent) event);
-        }
-    }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onPlateStep(BlockRedstoneEvent e)
     {
         if(e.getBlock().getType() == Material.WOOD_PLATE ||

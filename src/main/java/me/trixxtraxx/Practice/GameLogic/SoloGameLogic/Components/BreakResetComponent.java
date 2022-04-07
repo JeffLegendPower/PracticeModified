@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -20,19 +21,8 @@ public class BreakResetComponent extends GameComponent
         mat = material;
     }
     public BreakResetComponent(GameLogic logic){super(logic);}
-
-    @Override
-    public void onEvent(GameEvent e) {}
-
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof BlockBreakEvent)
-        {
-            onBlockBreak((BlockBreakEvent) event);
-        }
-    }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
     public void onBlockBreak(BlockBreakEvent e)
     {
         if(e.getBlock().getType() != mat) return;

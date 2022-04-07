@@ -7,6 +7,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.libs.Fastboard.FastBoard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -34,14 +35,9 @@ public class ScoreboardComponent extends GameComponent
         lines = lines;
     }
     public ScoreboardComponent(GameLogic logic){super(logic);}
-
-    @Override
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof StartEvent) onStart((StartEvent) event);
-    }
-
-    public void onStart(StartEvent e)
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(StartEvent e)
     {
         if(boards.size() != 0) return;
         for (Player p:e.getlogic().getPlayers())

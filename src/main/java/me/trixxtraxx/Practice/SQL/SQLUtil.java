@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
+import me.trixxtraxx.Practice.Component;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
@@ -78,8 +79,9 @@ public class SQLUtil
             while (res.next())
             {
                 Class<?> clazz = Class.forName(res.getString("Class"));
-                Constructor<?> constructor = clazz.getConstructor(Kit.class, String.class);
-                constructor.newInstance(k, res.getString("Data"));
+                Constructor<?> constructor = clazz.getConstructor(Kit.class);
+                Component comp = (Component) constructor.newInstance(k);
+                comp.applyData(res.getString("Data"));
             }
             
             ps.close();
@@ -104,8 +106,9 @@ public class SQLUtil
             while (res.next())
             {
                 Class<?> clazz = Class.forName(res.getString("Class"));
-                Constructor<?> constructor = clazz.getConstructor(GameLogic.class, String.class);
-                constructor.newInstance(logic, res.getString("Data"));
+                Constructor<?> constructor = clazz.getConstructor(GameLogic.class);
+                Component comp = (Component) constructor.newInstance(logic);
+                comp.applyData(res.getString("Data"));
             }
             
             ps.close();
@@ -127,8 +130,9 @@ public class SQLUtil
             while (res.next())
             {
                 Class<?> clazz = Class.forName(res.getString("Class"));
-                Constructor<?> constructor = clazz.getConstructor(Map.class, String.class);
-                constructor.newInstance(m, res.getString("Data"));
+                Constructor<?> constructor = clazz.getConstructor(Map.class);
+                Component comp = (Component) constructor.newInstance(m);
+                comp.applyData(res.getString("Data"));
             }
             ps.close();
             res.close();

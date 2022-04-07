@@ -7,6 +7,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Events.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -27,14 +28,9 @@ public class PointComponent extends GameComponent
         symb = symb;
     }
     public PointComponent(GameLogic logic){super(logic);}
-
-    @Override
-    public void onEvent(GameEvent e)
-    {
-        if(e instanceof WinEvent) onWin((WinEvent) e);
-    }
-
-    public void onWin(WinEvent e)
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
+    public void onEvent(WinEvent e)
     {
         if (!(logic instanceof DuelGameLogic)) return;
         DuelGameLogic log = (DuelGameLogic) logic;

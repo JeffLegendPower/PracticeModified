@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerCompone
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,25 +19,12 @@ import java.util.List;
 
 public class DropToBlockinTimer extends TimerComponent implements IStatComponent
 {
-
     public DropToBlockinTimer(GameLogic logic)
     {
         super(logic);
     }
-
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof BlockPlaceEvent) onBlockPlace((BlockPlaceEvent) event);
-    }
-
-    @Override
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof DropEvent) onDrop((DropEvent) event);
-        if(event instanceof ResetEvent) onReset((ResetEvent) event);
-    }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onBlockPlace(BlockPlaceEvent e)
     {
         List<Block> checked = new ArrayList<>();
@@ -66,12 +54,14 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
             depth++;
         }
     }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onDrop(DropEvent e){
         reset();
         start();
     }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onReset(ResetEvent e){
         stop();
         if(!e.wasSuccess()) reset();

@@ -24,13 +24,7 @@ public class PlaceRegion extends MapComponent
 
     public PlaceRegion(Map map){super(map);}
 
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof BlockPlaceEvent) onPlace((BlockPlaceEvent) event);
-    }
-
-    public void onPlace(BlockPlaceEvent e)
+    public void onEvent(BlockPlaceEvent e)
     {
         if(region.contains(e.getBlock().getLocation()))
         {

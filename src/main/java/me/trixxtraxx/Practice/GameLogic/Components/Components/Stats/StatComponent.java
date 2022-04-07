@@ -8,6 +8,7 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
+import me.trixxtraxx.Practice.TriggerEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ public class StatComponent extends GameComponent
     {
         super(logic);
     }
-
-    @Override
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(GameEvent event)
     {
         if(event instanceof StopEvent)

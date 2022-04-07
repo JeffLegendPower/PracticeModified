@@ -39,15 +39,8 @@ public class ClearOnDropComponent extends MapComponent
 
     public ClearOnDropComponent(Map map){super(map);}
 
-    @Override
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof ResetEvent) onResetAfter((ResetEvent) event);
-        if(event instanceof DropEvent) onDrop((DropEvent) event);
-    }
-
     @SuppressWarnings("deprecation")
-    public void onDrop(DropEvent e)
+    public void onEvent(DropEvent e)
     {
         for (Location loc:remove.getLocations(e.getlogic().getWorld()))
         {
@@ -61,7 +54,7 @@ public class ClearOnDropComponent extends MapComponent
     }
 
     @SuppressWarnings("deprecation")
-    public void onResetAfter(ResetEvent e)
+    public void onEvent(ResetEvent e)
     {
         if(stored.size() == 0) return;
         int i = 0;

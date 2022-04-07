@@ -23,41 +23,22 @@ public class NoMapBreakComponent extends MapComponent
         super(map);
     }
 
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof BlockPlaceEvent) onBlockPlace((BlockPlaceEvent) event);
-        if(event instanceof BlockBreakEvent) onBlockBreak((BlockBreakEvent) event);
-    }
-
-    @Override
-    public void onEventCancel(Event event)
-    {
-        if(event instanceof BlockPlaceEvent) onBlockPlace2((BlockPlaceEvent) event);
-    }
-
-    @Override
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof ResetEvent) onReset((ResetEvent) event);
-    }
-
-    public void onBlockPlace(BlockPlaceEvent e)
+    public void onEvent(BlockPlaceEvent e)
     {
         blocksPlaced.add(e.getBlock().getLocation());
     }
-    public void onBlockPlace2(BlockPlaceEvent e)
+    public void onEventCancel(BlockPlaceEvent e)
     {
         if(e.isCancelled()) blocksPlaced.remove(e.getBlock().getLocation());
     }
 
-    public void onBlockBreak(BlockBreakEvent e)
+    public void onEvent(BlockBreakEvent e)
     {
         if(!blocksPlaced.contains(e.getBlock().getLocation())) e.setCancelled(true);
         else blocksPlaced.remove(e.getBlock().getLocation());
     }
 
-    public void onReset(ResetEvent e)
+    public void onEvent(ResetEvent e)
     {
         blocksPlaced.clear();
     }

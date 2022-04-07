@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.Kit;
 
 import com.google.gson.Gson;
+import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.ConfigItem;
@@ -16,12 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Kit
+public class Kit extends ComponentClass<KitComponent>
 {
     private int sqlId;
     private int defaultOrderId;
     private String name;
-    private List<KitComponent> components = new ArrayList<>();
     private List<ItemStack> items;
     //This is rly a hashmap of String, Double lmao
     private HashMap<Integer, Integer> defaultOrder;
@@ -47,28 +47,6 @@ public class Kit
         this.sqlId = sqlId;
         this.defaultOrderId = defaultOrderId;
         this.name = name;
-    }
-
-    public List<KitComponent> getComponents()
-    {
-        return components;
-    }
-    public void addComponent(KitComponent comp)
-    {
-        components.add(comp);
-    }
-    public void removeComponent(KitComponent comp)
-    {
-        components.remove(comp);
-    }
-    public List<KitComponent> getComponents(Class<?> c)
-    {
-        List<KitComponent> comps = new ArrayList<>();
-        for (KitComponent comp:components)
-        {
-            if(c.isInstance(comp)) comps.add(comp);
-        }
-        return comps;
     }
 
     public int getSqlId(){return sqlId;}

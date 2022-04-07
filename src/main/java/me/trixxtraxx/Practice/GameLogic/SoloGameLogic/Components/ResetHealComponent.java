@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
 
 public class ResetHealComponent extends GameComponent
@@ -12,12 +13,8 @@ public class ResetHealComponent extends GameComponent
     {
         super(logic);
     }
-
-    public void onEvent(GameEvent event)
-    {
-        if(event instanceof ResetEvent) onReset((ResetEvent) event);
-    }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onReset(ResetEvent e)
     {
         for (Player p:logic.getPlayers())
