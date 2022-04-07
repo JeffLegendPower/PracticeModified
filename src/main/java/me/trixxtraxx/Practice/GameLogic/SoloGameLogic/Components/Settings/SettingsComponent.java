@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.Utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,14 +52,8 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         title = title;
     }
     public SettingsComponent(GameLogic logic){super(logic);}
-
-    @Override
-    public void onEvent(Event event)
-    {
-        if(event instanceof PlayerInteractEvent) onInteract((PlayerInteractEvent) event);
-        if(event instanceof InventoryClickEvent) onClick((InventoryClickEvent) event);
-    }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onInteract(PlayerInteractEvent e)
     {
         Player p = e.getPlayer();
@@ -78,6 +73,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
         return null;
     }
     
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onClick(InventoryClickEvent e)
     {
         if (e.getClickedInventory() == null){}

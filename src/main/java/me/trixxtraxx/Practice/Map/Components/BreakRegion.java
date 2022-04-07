@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.Utils.Region;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -23,7 +24,8 @@ public class BreakRegion extends MapComponent
     }
 
     public BreakRegion(Map map){super(map);}
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
     public void onEvent(BlockBreakEvent e)
     {
         if (region.contains(e.getBlock().getLocation()))

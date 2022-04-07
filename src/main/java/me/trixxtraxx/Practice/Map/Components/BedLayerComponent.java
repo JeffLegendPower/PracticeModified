@@ -11,6 +11,7 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings.ISetti
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,7 +47,8 @@ public class BedLayerComponent extends MapComponent implements ISettingsComponen
         butterfly = butterfly;
     }
     public BedLayerComponent(Map m){super(m);}
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(StartEvent e)
     {
         List<Block> blocks = getDefenceBlocks();

@@ -9,6 +9,7 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.Utils.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +39,8 @@ public class ClearOnDropComponent extends MapComponent
     }
 
     public ClearOnDropComponent(Map map){super(map);}
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
     public void onEvent(DropEvent e)
     {
@@ -52,7 +54,8 @@ public class ClearOnDropComponent extends MapComponent
             b.setType(Material.AIR);
         }
     }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
     public void onEvent(ResetEvent e)
     {

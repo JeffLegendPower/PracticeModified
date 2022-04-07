@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -22,22 +23,14 @@ public class NoMapBreakComponent extends MapComponent
     {
         super(map);
     }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(BlockPlaceEvent e)
     {
         blocksPlaced.add(e.getBlock().getLocation());
     }
-    public void onEventCancel(BlockPlaceEvent e)
-    {
-        if(e.isCancelled()) blocksPlaced.remove(e.getBlock().getLocation());
-    }
-
-    public void onEvent(BlockBreakEvent e)
-    {
-        if(!blocksPlaced.contains(e.getBlock().getLocation())) e.setCancelled(true);
-        else blocksPlaced.remove(e.getBlock().getLocation());
-    }
-
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(ResetEvent e)
     {
         blocksPlaced.clear();

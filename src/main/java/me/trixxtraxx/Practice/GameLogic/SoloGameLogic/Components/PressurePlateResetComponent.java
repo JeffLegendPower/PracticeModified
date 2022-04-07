@@ -17,8 +17,6 @@ public class PressurePlateResetComponent extends GameComponent
         super(logic);
     }
     
-    public void onEvent(GameEvent e) {}
-    
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onPlateStep(BlockRedstoneEvent e)
     {
