@@ -63,6 +63,81 @@ public class SQLUtil
             con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true&useSSL=false", username, password);
         }
     }
+    
+    public void applyComponents(Kit k)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM KitComponent INNER JOIN Kit ON Kit.Kit_ID = KitComponent.Kit_ID WHERE KitComponent.Kit_ID = ?");
+            ps.setInt(1, k.getSqlId());
+            
+            ps.executeQuery();
+            
+            ResultSet res = ps.getResultSet();
+            
+            while (res.next())
+            {
+                Class<?> clazz = Class.forName(res.getString("Class"));
+                Constructor<?> constructor = clazz.getConstructor(Kit.class, String.class);
+                constructor.newInstance(k, res.getString("Data"));
+            }
+            
+            ps.close();
+            res.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public void applyComponents(GameLogic logic)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM GameComponent INNER JOIN Gamemode ON GameComponent.Gamemode_ID = Gamemode.Gamemode_ID WHERE GameComponent.Gamemode_ID = ?");
+            ps.setInt(1, logic.getId());
+            
+            ps.executeQuery();
+            
+            ResultSet res = ps.getResultSet();
+            
+            while (res.next())
+            {
+                Class<?> clazz = Class.forName(res.getString("Class"));
+                Constructor<?> constructor = clazz.getConstructor(GameLogic.class, String.class);
+                constructor.newInstance(logic, res.getString("Data"));
+            }
+            
+            ps.close();
+            res.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public void applyComponents(Map m)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM MapComponent INNER JOIN Map ON Map.Map_ID = MapComponent.Map_ID WHERE Map.Map_ID = ?");
+            ps.setInt(1, m.getSqlIndex());
+            
+            ResultSet res = ps.executeQuery();
+            while (res.next())
+            {
+                Class<?> clazz = Class.forName(res.getString("Class"));
+                Constructor<?> constructor = clazz.getConstructor(Map.class, String.class);
+                constructor.newInstance(m, res.getString("Data"));
+            }
+            ps.close();
+            res.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public Map getMap(String Name)
     {
@@ -91,30 +166,6 @@ public class SQLUtil
         }
         return null;
     }
-
-    public void applyComponents(Map m)
-    {
-        try
-        {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM MapComponent INNER JOIN Map ON Map.Map_ID = MapComponent.Map_ID WHERE Map.Map_ID = ?");
-            ps.setInt(1, m.getSqlIndex());
-
-            ResultSet res = ps.executeQuery();
-            while (res.next())
-            {
-                Class<?> clazz = Class.forName(res.getString("Class"));
-                Constructor<?> constructor = clazz.getConstructor(Map.class, String.class);
-                constructor.newInstance(m, res.getString("Data"));
-            }
-            ps.close();
-            res.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public void deleteMap(Map m)
     {
         try
@@ -130,7 +181,6 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-
     public void addMap(Map m)
     {
         try
@@ -170,8 +220,7 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-
-    //MERGE THE QUERIES FROM getPlayer2 Into one query
+    
 
     public PracticePlayer getPlayer(Player p)
     {
@@ -243,7 +292,71 @@ public class SQLUtil
         }
         return null;
     }
-
+    private int createPlayer(Player p)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO Player (UUID, Name) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, p.getUniqueId() + "");
+            ps.setString(2, p.getName());
+            
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
+            int id =  rs.getInt(1);
+            
+            ps.close();
+            rs.close();
+            return id;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    public void addOrder(PracticePlayer prac, HashMap<Integer, Integer> order, int kitId, boolean nullkitid)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, new Gson().toJson(order));
+            if(nullkitid) ps.setNull(2, Types.NULL);
+            else ps.setInt(2, kitId);
+            
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
+            int id =  rs.getInt(1);
+            ps.close();
+            
+            ps = con.prepareStatement("INSERT INTO PlayerKitOrder (Player_ID, KitOrder_ID) VALUES (?,?)");
+            ps.setInt(1, prac.getPlayerId());
+            ps.setInt(2, id);
+            
+            ps.close();
+            rs.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public void updatePlayerKit(PracticePlayer player, Kit kit)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement("UPDATE Player SET Player.Kit_ID = ? WHERE Player.Player_ID = ?");
+            ps.setInt(1, kit.getSqlId());
+            ps.setInt(2, player.getPlayerId());
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
     public void saveComponents(PracticePlayer p)
     {
         try
@@ -269,68 +382,15 @@ public class SQLUtil
         }
     }
 
-    private int createPlayer(Player p)
-    {
-        try
-        {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO Player (UUID, Name) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, p.getUniqueId() + "");
-            ps.setString(2, p.getName());
-
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            rs.next();
-            int id =  rs.getInt(1);
-
-            ps.close();
-            rs.close();
-            return id;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    public void addOrder(PracticePlayer prac, HashMap<Integer, Integer> order, int kitId, boolean nullkitid)
-    {
-        try
-        {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, new Gson().toJson(order));
-            if(nullkitid) ps.setNull(2, Types.NULL);
-            else ps.setInt(2, kitId);
-
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            rs.next();
-            int id =  rs.getInt(1);
-            ps.close();
-
-            ps = con.prepareStatement("INSERT INTO PlayerKitOrder (Player_ID, KitOrder_ID) VALUES (?,?)");
-            ps.setInt(1, prac.getPlayerId());
-            ps.setInt(2, id);
-
-            ps.close();
-            rs.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
+    
     public Kit getKit(int KitId)
     {
         return getKitFromQuery("SELECT * FROM Kit WHERE Kit.Kit_ID = " + KitId);
     }
-
     public Kit getKit(String name)
     {
         return getKitFromQuery("SELECT * FROM Kit WHERE Kit.Name = '" + name + "'");
     }
-
     private Kit getKitFromQuery(String query)
     {
         try
@@ -410,33 +470,7 @@ public class SQLUtil
         }
         return null;
     }
-
-    public void applyComponents(Kit k)
-    {
-        try
-        {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM KitComponent INNER JOIN Kit ON Kit.Kit_ID = KitComponent.Kit_ID WHERE KitComponent.Kit_ID = ?");
-            ps.setInt(1, k.getSqlId());
-
-            ps.executeQuery();
-
-            ResultSet res = ps.getResultSet();
-
-            while (res.next())
-            {
-                Class<?> clazz = Class.forName(res.getString("Class"));
-                Constructor<?> constructor = clazz.getConstructor(Kit.class, String.class);
-                constructor.newInstance(k, res.getString("Data"));
-            }
-
-            ps.close();
-            res.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+    
 
     public void deleteKit(Kit k)
     {
@@ -454,7 +488,6 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-
     public void addKit(Kit k)
     {
         if(k.getSqlId() != -1) return;
@@ -517,17 +550,36 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
+    public void updateKit(Kit kit)
+    {
+        try
+        {
+            String sql = "UPDATE KitOrder SET `Order` = '" + kit.getDefaultOrder() + "' WHERE KitOrder_ID = " + kit.getDefaultOrderId();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+            ps.close();
+            //now update the kit parameter Items
+            ps = con.prepareStatement("UPDATE Kit SET Items = ? WHERE Kit_ID = ?");
+            ps.setString(1, kit.getItems());
+            ps.setInt(2, kit.getSqlId());
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
 
     public GameLogic getLogic(int logicId)
     {
         return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = " + logicId);
     }
-
     public GameLogic getLogic(String name)
     {
         return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Name = '" + name + "'");
     }
-
     private GameLogic getLogicFromQuery(String query){
         try
         {
@@ -557,34 +609,6 @@ public class SQLUtil
         }
         return null;
     }
-
-    public void applyComponents(GameLogic logic)
-    {
-        try
-        {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM GameComponent INNER JOIN Gamemode ON GameComponent.Gamemode_ID = Gamemode.Gamemode_ID WHERE GameComponent.Gamemode_ID = ?");
-            ps.setInt(1, logic.getId());
-
-            ps.executeQuery();
-
-            ResultSet res = ps.getResultSet();
-
-            while (res.next())
-            {
-                Class<?> clazz = Class.forName(res.getString("Class"));
-                Constructor<?> constructor = clazz.getConstructor(GameLogic.class, String.class);
-                constructor.newInstance(logic, res.getString("Data"));
-            }
-
-            ps.close();
-            res.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public void deleteLogic(GameLogic logic)
     {
         if(logic.getId() == -1) return;
@@ -601,7 +625,6 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-
     public void addLogic(GameLogic logic)
     {
         if(logic.getId() != -1) return;
@@ -641,6 +664,8 @@ public class SQLUtil
         }
     }
 
+    
+    
     public void addStatsTable(GameLogic logic)
     {
         try
@@ -660,7 +685,6 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-
     public void storeStats(GameLogic logic)
     {
         try
@@ -680,43 +704,6 @@ public class SQLUtil
                 statement.addBatch(sql);
             }
             statement.executeBatch();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
-    public void updatePlayerKit(PracticePlayer player, Kit kit)
-    {
-        try
-        {
-            PreparedStatement ps = con.prepareStatement("UPDATE Player SET Player.Kit_ID = ? WHERE Player.Player_ID = ?");
-            ps.setInt(1, kit.getSqlId());
-            ps.setInt(2, player.getPlayerId());
-            ps.executeUpdate();
-            ps.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
-    public void updateKit(Kit kit)
-    {
-        try
-        {
-            String sql = "UPDATE KitOrder SET `Order` = '" + kit.getDefaultOrder() + "' WHERE KitOrder_ID = " + kit.getDefaultOrderId();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.executeUpdate();
-            ps.close();
-            //now update the kit parameter Items
-            ps = con.prepareStatement("UPDATE Kit SET Items = ? WHERE Kit_ID = ?");
-            ps.setString(1, kit.getItems());
-            ps.setInt(2, kit.getSqlId());
-            ps.executeUpdate();
-            ps.close();
         }
         catch (Exception e)
         {
