@@ -2,6 +2,11 @@ package me.trixxtraxx.Practice.Utils;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigLocation
 {
@@ -45,4 +50,15 @@ public class ConfigLocation
     public double getPitch(){return pitch;}
 
     public Location getLocation(World w) {return new Location(w, x,y,z,yaw,pitch);}
+    
+    public String serialize()
+    {
+        return x + "," + y + "," + z + "," + yaw + "," + pitch;
+    }
+    
+    public static ConfigLocation deserialize(String s)
+    {
+        String[] args = s.split(",");
+        return new ConfigLocation(Double.parseDouble(args[0]),Double.parseDouble(args[1]),Double.parseDouble(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
+    }
 }

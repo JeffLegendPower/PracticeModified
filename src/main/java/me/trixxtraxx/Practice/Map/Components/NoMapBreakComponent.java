@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
@@ -17,22 +18,16 @@ import java.util.List;
 
 public class NoMapBreakComponent extends MapComponent
 {
-    private List<Location> blocksPlaced = new ArrayList<>();
-
+    
     public NoMapBreakComponent(Map map)
     {
         super(map);
+        Practice.log(4, "NoMapBreakComponent initialized");
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onEvent(BlockPlaceEvent e)
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
+    public void onEvent(BlockBreakEvent e)
     {
-        blocksPlaced.add(e.getBlock().getLocation());
-    }
-    
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onEvent(ResetEvent e)
-    {
-        blocksPlaced.clear();
+        e.setCancelled(true);
     }
 }

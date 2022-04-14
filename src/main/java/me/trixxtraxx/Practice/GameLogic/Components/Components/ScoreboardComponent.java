@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,18 +24,19 @@ public class ScoreboardComponent extends GameComponent
     @Config
     private String title;
     @Config
-    private List<String> lines;
+    private String lines;
 
     private BukkitRunnable run;
     private HashMap<Player, FastBoard> boards = new HashMap<>();
 
-    public ScoreboardComponent(GameLogic logic, String title, List<String> lines)
+    public ScoreboardComponent(GameLogic logic, String title, String lines)
     {
         super(logic);
-        title = title;
-        lines = lines;
+        this.title = title;
+        this.lines = lines;
     }
     public ScoreboardComponent(GameLogic logic){super(logic);}
+    
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(StartEvent e)
@@ -44,7 +46,7 @@ public class ScoreboardComponent extends GameComponent
         {
             FastBoard board = new FastBoard(p);
             board.updateTitle(e.getlogic().applyPlaceholders(p,title));
-            board.updateLines(e.getlogic().applyPlaceholders(p,lines));
+            board.updateLines(e.getlogic().applyPlaceholders(p, Arrays.asList(lines.split("\n"))));
             boards.put(p, board);
         }
         run = new BukkitRunnable()
@@ -55,7 +57,7 @@ public class ScoreboardComponent extends GameComponent
                 for (Map.Entry<Player, FastBoard> entry:boards.entrySet())
                 {
                     entry.getValue().updateTitle(e.getlogic().applyPlaceholders(entry.getKey(),title));
-                    entry.getValue().updateLines(e.getlogic().applyPlaceholders(entry.getKey(),lines));
+                    entry.getValue().updateLines(e.getlogic().applyPlaceholders(entry.getKey(),Arrays.asList(lines.split("\n"))));
                 }
             }
         };

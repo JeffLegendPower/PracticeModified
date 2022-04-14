@@ -40,11 +40,11 @@ public class BedLayerComponent extends MapComponent implements ISettingsComponen
     public BedLayerComponent(Map m, Material mat, ConfigLocation loc1, ConfigLocation loc2, int layer, boolean butterfly)
     {
         super(m);
-        mat = mat;
-        loc1 = loc1;
-        loc2 = loc2;
-        layer = layer;
-        butterfly = butterfly;
+        this.mat = mat;
+        this.loc1 = loc1;
+        this.loc2 = loc2;
+        this.layer = layer;
+        this.butterfly = butterfly;
     }
     public BedLayerComponent(Map m){super(m);}
     

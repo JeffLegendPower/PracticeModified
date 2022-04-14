@@ -23,15 +23,11 @@ public class GameLogicListener implements Listener
         if(p == null)
         {
             g.getLogic().triggerEvent(e);
-            g.getKit().triggerEvent(e);
-            g.getLogic().getMap().triggerEvent(e);
         }
         else
         {
             if(g.getLogic().getPlayers().contains(p)) {
                 g.getLogic().triggerEvent(e);
-                g.getKit().triggerEvent(e);
-                g.getLogic().getMap().triggerEvent(e);
             }
         }
     }
@@ -43,7 +39,9 @@ public class GameLogicListener implements Listener
         if(en instanceof Player)
         {
             Player p = (Player) en;
-            if(g.getLogic().getPlayers().contains(p)) g.getLogic().triggerEvent(e);
+            if(g.getLogic().getPlayers().contains(p)) {
+                g.getLogic().triggerEvent(e);
+            }
         }
         else
         {

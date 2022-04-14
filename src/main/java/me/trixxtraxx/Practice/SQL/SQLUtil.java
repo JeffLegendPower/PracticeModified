@@ -123,6 +123,7 @@ public class SQLUtil
     {
         try
         {
+            Practice.log(4, "Applying components to map " + m.getName());
             PreparedStatement ps = con.prepareStatement("SELECT * FROM MapComponent INNER JOIN Map ON Map.Map_ID = MapComponent.Map_ID WHERE Map.Map_ID = ?");
             ps.setInt(1, m.getSqlIndex());
             

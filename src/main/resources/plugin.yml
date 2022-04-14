@@ -5,6 +5,8 @@ api-version: 1.18
 authors: [ TrixxTraxx ]
 description: Bedwars Practice core
 website: store.ranked.fun
+depend:
+  - InventoryAPI
 
 commands:
   TestGame:

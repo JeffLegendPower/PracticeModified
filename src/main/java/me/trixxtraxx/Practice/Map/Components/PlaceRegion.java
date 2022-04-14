@@ -20,7 +20,7 @@ public class PlaceRegion extends MapComponent
     {
         super(map);
         region = r;
-        canPlace = canPlace;
+        this.canPlace = canPlace;
     }
 
     public PlaceRegion(Map map){super(map);}

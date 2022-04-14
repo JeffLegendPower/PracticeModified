@@ -3,9 +3,13 @@ package me.trixxtraxx.Practice.Utils;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Region
 {
@@ -21,9 +25,22 @@ public class Region
         int maxY = Math.max(location1.getBlockY(), location2.getBlockY());
         int minZ = Math.min(location1.getBlockZ(), location2.getBlockZ());
         int maxZ = Math.max(location1.getBlockZ(), location2.getBlockZ());
-
-        Practice.log(4, "Region: minX" + minX + " maxX" + maxX + " minY" + minY + " maxY" + maxY + " minZ" + minZ + " maxZ" + maxZ);
         
+        //set locations
+        loc1 = new ConfigLocation(minX, minY, minZ);
+        loc2 = new ConfigLocation(maxX, maxY, maxZ);
+    }
+    
+    public Region(ConfigLocation location1, ConfigLocation location2)
+    {
+        //get min and max of x y z of both locations
+        double minX = Math.min(location1.getX(), location2.getX());
+        double maxX = Math.max(location1.getX(), location2.getX());
+        double minY = Math.min(location1.getY(), location2.getY());
+        double maxY = Math.max(location1.getY(), location2.getY());
+        double minZ = Math.min(location1.getZ(), location2.getZ());
+        double maxZ = Math.max(location1.getZ(), location2.getZ());
+    
         //set locations
         loc1 = new ConfigLocation(minX, minY, minZ);
         loc2 = new ConfigLocation(maxX, maxY, maxZ);
@@ -61,5 +78,15 @@ public class Region
     public Location getLocation2(World w)
     {
         return loc2.getLocation(w);
+    }
+    
+    public String serialize()
+    {
+        return loc1.serialize() + ";" + loc2.serialize();
+    }
+    public static Region deserialize(String s)
+    {
+        String[] locs = s.split(";");
+        return new Region(ConfigLocation.deserialize(locs[0]), ConfigLocation.deserialize(locs[1]));
     }
 }

@@ -9,6 +9,7 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.Utils.Region;
 import org.bukkit.Location;
@@ -35,15 +36,21 @@ public class ClearOnDropComponent extends MapComponent
     public ClearOnDropComponent(Map m, Region remove)
     {
         super(m);
+        Practice.log(4, "Drop Component Manually added");
         this.remove = remove;
     }
 
-    public ClearOnDropComponent(Map map){super(map);}
+    public ClearOnDropComponent(Map map)
+    {
+        super(map);
+        Practice.log(4, "Drop Component Automatically added");
+    }
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
-    public void onEvent(DropEvent e)
+    public void onEvent1(DropEvent e)
     {
+        Practice.log(4, "Clearing Drop Area");
         for (Location loc:remove.getLocations(e.getlogic().getWorld()))
         {
             ItemStorage store = new ItemStorage();
@@ -57,9 +64,10 @@ public class ClearOnDropComponent extends MapComponent
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
-    public void onEvent(ResetEvent e)
+    public void onEvent2(ResetEvent e)
     {
         if(stored.size() == 0) return;
+        Practice.log(4, "Reseting Drop Area");
         int i = 0;
         for (Location loc:remove.getLocations(e.getlogic().getWorld()))
         {

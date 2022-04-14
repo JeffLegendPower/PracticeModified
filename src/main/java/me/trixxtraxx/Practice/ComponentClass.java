@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice;
 
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.Kit.KitComponent;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import org.bukkit.entity.Player;
@@ -20,8 +21,9 @@ public abstract class ComponentClass<E extends Component>
     {
         return components;
     }
-    public void addComponent(E comp)
-    {
+    public void setComponents(List<E> comps){components = comps;}
+    public void addComponent(E comp){
+        Practice.log(4, "Adding component " + comp.getClass().getSimpleName());
         components.add(comp);
     }
     public void removeComponent(E comp)
@@ -46,174 +48,106 @@ public abstract class ComponentClass<E extends Component>
         public Component component;
     }
     
-    //Trigger all functions that have the name "onEvent" in this class
-    //then if the event implements cancellable, call the onEventCancel functions is it isCancled, otherwise call the onEventAfter functions
-    public Event triggerEvent(Event e)
+    public <T> T triggerEvent(T e)
     {
-        for(Component comp:components)
+        if(e.getClass() == DropEvent.class) Practice.log(4, "Triggering " + getClass().getSimpleName() + "; checking " + getComponents().size() + " components");
+        List<MethodData> methods = new ArrayList<>();
+        for(Component comp: getComponents())
         {
             Class<?> c = comp.getClass();
             //get all methods that have the annotation @TriggerEvent, and call them in order of their priority from lowest to highest
-            List<MethodData> methods = new ArrayList<>();
-            for(Method m:c.getMethods())
+            if(e.getClass() == DropEvent.class) Practice.log(4, "Checking Component: " + c.getSimpleName());
+            for(Method m: c.getMethods())
             {
-                if(m.isAnnotationPresent(TriggerEvent.class))
+                TriggerEvent eventAnnotation = m.getAnnotation(TriggerEvent.class);
+                if(eventAnnotation != null)
                 {
                     //continue if more then 1 parameter is given or the parameter cant be cast from the event
                     if(m.getParameterCount() != 1 || !m.getParameterTypes()[0].isAssignableFrom(e.getClass())) continue;
-                    TriggerEvent event = m.getAnnotation(TriggerEvent.class);
+                    if(e.getClass() == DropEvent.class) Practice.log(4, "Found drop event method: " + m.getName() + " in " + c.getSimpleName());
                     methods.add(new MethodData()
                     {
                         {
                             method = m;
-                            event = event;
+                            event = eventAnnotation;
                             component = comp;
                         }
                     });
                 }
             }
-            methods.sort((a,b)->a.event.priority()-b.event.priority());
-            for(MethodData method:methods)
-            {
-                if(method.event.state() == TriggerEvent.CancelState.NONE)
-                {
-                    try
-                    {
-                        //invoke but cast the event to the first parameter of the method
-                        method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
-                    }
-                    catch(Exception ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-            if(e instanceof Cancellable)
-            {
-                if(((Cancellable)e).isCancelled())
-                {
-                    for(MethodData method: methods)
-                    {
-                        if(method.event.state() == TriggerEvent.CancelState.ENSURE_CANCEL)
-                        {
-                            try
-                            {
-                                //invoke but cast the event to the first parameter of the method
-                                method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
-                            }
-                            catch(Exception ex)
-                            {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }
-    
-            for(MethodData method: methods)
-            {
-                if(method.event.state() == TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-                {
-                    try
-                    {
-                        //invoke but cast the event to the first parameter of the method
-                        method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
-                    }
-                    catch(Exception ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                }
-            }
         }
-        return e;
-    }
-    public GameEvent triggerEvent(GameEvent e)
-    {
-        for(Component comp:components)
+        methods.sort((a, b) -> a.event.priority() - b.event.priority());
+        for(MethodData method: methods)
         {
-            Class<?> c = comp.getClass();
-            //get all methods that have the annotation @TriggerEvent, and call them in order of their priority from lowest to highest
-            List<MethodData> methods = new ArrayList<>();
-            for(Method m:c.getMethods())
+            if(method.event.state() == TriggerEvent.CancelState.NONE)
             {
-                if(m.isAnnotationPresent(TriggerEvent.class))
+                try
                 {
-                    //continue if more then 1 parameter is given or the parameter cant be cast from the event
-                    if(m.getParameterCount() != 1 || !m.getParameterTypes()[0].isAssignableFrom(e.getClass())) continue;
-                    TriggerEvent event = m.getAnnotation(TriggerEvent.class);
-                    methods.add(new MethodData()
+                    //invoke but cast the event to the first parameter of the method
+                    method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        
+        if(e instanceof Cancellable || e instanceof GameEvent)
+        {
+            if((e instanceof Cancellable && ((Cancellable) e).isCancelled()) || (e instanceof GameEvent && ((GameEvent) e).isCanceled()))
+            {
+                for(MethodData method: methods)
+                {
+                    if(method.event.state() == TriggerEvent.CancelState.ENSURE_CANCEL)
                     {
+                        try
                         {
-                            method = m;
-                            event = event;
-                            component = comp;
+                            //invoke but cast the event to the first parameter of the method
+                            method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
                         }
-                    });
-                }
-            }
-            methods.sort(Comparator.comparingInt((MethodData a) -> a.event.priority()));
-            
-            for(MethodData method:methods)
-            {
-                if(method.event.state() == TriggerEvent.CancelState.NONE)
-                {
-                    try
-                    {
-                        //invoke but cast the event to the first parameter of the method
-                        method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
-                    }
-                    catch(Exception ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-            if(e instanceof Cancellable)
-            {
-                if(((Cancellable)e).isCancelled())
-                {
-                    for(MethodData method: methods)
-                    {
-                        if(method.event.state() == TriggerEvent.CancelState.ENSURE_CANCEL)
+                        catch(Exception ex)
                         {
-                            try
-                            {
-                                //invoke but cast the event to the first parameter of the method
-                                method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
-                            }
-                            catch(Exception ex)
-                            {
-                                ex.printStackTrace();
-                            }
+                            ex.printStackTrace();
                         }
                     }
                 }
+                return e;
             }
+        }
     
-            for(MethodData method: methods)
+        for(MethodData method: methods)
+        {
+            if(method.event.state() == TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
             {
-                if(method.event.state() == TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+                try
                 {
-                    try
-                    {
-                        //invoke but cast the event to the first parameter of the method
-                        method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
-                    }
-                    catch(Exception ex)
-                    {
-                        ex.printStackTrace();
-                    }
+                    //invoke but cast the event to the first parameter of the method
+                    method.method.invoke(method.component, method.method.getParameterTypes()[0].cast(e));
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
                 }
             }
         }
         return e;
     }
-    
     
     public String applyPlaceholders(Player p, String s)
     {
-        for (Component comp : getComponents()) s = comp.applyPlaceholder(p, s);
+        if(s == null) return s;
+        for (Component comp : getComponents())
+        {
+            try
+            {
+                s = comp.applyPlaceholder(p, s);
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
         return s;
     }
     public List<String> applyPlaceholders(Player p, List<String> list)
@@ -221,9 +155,7 @@ public abstract class ComponentClass<E extends Component>
         List<String> newStrings = new ArrayList<>();
         for (String string:list)
         {
-            String s = string;
-            applyPlaceholders(p, s);
-            newStrings.add(s);
+            newStrings.add(applyPlaceholders(p, string));
         }
         return newStrings;
     }

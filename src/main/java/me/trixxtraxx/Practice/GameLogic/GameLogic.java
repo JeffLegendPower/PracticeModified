@@ -31,7 +31,16 @@ public abstract class GameLogic extends ComponentClass<GameComponent>
 
     public String getName(){return name;}
     public int getId(){return id;}
-
+    
+    @Override
+    public <T> T triggerEvent(T e)
+    {
+        Practice.log(5, "Event: " + e.getClass().getSimpleName());
+        getMap().triggerEvent(e);
+        super.triggerEvent(e);
+        getGame().getKit().triggerEvent(e);
+        return e;
+    }
 
     public abstract void start(Game gm, List<Player> players, Map m);
     public abstract void stop(boolean dc);

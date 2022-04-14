@@ -1,7 +1,7 @@
 package me.trixxtraxx.Practice;
 
-import com.google.gson.Gson;
 import com.grinderwolf.swm.api.SlimePlugin;
+import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.PointComponent;
@@ -19,13 +19,16 @@ import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Map.Components.BedLayerComponent;
+import me.trixxtraxx.Practice.Map.Components.BreakRegion;
+import me.trixxtraxx.Practice.Map.Components.ClearOnDropComponent;
 import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
 import me.trixxtraxx.Practice.Map.Editor.MapEditingSession;
 import me.trixxtraxx.Practice.Map.Editor.MapEditorListener;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.CacheListener;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
-import me.trixxtraxx.Practice.Utils.ItemBuilder;
+import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import me.trixxtraxx.Practice.Utils.Region;
 import me.trixxtraxx.Practice.worldloading.SlimeWorldLoader;
 import me.trixxtraxx.Practice.worldloading.WorldLoader;
@@ -204,8 +207,11 @@ public final class Practice extends JavaPlugin
         if(conf.getBoolean("MapEditor.enabled")){
             log(3, "enabled map editor");
             getServer().getPluginManager().registerEvents(new MapEditorListener(), this);
-            //init map editor
-            MapEditingSession.init(conf);
+        }
+        
+        if(conf.getBoolean("ComponentEditor.enabled")){
+            log(3, "enabled component editor");
+            ComponentEditor.init(conf);
         }
     }
 
@@ -227,7 +233,6 @@ public final class Practice extends JavaPlugin
                 Map m = SQLUtil.Instance.getMap("Blockin1");
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                SQLUtil.Instance.applyComponents(m);
                 Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
                 g.getLogic().setName("BlockinPractice");
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
@@ -246,24 +251,24 @@ public final class Practice extends JavaPlugin
                 new DropToBreakTimer(g.getLogic(), Material.ENDER_STONE);
                 new ScoreboardComponent(g.getLogic(),
                         ChatColor.AQUA + "Blockin Practice",
-                        Arrays.asList(
-                                "",
-                                ChatColor.BLUE + "Wool          " + ChatColor.AQUA + "{WOOLTimer}",
-                                ChatColor.BLUE + "Wood         " + ChatColor.AQUA + "{WOODTimer}",
-                                ChatColor.BLUE + "Endstone: " + ChatColor.AQUA + "{ENDER_STONETimer}",
-                                ChatColor.BLUE + "Blockin:     " + ChatColor.AQUA + "{BlockinTimer}",
-                                ChatColor.BLUE + "Finish:       " + ChatColor.AQUA + "{TotalTimer}",
-                                "",
-                                ChatColor.BLUE + "Ranked.fun"
-                        )
+                                "" + "\n" +
+                                ChatColor.BLUE + "Wool:         " + ChatColor.AQUA + "{WOOLTimer}" + "\n" +
+                                ChatColor.BLUE + "Wood:        " + ChatColor.AQUA + "{WOODTimer}" + "\n" +
+                                ChatColor.BLUE + "Endstone: " + ChatColor.AQUA + "{ENDER_STONETimer}" + "\n" +
+                                ChatColor.BLUE + "Blockin:     " + ChatColor.AQUA + "{BlockinTimer}" + "\n" +
+                                ChatColor.BLUE + "Finish:       " + ChatColor.AQUA + "{TotalTimer}" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
-
-                //new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
-                //new BedLayerComponent(m, Material.WOOD, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 2, false);
-                //new BedLayerComponent(m, Material.WOOL, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 3, false);
-                //new NoMapBreakComponent(m);
-                //new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
-                //new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
+                
+                SQLUtil.Instance.applyComponents(m);
+                
+                /*new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
+                new BedLayerComponent(m, Material.WOOD, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 2, false);
+                new BedLayerComponent(m, Material.WOOL, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 3, false);
+                new NoMapBreakComponent(m);
+                new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
+                new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);*/
             }
             else if(args[0].equalsIgnoreCase("Bridge"))
             {
@@ -306,15 +311,13 @@ public final class Practice extends JavaPlugin
                 );
                 new ScoreboardComponent(g.getLogic(),
                         ChatColor.AQUA + "Classic",
-                        Arrays.asList(
-                                "",
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}",
-                                "",
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms",
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms",
-                                "",
-                                ChatColor.BLUE + "Ranked.fun"
-                        )
+                                "" + "\n" +
+                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
+                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
@@ -343,17 +346,15 @@ public final class Practice extends JavaPlugin
                 );
                 new ScoreboardComponent(g.getLogic(),
                         ChatColor.AQUA + "Sumo",
-                        Arrays.asList(
-                                "",
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}",
-                                "",
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms",
-                                "{Points1}",
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms",
-                                "{Points2}",
-                                "",
-                                ChatColor.BLUE + "Ranked.fun"
-                        )
+                                "" + "\n" +
+                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
+                                "{Points1}" + "\n" +
+                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
+                                "{Points2}" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
@@ -417,7 +418,9 @@ public final class Practice extends JavaPlugin
             else if(args[0].equalsIgnoreCase("editMap"))
             {
                 if(!(s instanceof Player)) return false;
-                MapEditingSession.addSession(new MapEditingSession(((Player) s), SQLUtil.Instance.getMap(args[1])));
+                Map m = SQLUtil.Instance.getMap(args[1]);
+                SQLUtil.Instance.applyComponents(m);
+                MapEditingSession.addSession(new MapEditingSession(((Player) s), m));
             }
             else if(args[0].equalsIgnoreCase("openMapComponents"))
             {
@@ -431,7 +434,7 @@ public final class Practice extends JavaPlugin
                 if(!(s instanceof Player)) return false;
                 log(4, "Setting config item: " + args[1] + " to " + ((Player)s).getInventory().getItemInHand());
                 getConfig().set(args[1], ((Player)s).getInventory().getItemInHand());
-                MapEditingSession.init(getConfig());
+                ComponentEditor.init(getConfig());
                 try
                 {
                     getConfig().save("./plugins/"+ getPlugin(Practice.class).getName() +"/config.yml");
