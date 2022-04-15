@@ -89,4 +89,9 @@ public class Region
         String[] locs = s.split(";");
         return new Region(ConfigLocation.deserialize(locs[0]), ConfigLocation.deserialize(locs[1]));
     }
+    
+    @Override
+    public String toString(){
+        return serialize();
+    }
 }

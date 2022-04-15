@@ -61,4 +61,9 @@ public class ConfigLocation
         String[] args = s.split(",");
         return new ConfigLocation(Double.parseDouble(args[0]),Double.parseDouble(args[1]),Double.parseDouble(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
     }
+    
+    @Override
+    public String toString(){
+        return serialize();
+    }
 }

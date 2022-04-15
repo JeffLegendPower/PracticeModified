@@ -68,8 +68,7 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
     }
 
     @Override
-    public String applyPlaceholder(Player p, String s)
-    {
+    public String applyPlaceholder(Player p, String s){
         return s.replace("{BlockinTimer}", getTime());
     }
 

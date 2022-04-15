@@ -44,23 +44,16 @@ public class ComponentEditor
     private int page = 0;
     private Save save;
     
-    private static ItemStack Description;
-    private static ItemStack BackArrow;
-    private static ItemStack NextArrow;
-    private static ItemStack RemoveComponent;
-    private static ItemStack AddComponent;
-    private static ItemStack BackToMenu;
+    private static ItemStack Description = new BetterItem(Material.BOOK).setDisplayName(ChatColor.BLUE + "Description").setLore(ChatColor.AQUA + "Edit Components to modify the\n behavior of your Map/Gamemode/Kit");
+    private static ItemStack BackArrow = new BetterItem(Material.ARROW).setDisplayName(ChatColor.BLUE + "Back").setLore(ChatColor.AQUA + "Go back to the previous page");
+    private static ItemStack NextArrow = new BetterItem(Material.ARROW).setDisplayName(ChatColor.BLUE + "Next").setLore(ChatColor.AQUA + "Go to the next page");
+    private static ItemStack RemoveComponent = new BetterItem(Material.WOOL).NsetDurability((short) 14).setDisplayName(ChatColor.RED + "Remove Component").setLore(ChatColor.AQUA + "Drag a Component to here to remove it");
+    private static ItemStack AddComponent = new BetterItem(Material.WOOL).NsetDurability((short) 5).setDisplayName(ChatColor.GREEN + "Add Component").setLore(ChatColor.AQUA + "Drag a Component to here to add it");
+    private static ItemStack BackToMenu = new BetterItem(Material.BARRIER).setDisplayName(ChatColor.RED + "Back to Menu").setLore(ChatColor.AQUA + "Go back to the Menu");
     private static HashMap<Class<? extends Component>, ItemStack> componentItems = new HashMap<>();
     
     public static void init(FileConfiguration conf)
     {
-        Description = conf.getItemStack("ComponentEditor.DescriptionItem");
-        BackArrow = conf.getItemStack("ComponentEditor.BackArrowItem");
-        NextArrow = conf.getItemStack("ComponentEditor.NextArrowItem");
-        RemoveComponent = conf.getItemStack("ComponentEditor.RemoveComponentItem");
-        AddComponent = conf.getItemStack("ComponentEditor.AddComponentItem");
-        BackToMenu = conf.getItemStack("ComponentEditor.BackToMenuItem");
-        
         componentItems.put(BedLayerComponent.class, new BetterItem(Material.BED));
         componentItems.put(BreakRegion.class, new BetterItem(Material.DIAMOND_PICKAXE));
         componentItems.put(ClearOnDropComponent.class, new BetterItem(Material.BARRIER));
@@ -191,11 +184,9 @@ public class ComponentEditor
                         try
                         {
                             f.setAccessible(true);
-                            //key = Blue, value = aqua
-                            sb.append(ChatColor.BLUE).append(f.getName()).append(": ").append(ChatColor.AQUA).append(f.get(
-                                    components.get(index)).toString()).append("\n");
+                            sb.append(ChatColor.BLUE).append(f.getName()).append(": ").append(ChatColor.AQUA).append(f.get(components.get(index)).toString()).append("\n");
                         }
-                        catch(IllegalArgumentException|IllegalAccessException ex)
+                        catch(Exception ex)
                         {
                             ex.printStackTrace();
                         }
@@ -203,7 +194,8 @@ public class ComponentEditor
                 }
     
                 //append by "\nClick to Edit" + little unicode arrows left and right that is in aqua
-                sb.append("\n\n").append(ChatColor.AQUA).append("\u2190").append(" Click to Edit ").append("\u2192");
+                sb.append("\n\n").append(ChatColor.AQUA).append("\u2190").append(" Right Click to Edit ").append("\u2192");
+                sb.append("\n").append(ChatColor.AQUA).append("\u2191").append(" Left Click to Move ").append("\u2193");
     
                 item.setLore(sb.toString());
                 inv.setItem(i, item);
@@ -310,12 +302,20 @@ public class ComponentEditor
             try
             {
                 c.getConstructor(editing.getClass());
-                items.put(c, componentItems.get(c));
+                BetterItem item = new BetterItem(componentItems.get(c));
+                item.setDisplayName(ChatColor.BLUE + c.getSimpleName());
+                
+                String lore = "";
+                for(Field f : c.getDeclaredFields()){
+                    if(f.isAnnotationPresent(Config.class)){
+                        lore += ChatColor.BLUE + f.getName() + "\n";
+                    }
+                }
+                item.setLore(lore);
+                
+                items.put(c, item);
             }
-            catch(NoSuchMethodException ex)
-            {
-                //do nothing
-            }
+            catch(NoSuchMethodException ex){}
         }
         
         for(int i = 10; i < 44; i++)
@@ -360,24 +360,26 @@ public class ComponentEditor
         };
         for(int i : slots)
         {
-            inv.setItem(i, new BetterItem(Material.STAINED_GLASS_PANE).NsetDurability((short) 7));
+            inv.setItem(i, new BetterItem(Material.STAINED_GLASS_PANE).NsetDurability((short) 7).setDisplayName(" "));
             inv.lock(i);
         }
     }
     
     private class ComponentSetting<E>
     {
+        private Component component;
         private Class<?> c;
         private String name;
         private E value;
         private Config config;
         
-        public ComponentSetting(Class<E> c, String name, Object value, Config config)
+        public ComponentSetting(Component component, Class<E> c, String name, Object value, Config config)
         {
             this.c = c;
             this.name = name;
             this.value = (E) value;
             this.config = config;
+            this.component = component;
         }
         
         public Class<?> Class()
@@ -399,6 +401,21 @@ public class ComponentEditor
         {
             return config;
         }
+        
+        public void setValue(E value)
+        {
+            try
+            {
+                Field f = component.getClass().getDeclaredField(name);
+                f.setAccessible(true);
+                f.set(component, value);
+                this.value = value;
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
     
     private void renderComponent(Component c)
@@ -410,14 +427,13 @@ public class ComponentEditor
         //get all properties with @Config annotation and put them into settings List
         for(Field f : c.getClass().getDeclaredFields())
         {
-            f.setAccessible(true);
-            Practice.log(4, "Field: " + f.getName() + "," + f.isAnnotationPresent(Config.class));
             //check if the field has the Config annotation
             if(f.isAnnotationPresent(Config.class))
             {
                 try
                 {
-                    settings.add(new ComponentSetting(f.getType(), f.getName(), f.get(c), f.getAnnotation(Config.class)));
+                    f.setAccessible(true);
+                    settings.add(new ComponentSetting(c, f.getType(), f.getName(), f.get(c), f.getAnnotation(Config.class)));
                 }
                 catch(IllegalAccessException e)
                 {
@@ -460,26 +476,25 @@ public class ComponentEditor
             //continue in the 2nd and 3rd row of 4
             if(i < 27 && i >= 9) continue;
             //return if settings is not long enough
-            if(settings.size() >= index){break;}
+            if(settings.size() <= index){break;}
             ComponentSetting setting = settings.get(index);
             //ConfigLocation, Region, String, Integer, bool, Material, ItemStack
             BetterItem item = null;
-            inv.lock(i);
             
             //play cool sound
             player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
             
-            if(setting.c == String.class)
+            if(setting.Class() == String.class)
             {
                 item = new BetterItem(Material.SIGN);
                 inv.setItem(i + 9, new BetterItem(Material.BOOK).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + (String) setting.value +ChatColor.AQUA + "\n\n§7Click to change"));
                 inv.OnClickSlot(i + 9, e -> {
                     e.setCancelled(true);
-                   //close inventory and wait for text
+                   //TODO: close inventory and wait for text
                    inv.close();
                 });
             }
-            else if(setting.c == Boolean.class)
+            else if(setting.Class() == boolean.class)
             {
                 item = new BetterItem(Material.STONE_BUTTON);
                 boolean value = (boolean) setting.value;
@@ -489,31 +504,33 @@ public class ComponentEditor
                 inv.OnClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                     //toggle value
-                    boolean newvalue = !value;
+                    boolean newvalue = !((boolean)setting.value);
+                    setting.setValue(newvalue);
                     short newdata = (short) (newvalue ? 10 : 8);
-                    inv.setItem(newIndex, new BetterItem(Material.INK_SACK, 1, data).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(value) +ChatColor.AQUA + "\n\nClick to toggle"));
+                    Practice.log(4, "Boolean value changed " + setting.value + "," + newvalue);
+                    inv.setItem(newIndex, new BetterItem(Material.INK_SACK, 1, newdata).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(newvalue) +ChatColor.AQUA + "\n\nClick to toggle"));
                 });
             }
-            else if(setting.c == Integer.class)
+            else if(setting.Class() == int.class)
             {
                 item = new BetterItem(Material.PAPER);
-                inv.setItem(i + 9, new BetterItem(Material.PAPER).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(setting.value) + "\n\n" + ChatColor.AQUA + "Right click to increase by 1\nLeft click to decrease by 1"));
+                inv.setItem(i + 9, new BetterItem(Material.PAPER, (int) setting.value).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(setting.value) + "\n\n" + ChatColor.AQUA + "Right click to increase by 1\nLeft click to decrease by 1"));
                 int newIndex = i + 9;
                 inv.OnClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                     //increment if right else decrement
                     if(e.getAction() == InventoryAction.PICKUP_HALF)
                     {
-                        setting.value = (int) setting.value + 1;
+                        setting.setValue((int) setting.value + 1);
                     }
                     else
                     {
-                        setting.value = (int) setting.value - 1;
+                        setting.setValue((int) setting.value - 1);
                     }
-                    inv.setItem(newIndex, new BetterItem(Material.PAPER).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(setting.value) + "\n\n" + ChatColor.AQUA + "Right click to increase by 1\nLeft click to decrease by 1"));
+                    inv.setItem(newIndex, new BetterItem(Material.PAPER, (int) setting.value).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(setting.value) + "\n\n" + ChatColor.AQUA + "Right click to increase by 1\nLeft click to decrease by 1"));
                 });
             }
-            else if(setting.c == Material.class)
+            else if(setting.Class() == Material.class)
             {
                 item = new BetterItem(Material.WORKBENCH);
                 Material value = (Material) setting.value;
@@ -531,7 +548,7 @@ public class ComponentEditor
                     if(e.getSlot() == newIndex)
                     {
                         //replace material
-                        setting.value = e.getItem().getType();
+                        setting.setValue( e.getItem().getType());
                         inv.setItem(newIndex,
                                     new BetterItem(value).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(
                                             ChatColor.DARK_BLUE + ((Material) setting.value).name() + "\n\n" + ChatColor.AQUA + "Drag an Item in from your inventory to change it")
@@ -539,7 +556,7 @@ public class ComponentEditor
                     }
                 });
             }
-            else if(setting.c == ItemStack.class)
+            else if(setting.Class() == ItemStack.class)
             {
                 item = new BetterItem(Material.STONE);
                 ItemStack value = (ItemStack) setting.value;
@@ -557,7 +574,7 @@ public class ComponentEditor
                     if(e.getSlot() == newIndex)
                     {
                         //replace Item
-                        setting.value = e.getItem();
+                        setting.setValue(e.getItem());
                         inv.setItem(
                                 newIndex,
                                 new BetterItem(value).setLore(ChatColor.AQUA + "Drag an Item in from your inventory to change it!")
@@ -565,7 +582,7 @@ public class ComponentEditor
                     }
                 });
             }
-            else if(setting.c == ConfigLocation.class)
+            else if(setting.Class() == ConfigLocation.class)
             {
                 item = new BetterItem(Material.EMPTY_MAP);
                 ConfigLocation value = (ConfigLocation) setting.value;
@@ -575,12 +592,19 @@ public class ComponentEditor
                 final int newIndex = i + 9;
                 inv.OnClickSlot(i + 9, e -> {
                     e.setCancelled(true);
-                    //set to current location
-                    setting.value = new ConfigLocation(e.getPlayer().getLocation());
+                    try
+                    {
+                        //set to current location
+                        setting.setValue(new ConfigLocation(e.getPlayer().getLocation()));
+                    }
+                    catch(Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
                     inv.setItem(newIndex, new BetterItem(Material.EMPTY_MAP).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + "X: " + ((ConfigLocation) setting.value).getX() + "\nY: " + ((ConfigLocation) setting.value).getY() + "\nZ: " + ((ConfigLocation) setting.value).getZ() + "\n\n" + ChatColor.AQUA + "Click to set to current location"));
                 });
             }
-            else if(setting.c == Region.class)
+            else if(setting.Class() == Region.class)
             {
                 item = new BetterItem(Material.MAP);
                 Region value = (Region) setting.value;
@@ -592,15 +616,21 @@ public class ComponentEditor
                 final int newIndex = i + 9;
                 inv.OnClickSlot(i + 9, e -> {
                     e.setCancelled(true);
-                    if(e.getAction() == InventoryAction.PICKUP_HALF)
+                    try
                     {
-                        //set 1st location
-                        setting.value = new Region(player.getLocation(),((Region) setting.value).getLocation2(player.getWorld()));
+                        if(e.getAction() == InventoryAction.PICKUP_HALF)
+                        {
+                            //set 1st location
+                            setting.setValue(new Region(player.getLocation(), ((Region) setting.value).getLocation2(player.getWorld())));
+                        }
+                        else
+                        {
+                            setting.setValue(new Region(((Region) setting.value).getLocation1(player.getWorld()), player.getLocation()));
+                        }
                     }
-                    else
+                    catch(Exception ex)
                     {
-                        //set 2nd location
-                        setting.value = new Region(((Region) setting.value).getLocation1(player.getWorld()),player.getLocation());
+                        ex.printStackTrace();
                     }
                     //update Item
                     Location newLoc1 = ((Region) setting.value).getLocation1(player.getWorld());
@@ -608,8 +638,12 @@ public class ComponentEditor
                     inv.setItem(newIndex, new BetterItem(Material.MAP).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + "X1: " + newLoc1.getBlockX() + "\nY1: " + newLoc1.getBlockY() + "\nZ1: " + newLoc1.getBlockZ() + "\n\nX2: " + newLoc2.getBlockX() + "\nY2: " + newLoc2.getBlockY() + "\nZ2: " + newLoc2.getBlockZ() + "\n\n" + ChatColor.AQUA + "Left click to set 1st location\nRight click to set 2nd location"));
                 });
             }
+            
             if(item != null) item.setDisplayName(ChatColor.DARK_BLUE + setting.getName()).setLore(ChatColor.AQUA + setting.getConfig().description());
+            else Practice.log(4, "Item is null for " + setting.getName());
             inv.setItem(i, item);
+            inv.lock(i);
+            index++;
         }
     }
     
