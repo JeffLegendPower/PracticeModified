@@ -19,8 +19,7 @@ public class MapEditingSession
     private Map map;
     private World world;
 
-    public MapEditingSession(Player player, Map m)
-    {
+    public MapEditingSession(Player player, Map m){
         this.player = player;
         this.map = m;
         world = m.load();
@@ -28,9 +27,11 @@ public class MapEditingSession
     }
 
     public static void addSession(MapEditingSession session) {sessions.add(session);}
-    public static void removeSession(MapEditingSession session) {sessions.remove(session);}
-    public static MapEditingSession getSession(Player player)
-    {
+    public static void removeSession(MapEditingSession session){
+        sessions.remove(session);
+        session.exit(true);
+    }
+    public static MapEditingSession getSession(Player player){
         for (MapEditingSession session : sessions)
         {
             if (session.getPlayer() == player)
@@ -47,8 +48,7 @@ public class MapEditingSession
 
     public World getWorld() {return world;}
 
-    public void exit(boolean save)
-    {
+    public void exit(boolean save){
         map.unload(true);
         if (save)
         {
@@ -60,8 +60,7 @@ public class MapEditingSession
         removeSession(this);
     }
     
-    public void openComponentGui()
-    {
+    public void openComponentGui(){
         List<Component> components = new ArrayList<>();
         for(MapComponent mc : map.getComponents())
         {

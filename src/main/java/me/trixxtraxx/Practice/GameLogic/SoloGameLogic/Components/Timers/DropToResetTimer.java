@@ -9,9 +9,9 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
 
-public class DropToResetTimer extends TimerComponent implements IStatComponent
+public class DropToResetTimer extends TimerComponent
 {
-
+    
     public DropToResetTimer(GameLogic logic)
     {
         super(logic);
@@ -19,35 +19,22 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
     
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onDrop(DropEvent e){
+    public void onDrop(DropEvent e)
+    {
         reset();
         start();
     }
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onReset(ResetEvent e){
+    public void onReset(ResetEvent e)
+    {
         stop();
         if(!e.wasSuccess()) reset();
     }
-
+    
     @Override
     public String applyPlaceholder(Player p, String s)
     {
         return s.replace("{TotalTimer}", getTime());
-    }
-
-    @Override
-    public String getStat(Player p) {
-        return null;
-    }
-
-    @Override
-    public String getSQLName() {
-        return null;
-    }
-
-    @Override
-    public String getSQLType() {
-        return null;
     }
 }

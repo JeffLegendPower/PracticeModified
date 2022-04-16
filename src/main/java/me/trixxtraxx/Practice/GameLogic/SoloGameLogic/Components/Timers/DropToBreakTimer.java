@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 
-public class DropToBreakTimer extends TimerComponent implements IStatComponent
+public class DropToBreakTimer extends TimerComponent
 {
     private Material mat;
     public DropToBreakTimer(GameLogic logic, Material mat)
@@ -44,20 +44,5 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
     public String applyPlaceholder(Player p, String s)
     {
         return s.replace("{" + mat + "Timer}", getTime());
-    }
-
-    @Override
-    public String getStat(Player p) {
-        return null;
-    }
-
-    @Override
-    public String getSQLName() {
-        return null;
-    }
-
-    @Override
-    public String getSQLType() {
-        return null;
     }
 }

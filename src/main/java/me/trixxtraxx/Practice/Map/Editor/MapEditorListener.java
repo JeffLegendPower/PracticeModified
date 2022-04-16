@@ -18,6 +18,4 @@ public class MapEditorListener implements Listener
     {
         MapEditingSession.removeSession(MapEditingSession.getSession(event.getPlayer()));
     }
-
-
 }
