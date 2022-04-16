@@ -729,7 +729,7 @@ public class SQLUtil
                 for(IStatComponent.SQLProperty sql: comp.getSQL())
                 {
                     if(sql.isPerGame()) continue;
-                    statement.addBatch("ALTER TABLE `" + logic.getName() + "Stats`\n" + "    ADD COLUMN IF NOT EXISTS `" + sql.getName() + "` " + sql.getType() + " NOT NULL;");
+                    statement.addBatch("ALTER TABLE `" + logic.getName() + "Stats`\n" + "    ADD COLUMN IF NOT EXISTS `" + sql.getName() + "` " + sql.getType() + " NOT NULL DEFAULT `" + sql.getDefaultValue() + "`;");
                 }
             }
     
@@ -752,7 +752,6 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-    
     public void storeStats(GameLogic logic)
     {
         try

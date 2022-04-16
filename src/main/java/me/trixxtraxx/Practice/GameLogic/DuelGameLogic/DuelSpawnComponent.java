@@ -23,6 +23,25 @@ public class DuelSpawnComponent implements ISpawnComponent
         public float yaw;
         public float pitch;
     }
+    
+    public DuelSpawnComponent(){}
+    
+    public DuelSpawnComponent(double x1, double y1, double z1, float yaw1, float pitch1, double x2, double y2, double z2, float yaw2, float pitch2)
+    {
+        settings = new DuelSettings[2];
+        settings[0] = new DuelSettings();
+        settings[0].x = x1;
+        settings[0].y = y1;
+        settings[0].z = z1;
+        settings[0].yaw = yaw1;
+        settings[0].pitch = pitch1;
+        settings[1] = new DuelSettings();
+        settings[1].x = x2;
+        settings[1].y = y2;
+        settings[1].z = z2;
+        settings[1].yaw = yaw2;
+        settings[1].pitch = pitch2;
+    }
 
     @Override
     public Location getSpawn(GameLogic logic, Player p)

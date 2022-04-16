@@ -29,7 +29,7 @@ public class MapEditingSession
     public static void addSession(MapEditingSession session) {sessions.add(session);}
     public static void removeSession(MapEditingSession session){
         sessions.remove(session);
-        session.exit(true);
+        if(session != null) session.exit(true);
     }
     public static MapEditingSession getSession(Player player){
         for (MapEditingSession session : sessions)
