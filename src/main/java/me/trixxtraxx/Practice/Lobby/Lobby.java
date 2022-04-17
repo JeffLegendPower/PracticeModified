@@ -12,7 +12,7 @@ public class Lobby
     private static List<Lobby> lobbies = new ArrayList<>();
     private String world;
     private String name;
-    private int ratedPlayers;
+    private int maxRatedPlayers;
     private boolean blockBreak;
     private boolean blockPlace;
     private boolean blockDamage;
@@ -24,7 +24,7 @@ public class Lobby
     {
         this.world = section.getString("world");
         this.name = section.getString("name");
-        this.ratedPlayers = section.getInt("ratedPlayers");
+        this.maxRatedPlayers = section.getInt("maxRatedPlayers");
         this.blockBreak = section.getBoolean("BlockBreak");
         this.blockPlace = section.getBoolean("BlockPlace");
         this.blockDamage = section.getBoolean("BlockDamage");
@@ -35,7 +35,7 @@ public class Lobby
     
     public String getWorld(){return world;}
     public String getName(){return name;}
-    public int getRatedPlayers(){return ratedPlayers;}
+    public int getMaxRatedPlayers(){return maxRatedPlayers;}
     public boolean isBreakBlocked(){return blockBreak;}
     public boolean isPlaceBlocked(){return blockPlace;}
     public boolean isDamageBlocked(){return blockDamage;}
