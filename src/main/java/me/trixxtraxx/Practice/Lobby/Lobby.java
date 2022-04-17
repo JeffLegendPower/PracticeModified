@@ -22,14 +22,14 @@ public class Lobby
     
     public Lobby(ConfigurationSection section)
     {
-        this.world = section.getString("world");
-        this.name = section.getString("name");
-        this.maxRatedPlayers = section.getInt("maxRatedPlayers");
-        this.blockBreak = section.getBoolean("BlockBreak");
-        this.blockPlace = section.getBoolean("BlockPlace");
-        this.blockDamage = section.getBoolean("BlockDamage");
-        this.blockEntityDamage = section.getBoolean("BlockEntityDamage");
-        this.blockedInventories = section.getStringList("blockedInventories");
+        this.world = section.getString("Lobby.world");
+        this.name = section.getString("Lobby.name");
+        this.maxRatedPlayers = section.getInt("Lobby.maxRatedPlayers");
+        this.blockBreak = section.getBoolean("Lobby.BlockBreak");
+        this.blockPlace = section.getBoolean("Lobby.BlockPlace");
+        this.blockDamage = section.getBoolean("Lobby.BlockDamage");
+        this.blockEntityDamage = section.getBoolean("Lobby.BlockEntityDamage");
+        this.blockedInventories = section.getStringList("Lobby.blockedInventories");
         lobbies.add(this);
     }
     
