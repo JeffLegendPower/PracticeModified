@@ -402,7 +402,7 @@ public class SQLUtil
     
     
             Statement s = con.createStatement();
-            for(GameComponent comp: p.getComponents())
+            for(PlayerComponent comp: p.getComponents())
             {
                 s.addBatch("INSERT INTO PlayerComponent (Player_ID, Class, Data) VALUES (" + p.getPlayerId() + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
             }

@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.SQL;
 
+import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Practice;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PracticePlayer
+public class PracticePlayer extends ComponentClass<PlayerComponent>
 {
     private static List<PracticePlayer> players = new ArrayList<>();
     private Player player;
@@ -53,31 +54,6 @@ public class PracticePlayer
     public Kit getKit(){return kit;}
     public int getPlayerId(){return playerId;}
     public HashMap<Integer, Integer> getCustomOrder(int kitId){return customKitOrders.get(kitId);}
-
-    
-    protected List<GameComponent> components = new ArrayList<>();
-    public List<GameComponent> getComponents()
-    {
-        return components;
-    }
-    public void addComponent(GameComponent comp)
-    {
-        components.add(comp);
-    }
-    public void removeComponent(GameComponent comp)
-    {
-        components.remove(comp);
-    }
-    public List<GameComponent> getComponents(Class<?> c)
-    {
-        List<GameComponent> comps = new ArrayList<>();
-        for (GameComponent comp:components)
-        {
-            if(c.isInstance(comp)) comps.add(comp);
-        }
-        return comps;
-    }
-    
     
     public void saveKit()
     {
