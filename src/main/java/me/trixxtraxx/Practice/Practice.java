@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice;
 
 import com.grinderwolf.swm.api.SlimePlugin;
 import me.TrixxTraxx.Linq.List;
+import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
@@ -222,6 +223,8 @@ public final class Practice extends JavaPlugin
             log(3, "enabled component editor");
             ComponentEditor.init(conf);
         }
+    
+        BungeeUtil.getInstance().init(conf.getString("Bungee.Identifier"), conf.getInt("Bungee.maxRatedPlayers"));
     }
 
     @Override

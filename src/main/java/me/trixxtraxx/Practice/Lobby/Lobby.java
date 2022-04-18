@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Lobby;
 
+import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.*;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.MenuItem;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
@@ -77,9 +78,11 @@ public class Lobby
     public void addPlayer(PracticePlayer player){
         players.add(player);
         setInv(player);
+        BungeeUtil.getInstance().update();
     }
     public void removePlayer(PracticePlayer player){
         players.remove(player);
+        BungeeUtil.getInstance().update();
     }
     private void setInv(PracticePlayer player){
         PlayerInventory inv = player.getPlayer().getInventory();

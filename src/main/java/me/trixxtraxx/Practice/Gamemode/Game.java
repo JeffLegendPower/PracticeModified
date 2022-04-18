@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Gamemode;
 
+import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Map;
@@ -31,6 +32,7 @@ public class Game
             p.getEnderChest().clear();
         }
         logic.start(this, players, m);
+        BungeeUtil.getInstance().update();
     }
 
     public GameLogic getLogic() {return logic;}
@@ -60,4 +62,6 @@ public class Game
         }
         return null;
     }
+    
+    public static List<Game> getGames() {return games;}
 }

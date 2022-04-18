@@ -69,10 +69,7 @@ public class SoloGameLogic extends GameLogic
     public Map getMap() {return map;}
 
     @Override
-    public void applyData(String s)
-    {
-
-    }
+    public void applyData(String s){}
 
     public String getData() {return "{}";}
 
