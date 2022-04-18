@@ -17,7 +17,7 @@ import org.bukkit.event.Event;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public abstract class GameLogic extends ComponentClass<GameComponent>
 {

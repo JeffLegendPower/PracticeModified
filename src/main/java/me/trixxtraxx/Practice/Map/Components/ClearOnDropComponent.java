@@ -19,13 +19,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class ClearOnDropComponent extends MapComponent
 {
     @Config
     private Region remove;
-    private List<ItemStorage> stored = new ArrayList<>();
+    private List<ItemStorage> stored = new List<>();
 
     private class ItemStorage
     {

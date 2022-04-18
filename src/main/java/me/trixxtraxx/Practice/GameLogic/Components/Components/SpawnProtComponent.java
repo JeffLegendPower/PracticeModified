@@ -18,7 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class SpawnProtComponent extends GameComponent
 {
@@ -30,7 +30,7 @@ public class SpawnProtComponent extends GameComponent
     private String starting;
 
     private HashMap<Player, Location> prot = new HashMap<>();
-    private List<Player> tped = new ArrayList<>();
+    private List<Player> tped = new List<>();
 
     public SpawnProtComponent(GameLogic logic, int spawnProt, String remaining, String starting)
     {

@@ -19,7 +19,7 @@ import java.lang.reflect.Constructor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class SQLUtil
 {
@@ -494,7 +494,7 @@ public class SQLUtil
     
             ps.close();
             res.close();
-            List<ItemStack> stacks = new ArrayList<>();
+            List<ItemStack> stacks = new List<>();
             for(ConfigItem i: items)
             {
                 java.util.Map<String, Object> map = new HashMap<>();

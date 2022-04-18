@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class DuelGameLogic extends GameLogic
 {
@@ -64,7 +64,7 @@ public class DuelGameLogic extends GameLogic
     @Override
     public List<Player> getPlayers()
     {
-        return Arrays.asList(p1,p2);
+        return new List<>(p1,p2);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class DuelGameLogic extends GameLogic
     @Override
     public void applyData(String s)
     {
-
+    
     }
 
     public String getData() {return "{}";}

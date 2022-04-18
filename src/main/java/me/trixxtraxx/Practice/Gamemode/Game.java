@@ -8,11 +8,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class Game
 {
-    private static List<Game> games = new ArrayList<>();
+    private static List<Game> games = new List<>();
     private GameLogic logic;
     private Kit kit;
 

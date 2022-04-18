@@ -39,7 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -167,7 +167,7 @@ public class FastBoard {
     private final Player player;
     private final String id;
 
-    private final List<String> lines = new ArrayList<>();
+    private final List<String> lines = new List<>();
     private String title = ChatColor.RESET.toString();
 
     private boolean deleted = false;
@@ -229,7 +229,7 @@ public class FastBoard {
      * @return the scoreboard lines
      */
     public List<String> getLines() {
-        return new ArrayList<>(this.lines);
+        return new List<>(this.lines);
     }
 
     /**
@@ -263,7 +263,7 @@ public class FastBoard {
                 return;
             }
 
-            List<String> newLines = new ArrayList<>(this.lines);
+            List<String> newLines = new List<>(this.lines);
 
             if (line > size()) {
                 for (int i = size(); i < line; i++) {
@@ -291,7 +291,7 @@ public class FastBoard {
             return;
         }
 
-        List<String> newLines = new ArrayList<>(this.lines);
+        List<String> newLines = new List<>(this.lines);
         newLines.remove(line);
         updateLines(newLines);
     }
@@ -328,7 +328,7 @@ public class FastBoard {
             }
         }
 
-        List<String> oldLines = new ArrayList<>(this.lines);
+        List<String> oldLines = new List<>(this.lines);
         this.lines.clear();
         this.lines.addAll(lines);
 
@@ -336,7 +336,7 @@ public class FastBoard {
 
         try {
             if (oldLines.size() != linesSize) {
-                List<String> oldLinesCopy = new ArrayList<>(oldLines);
+                List<String> oldLinesCopy = new List<>(oldLines);
 
                 if (oldLines.size() > linesSize) {
                     for (int i = oldLinesCopy.size(); i > linesSize; i--) {

@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class BedLayerComponent extends MapComponent implements ISettingsComponent
 {
@@ -90,7 +90,7 @@ public class BedLayerComponent extends MapComponent implements ISettingsComponen
 
     private List<Block> getBlocks(Block b, BlockFace[] faces)
     {
-        List<Block> blocks = new ArrayList<>();
+        List<Block> blocks = new List<>();
         for(int i1 = 0; i1 <= layer; i1++)
         {
             for (int i2 = 0; i2 <= layer - i1; i2++)

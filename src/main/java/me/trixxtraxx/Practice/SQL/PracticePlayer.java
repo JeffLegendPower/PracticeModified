@@ -1,5 +1,7 @@
 package me.trixxtraxx.Practice.SQL;
 
+import com.google.gson.Gson;
+import me.TrixxTraxx.RestCommunicator.PluginAPI.MessageProvider;
 import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
@@ -10,56 +12,31 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class PracticePlayer extends ComponentClass<PlayerComponent>
 {
-    private static List<PracticePlayer> players = new ArrayList<>();
+    private static List<PracticePlayer> players = new List<>();
     private Player player;
     private int playerId;
     private HashMap<Integer, HashMap<Integer, Integer>> customKitOrders;
     private Kit kit;
-
-    public PracticePlayer(int playerId, Player p, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, Kit kit)
-    {
+    
+    public PracticePlayer(int playerId, Player p, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, Kit kit){
         player = p;
         this.customKitOrders = customKitOrders;
         this.playerId = playerId;
         this.kit = kit;
     }
-
-    public static PracticePlayer generatePlayer(Player p)
-    {
-        PracticePlayer prac = SQLUtil.Instance.getPlayer(p);
-        players.add(prac);
-        return prac;
-    }
-
-    public static PracticePlayer removePlayer(Player p)
-    {
-        PracticePlayer prac = getPlayer(p);
-        players.remove(prac);
-        return prac;
-    }
-
-    public static PracticePlayer getPlayer(Player p)
-    {
-        for (PracticePlayer prac:players)
-        {
-            if(prac.player == p) return prac;
-        }
-        return null;
-    }
-
+    
+    public Player getPlayer(){return player;}
     public Kit getKit(){return kit;}
     public int getPlayerId(){return playerId;}
     public HashMap<Integer, Integer> getCustomOrder(int kitId){return customKitOrders.get(kitId);}
-    
-    public void saveKit()
-    {
+    public void saveKit(){
         PlayerInventory inv = player.getInventory();
         HashMap<Integer, Integer> defaultOrder = new HashMap<>();
-        List<ItemStack> items = new ArrayList<>();
+        List<ItemStack> items = new List<>();
         for(int i = 0; i < 40; i++)
         {
             ItemStack item = inv.getItem(i);
@@ -80,5 +57,48 @@ public class PracticePlayer extends ComponentClass<PlayerComponent>
         
         SQLUtil.Instance.updateKit(kit);
         SQLUtil.Instance.updatePlayerKit(this, kit);
+    }
+    public void openBungeeInventory(String inv){
+        MessageProvider.SendMessage("PracticeGui", new Gson().toJson(new OpenGuiRequest(player, inv)));
+    }
+    public void executeBungeeCommand(String command){
+        MessageProvider.SendMessage("ExecuteCommand", new Gson().toJson(new ExecuteCommand(player, command)));
+    }
+    
+    private class OpenGuiRequest{
+        private String player;
+        private String gui;
+        public OpenGuiRequest(Player p, String inv)
+        {
+            player = p.getName();
+            gui = inv;
+        }
+    }
+    private class ExecuteCommand{
+        private String player;
+        private String command;
+        public ExecuteCommand(Player p, String cmd)
+        {
+            player = p.getName();
+            command = cmd;
+        }
+    }
+    
+    public static PracticePlayer generatePlayer(Player p){
+        PracticePlayer prac = SQLUtil.Instance.getPlayer(p);
+        players.add(prac);
+        return prac;
+    }
+    public static PracticePlayer removePlayer(Player p){
+        PracticePlayer prac = getPlayer(p);
+        players.remove(prac);
+        return prac;
+    }
+    public static PracticePlayer getPlayer(Player p){
+        for (PracticePlayer prac:players)
+        {
+            if(prac.player == p) return prac;
+        }
+        return null;
     }
 }

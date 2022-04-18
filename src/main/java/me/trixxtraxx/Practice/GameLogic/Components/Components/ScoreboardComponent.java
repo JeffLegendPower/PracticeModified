@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 import java.util.Map;
 
 public class ScoreboardComponent extends GameComponent
@@ -46,7 +46,7 @@ public class ScoreboardComponent extends GameComponent
         {
             FastBoard board = new FastBoard(p);
             board.updateTitle(e.getlogic().applyPlaceholders(p,title));
-            board.updateLines(e.getlogic().applyPlaceholders(p, Arrays.asList(lines.split("\n"))));
+            board.updateLines(e.getlogic().applyPlaceholders(p, new List<>(lines.split("\n"))));
             boards.put(p, board);
         }
         run = new BukkitRunnable()
@@ -57,7 +57,7 @@ public class ScoreboardComponent extends GameComponent
                 for (Map.Entry<Player, FastBoard> entry:boards.entrySet())
                 {
                     entry.getValue().updateTitle(e.getlogic().applyPlaceholders(entry.getKey(),title));
-                    entry.getValue().updateLines(e.getlogic().applyPlaceholders(entry.getKey(),Arrays.asList(lines.split("\n"))));
+                    entry.getValue().updateLines(e.getlogic().applyPlaceholders(entry.getKey(),new List<>(lines.split("\n"))));
                 }
             }
         };

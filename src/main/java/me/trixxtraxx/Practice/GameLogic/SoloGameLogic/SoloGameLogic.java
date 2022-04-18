@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class SoloGameLogic extends GameLogic
 {
@@ -59,7 +59,7 @@ public class SoloGameLogic extends GameLogic
     @Override
     public List<Player> getPlayers()
     {
-        return Collections.singletonList(player);
+        return new List<>(player);
     }
 
     @Override

@@ -14,7 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 import java.util.Map;
 
 public class Kit extends ComponentClass<KitComponent>
@@ -54,7 +54,7 @@ public class Kit extends ComponentClass<KitComponent>
     public String getName(){return name;}
     public String getItems()
     {
-        List<ConfigItem> Items = new ArrayList<>();
+        List<ConfigItem> Items = new List<>();
         for (ItemStack i:items)
         {
             ConfigItem i2 = new ConfigItem();
@@ -83,7 +83,7 @@ public class Kit extends ComponentClass<KitComponent>
         PracticePlayer prac = PracticePlayer.getPlayer(p);
         if(prac.getCustomOrder(sqlId) != null) order = prac.getCustomOrder(sqlId);
 
-        List<Integer> indexes = new ArrayList<>();
+        List<Integer> indexes = new List<>();
         for (int i = 0; i < items.size(); i++) indexes.add(i);
 
         //Practice.log(4, "Default Order: " + order.size() + "," + order.entrySet() + "," + (order.size() == defaultOrder.size()) );

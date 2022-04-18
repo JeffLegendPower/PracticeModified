@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class DropItemComponent extends GameComponent
 {

@@ -12,11 +12,11 @@ import org.bukkit.event.Event;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public abstract class ComponentClass<E extends Component>
 {
-    protected List<E> components = new ArrayList<>();
+    protected List<E> components = new List<>();
     public List<E> getComponents()
     {
         return components;
@@ -33,7 +33,7 @@ public abstract class ComponentClass<E extends Component>
     
     public List<E> getComponents(Class<?> c)
     {
-        List<E> comps = new ArrayList<>();
+        List<E> comps = new List<>();
         for (E comp:components)
         {
             if(c.isInstance(comp)) comps.add(comp);
@@ -51,7 +51,7 @@ public abstract class ComponentClass<E extends Component>
     public <T> T triggerEvent(T e)
     {
         if(e.getClass() == DropEvent.class) Practice.log(4, "Triggering " + getClass().getSimpleName() + "; checking " + getComponents().size() + " components");
-        List<MethodData> methods = new ArrayList<>();
+        List<MethodData> methods = new List<>();
         for(Component comp: getComponents())
         {
             Class<?> c = comp.getClass();
@@ -152,7 +152,7 @@ public abstract class ComponentClass<E extends Component>
     }
     public List<String> applyPlaceholders(Player p, List<String> list)
     {
-        List<String> newStrings = new ArrayList<>();
+        List<String> newStrings = new List<>();
         for (String string:list)
         {
             newStrings.add(applyPlaceholders(p, string));

@@ -15,7 +15,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class DropToBlockinTimer extends TimerComponent
 {
@@ -27,11 +27,11 @@ public class DropToBlockinTimer extends TimerComponent
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onBlockPlace(BlockPlaceEvent e)
     {
-        List<Block> checked = new ArrayList<>();
+        List<Block> checked = new List<>();
 
         Block source = e.getPlayer().getEyeLocation().getBlock();
 
-        List<Block> current = new ArrayList<>();
+        List<Block> current = new List<>();
         current.add(source);
 
         int depth = 1;
@@ -39,7 +39,7 @@ public class DropToBlockinTimer extends TimerComponent
         {
             if(current.isEmpty()) stop();
 
-            List<Block> copy = new ArrayList<>(current);
+            List<Block> copy = new List<>(current);
             current.clear();
             for (Block b:copy)
             {

@@ -1,15 +1,17 @@
 package me.trixxtraxx.Practice.Lobby;
 
+import me.trixxtraxx.Practice.Lobby.ItemTypes.*;
+import me.trixxtraxx.Practice.Lobby.ItemTypes.MenuItem;
+import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.inventory.PlayerInventory;
 
-import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class Lobby
 {
-    private static List<Lobby> lobbies = new ArrayList<>();
+    private static List<Lobby> lobbies = new List<>();
     private String world;
     private String name;
     private int maxRatedPlayers;
@@ -17,19 +19,47 @@ public class Lobby
     private boolean blockPlace;
     private boolean blockDamage;
     private boolean blockEntityDamage;
+    private boolean blockInvMove;
     private List<String> blockedInventories;
+    private List<PracticePlayer> players = new List<>();
+    private List<LobbyItem> items = new List<>();
     
-    
-    public Lobby(ConfigurationSection section)
-    {
-        this.world = section.getString("Lobby.world");
-        this.name = section.getString("Lobby.name");
-        this.maxRatedPlayers = section.getInt("Lobby.maxRatedPlayers");
-        this.blockBreak = section.getBoolean("Lobby.BlockBreak");
-        this.blockPlace = section.getBoolean("Lobby.BlockPlace");
-        this.blockDamage = section.getBoolean("Lobby.BlockDamage");
-        this.blockEntityDamage = section.getBoolean("Lobby.BlockEntityDamage");
-        this.blockedInventories = section.getStringList("Lobby.blockedInventories");
+    public Lobby(ConfigurationSection section){
+        this.world = section.getString("world");
+        this.name = section.getString("name");
+        this.maxRatedPlayers = section.getInt("maxRatedPlayers");
+        this.blockBreak = section.getBoolean("BlockBreak");
+        this.blockPlace = section.getBoolean("BlockPlace");
+        this.blockDamage = section.getBoolean("BlockDamage");
+        this.blockEntityDamage = section.getBoolean("BlockEntityDamage");
+        this.blockedInventories = new List<>(section.getStringList("blockedInventories"));
+        this.blockInvMove = section.getBoolean("BlockInvMove");
+        ConfigurationSection ItemSec = section.getConfigurationSection("Items");
+        for(String key : ItemSec.getKeys(false))
+        {
+            ConfigurationSection itemSec = ItemSec.getConfigurationSection(key);
+            String Type = itemSec.getString("Type");
+            if("OPEN_MENU".equals(Type))
+            {
+                items.add(new MenuItem(itemSec));
+            }
+            else if("CUSTOM_GAMEMODE".equals(Type))
+            {
+                items.add(new CustomGamemodeItem(itemSec));
+            }
+            else if("STATS".equals(Type))
+            {
+                items.add(new StatsItem(itemSec));
+            }
+            else if("PARTIES".equals(Type))
+            {
+                items.add(new PartyItem(itemSec));
+            }
+            else if("EVENTS".equals(Type))
+            {
+                items.add(new EventItem(itemSec));
+            }
+        }
         lobbies.add(this);
     }
     
@@ -40,13 +70,31 @@ public class Lobby
     public boolean isPlaceBlocked(){return blockPlace;}
     public boolean isDamageBlocked(){return blockDamage;}
     public boolean isEntityDamageBlocked(){return blockEntityDamage;}
+    public boolean isInvMoveBlocked(){return blockInvMove;}
     public List<String> getBlockedInventories(){return blockedInventories;}
-    
+    public LobbyItem getItem(int slot){return items.find(x -> x.getSlot() == slot);}
+    public List<PracticePlayer> getPlayers(){return players;}
+    public void addPlayer(PracticePlayer player){
+        players.add(player);
+        setInv(player);
+    }
+    public void removePlayer(PracticePlayer player){
+        players.remove(player);
+    }
+    private void setInv(PracticePlayer player){
+        PlayerInventory inv = player.getPlayer().getInventory();
+        inv.clear();
+        for(LobbyItem item : items)
+        {
+            inv.setItem(item.getSlot(), item.getItem());
+            player.getPlayer().sendMessage("Setting Item: " + item.getSlot() + " - " + item.getItem());
+        }
+    }
     
     public static List<Lobby> getLobbies(){return lobbies;}
     public static Lobby get(World world){
         for(Lobby lobby : lobbies){
-            if(lobby.getWorld().contentEquals(world.getName()))
+            if(lobby.getWorld().equalsIgnoreCase(world.getName()))
             {
                 return lobby;
             }

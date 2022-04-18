@@ -30,12 +30,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 //this is a class that takes in a player and a List of Components and lets a Player edit them in a Minecraft Inventory GUI.
 public class ComponentEditor
 {
-    private static List<ComponentEditor> editors = new ArrayList<>();
+    private static List<ComponentEditor> editors = new List<>();
     private Player player;
     private Object editing;
     private List<Component> components;
@@ -423,7 +423,7 @@ public class ComponentEditor
         page = 0;
         gui.clear();
         final BetterInv inv = gui;
-        List<ComponentSetting> settings = new ArrayList<>();
+        List<ComponentSetting> settings = new List<>();
         //get all properties with @Config annotation and put them into settings List
         for(Field f : c.getClass().getDeclaredFields())
         {

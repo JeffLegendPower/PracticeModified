@@ -13,11 +13,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class MapResetComponent extends GameComponent
 {
-    private List<BlockStorage> blocks = new ArrayList<>();
+    private List<BlockStorage> blocks = new List<>();
 
     private class BlockStorage
     {

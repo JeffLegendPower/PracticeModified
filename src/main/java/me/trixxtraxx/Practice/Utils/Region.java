@@ -8,7 +8,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 import java.util.Map;
 
 public class Region
@@ -56,7 +56,7 @@ public class Region
 
     public List<Location> getLocations(World w)
     {
-        List<Location> locs = new ArrayList<>();
+        List<Location> locs = new List<>();
         for (int x = loc1.getLocation(w).getBlockX(); x < loc2.getLocation(w).getBlockX(); x++)
         {
             for (int y = loc1.getLocation(w).getBlockY(); y < loc2.getLocation(w).getBlockY(); y++)

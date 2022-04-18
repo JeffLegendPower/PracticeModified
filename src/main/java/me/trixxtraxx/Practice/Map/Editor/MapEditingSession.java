@@ -10,11 +10,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class MapEditingSession
 {
-    private static List<MapEditingSession> sessions = new ArrayList<>();
+    private static List<MapEditingSession> sessions = new List<>();
     private Player player;
     private Map map;
     private World world;
@@ -47,7 +47,6 @@ public class MapEditingSession
     public Map getMap() {return map;}
 
     public World getWorld() {return world;}
-
     public void exit(boolean save){
         map.unload(true);
         if (save)
@@ -59,16 +58,15 @@ public class MapEditingSession
         player.teleport(Bukkit.getWorld("world").getSpawnLocation());
         removeSession(this);
     }
-    
     public void openComponentGui(){
-        List<Component> components = new ArrayList<>();
+        List<Component> components = new List<>();
         for(MapComponent mc : map.getComponents())
         {
             components.add(mc);
         }
         new ComponentEditor(player, components, comps ->
         {
-            List<MapComponent> newcomps = new ArrayList<>();
+            List<MapComponent> newcomps = new List<>();
             for(Component c : comps)
             {
                 newcomps.add((MapComponent) c);

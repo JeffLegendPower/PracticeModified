@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class KitEditor
 {
     private static KitEditor instance;
     private Region region;
-    private List<Player> players = new ArrayList<>();
+    private List<Player> players = new List<>();
 
     private KitEditor(Region r)
     {

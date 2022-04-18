@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice;
 
 import com.grinderwolf.swm.api.SlimePlugin;
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
@@ -19,6 +20,8 @@ import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Lobby.Lobby;
+import me.trixxtraxx.Practice.Lobby.LobbyListener;
 import me.trixxtraxx.Practice.Map.Components.BedLayerComponent;
 import me.trixxtraxx.Practice.Map.Components.BreakRegion;
 import me.trixxtraxx.Practice.Map.Components.ClearOnDropComponent;
@@ -45,7 +48,9 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 
 public final class Practice extends JavaPlugin
 {
@@ -195,6 +200,10 @@ public final class Practice extends JavaPlugin
 
         getServer().getPluginManager().registerEvents(new GameLogicListener(), this);
         getServer().getPluginManager().registerEvents(new CacheListener(), this);
+        getServer().getPluginManager().registerEvents(new LobbyListener(), this);
+        
+        new Lobby(conf.getConfigurationSection("Lobby"));
+        
         if (conf.getBoolean("KitEditor.enabled"))
         {
             log(3, "enabled kit editor");
@@ -233,7 +242,7 @@ public final class Practice extends JavaPlugin
                 Map m = SQLUtil.Instance.getMap("Blockin1");
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
+                Game g = new Game(new SoloGameLogic(), new List<Player>(Collections.singletonList(p)), k, m);
                 g.getLogic().setName("BlockinPractice");
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
@@ -241,7 +250,7 @@ public final class Practice extends JavaPlugin
                 new YKillComponent(g.getLogic(), 50);
                 new KillResetComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
-                new DropItemComponent(g.getLogic(), Material.ANVIL, Arrays.asList(new Material[]{Material.ANVIL, Material.BED,Material.NETHER_STAR}));
+                new DropItemComponent(g.getLogic(), Material.ANVIL, new List<>(new Material[]{Material.ANVIL, Material.BED,Material.NETHER_STAR}));
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
                 new DropToBlockinTimer(g.getLogic());
@@ -276,14 +285,14 @@ public final class Practice extends JavaPlugin
                 Map m = new Map(-1,"BridgeTest", "BridgeTest", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 100, 0)));
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloGameLogic(), Collections.singletonList(p), k, m);
+                Game g = new Game(new SoloGameLogic(), new List<>(Collections.singletonList(p)), k, m);
                 g.getLogic().setName("BridgePractice");
                 new PressurePlateResetComponent(g.getLogic());
                 new MapResetComponent(g.getLogic());
                 new YKillComponent(g.getLogic(), 90);
                 new KillResetComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
-                new DropItemComponent(g.getLogic(), Material.WOOL, Arrays.asList(new Material[]{Material.BED}));
+                new DropItemComponent(g.getLogic(), Material.WOOL, new List<>(new Material[]{Material.BED}));
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
                 new DropToResetTimer(g.getLogic());
@@ -298,7 +307,7 @@ public final class Practice extends JavaPlugin
                 Map m = new Map(-1,"Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[2]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k,m);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m);
                 g.getLogic().setName("Classic");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDieComponent(g.getLogic());
@@ -332,9 +341,9 @@ public final class Practice extends JavaPlugin
                 DuelSpawnComponent spawn = new DuelSpawnComponent(3, 100, 0, 90, 0, -3, 100, 0, -90, 0);
                 Map m = new Map(-1, "Sumo1", "Sumo1", spawn);
                 //Kit k = SQLUtil.Instance.getKit(args[2]);
-                Kit k = new Kit("Sumo1", -1, new ArrayList<>(), -1, new HashMap<>());
+                Kit k = new Kit("Sumo1", -1, new List<>(), -1, new HashMap<>());
                 //SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), Arrays.asList(p,p2), k, m);
+                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
                 g.getLogic().setName("Sumo");
                 new YKillComponent(g.getLogic(), 97);
                 new NoDieComponent(g.getLogic());
@@ -369,7 +378,7 @@ public final class Practice extends JavaPlugin
                 Player p = (Player) s;
                 PlayerInventory inv = p.getInventory();
                 HashMap<Integer, Integer> defaultOrder = new HashMap<>();
-                List<ItemStack> items = new ArrayList<>();
+                List<ItemStack> items = new List<>();
                 for(int i = 0; i < 40; i++)
                 {
                     ItemStack item = inv.getItem(i);
@@ -404,7 +413,7 @@ public final class Practice extends JavaPlugin
                 SQLUtil.Instance.applyComponents(k);
                 SQLUtil.Instance.applyComponents(m);
 
-                List<Player> ppl = new ArrayList<>();
+                List<Player> ppl = new List<>();
 
                 ppl.add(p);
 

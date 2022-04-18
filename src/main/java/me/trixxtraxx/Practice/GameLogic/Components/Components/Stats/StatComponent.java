@@ -11,7 +11,7 @@ import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.TriggerEvent;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class StatComponent extends GameComponent
 {

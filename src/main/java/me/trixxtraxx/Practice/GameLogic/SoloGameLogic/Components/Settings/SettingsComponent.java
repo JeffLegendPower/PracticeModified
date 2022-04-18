@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class SettingsComponent extends GameComponent implements ISettingsComponent
 {
@@ -35,7 +35,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
     @Config
     private String customDefenceTitle = ChatColor.AQUA + "Custom Defence";
     
-    private List<StoredInventory> inv = new ArrayList<>();
+    private List<StoredInventory> inv = new List<>();
     
     private class StoredInventory
     {

@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.util.ArrayList;
-import java.util.List;
+import me.TrixxTraxx.Linq.List;
 
 public class Map extends ComponentClass<MapComponent>
 {
