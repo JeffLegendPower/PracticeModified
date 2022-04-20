@@ -64,6 +64,9 @@ public class PracticePlayer extends ComponentClass<PlayerComponent>
     public void executeBungeeCommand(String command){
         MessageProvider.SendMessage("ExecuteCommand", new Gson().toJson(new ExecuteCommand(player, command)));
     }
+    public void toLobby(){
+        //TODO: implement
+    }
     
     private class OpenGuiRequest{
         private String player;
