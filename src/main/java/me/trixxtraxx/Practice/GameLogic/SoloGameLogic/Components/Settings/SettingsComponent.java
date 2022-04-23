@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings;
 
 import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
@@ -9,16 +10,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import me.TrixxTraxx.Linq.List;
 
 public class SettingsComponent extends GameComponent implements ISettingsComponent
 {
@@ -97,16 +94,16 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case COAL:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case IRON_INGOT:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case GOLD_INGOT:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case DIAMOND:
-                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "Difficulty have been set to " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case BARRIER:
                     settingmenu(p);
@@ -116,16 +113,16 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
             e.setCancelled(true);
             switch (e.getCurrentItem().getType()){
                 case WOOD_PICKAXE:
-                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case STONE_PICKAXE:
-                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case IRON_PICKAXE:
-                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case DIAMOND_PICKAXE:
-                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getType().name() + ChatColor.AQUA + "!");
+                    p.sendMessage(ChatColor.AQUA + "You have been given the toolset of " + e.getCurrentItem().getItemMeta().getDisplayName() + ChatColor.AQUA + "!");
                     return;
                 case BARRIER:
                     settingmenu(p);
@@ -136,9 +133,9 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
             switch (e.getCurrentItem().getType()){
                 case STAINED_GLASS:
                     if (e.getCurrentItem().getDurability() == DyeColor.RED.getData()){
-                        p.sendMessage("You have choosen the typical Ranked Bedwars Defence! (Endstone and Clay)");
+                        p.sendMessage(ChatColor.AQUA + "You have choosen the typical Ranked Bedwars Defence! (Endstone and Clay)");
                     }else if (e.getCurrentItem().getDurability() == DyeColor.LIGHT_BLUE.getData()){
-                        p.sendMessage("You have choosen the typical Ranked Bedwars Defence (Endstone And Wood)");
+                        p.sendMessage(ChatColor.AQUA + "You have choosen the typical Ranked Bedwars Defence (Endstone And Wood)");
                     }
                     return;
                 case REDSTONE_TORCH_ON:
@@ -160,7 +157,7 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
 
     private void settingmenu(Player p){
         Inventory setting = Bukkit.createInventory(p,45,title);
-        setting.setItem(4,new BetterItem(Material.BOOK).setDisplayName(ChatColor.GOLD + "Setting").setLore(ChatColor.YELLOW + "By changing settings here you can", ChatColor.YELLOW + "customised the gamemode to your likings").NaddEnchantment(Enchantment.DAMAGE_ALL, 1).addItemFlag(ItemFlag.HIDE_ENCHANTS));
+        setting.setItem(4,new BetterItem(Material.BOOK).setDisplayName(ChatColor.GOLD + "Setting").setLore(ChatColor.YELLOW + "By changing settings here you can", ChatColor.YELLOW + "customised the gamemode to your likings").addItemFlag(ItemFlag.HIDE_ENCHANTS));
         setting.setItem(20,new BetterItem(Material.WOOL).setDisplayName(ChatColor.RED + "Defence Setting").setLore(ChatColor.RED + "Customise Your Bed Defence Here!", "",ChatColor.YELLOW + "Click Me!"));
         setting.setItem(22,new BetterItem(Material.REDSTONE).setDisplayName(ChatColor.RED + "Difficulty Setting").setLore(ChatColor.RED + "Change Your Gamemode Difficulty Here!", "",ChatColor.YELLOW + "Click Me!"));
         setting.setItem(24,new BetterItem(Material.WOOD_PICKAXE).setDisplayName(ChatColor.RED + "Tool Setting").setLore(ChatColor.RED + "Setup Your Tool Setting Here!", "",ChatColor.YELLOW + "Click Me!"));
@@ -190,8 +187,8 @@ public class SettingsComponent extends GameComponent implements ISettingsCompone
 
     private void defenceMenu(Player p){
         Inventory defence = Bukkit.createInventory(p,27,defenceTitle);
-        defence.setItem(11,new BetterItem(Material.STAINED_GLASS).NsetDurability((short) 14).setDisplayName(ChatColor.YELLOW + "Ranked Bedwars Defence (Clay)").setLore(ChatColor.YELLOW + "The typical Endstone Clay Bed Defence that is used in Ranked Bedwars"));
-        defence.setItem(13,new BetterItem(Material.STAINED_GLASS).NsetDurability((short) 12).setDisplayName(ChatColor.YELLOW + "Ranked Bedwars Defence (Wood)").setLore(ChatColor.YELLOW + "The Endstone Wood Bed defence that is used in Ranked Bedwars"));
+        defence.setItem(11,new BetterItem(Material.BED).setDisplayName(ChatColor.YELLOW + "Ranked Bedwars Defence (Clay)").setLore(ChatColor.YELLOW + "The typical Endstone Clay Bed Defence that is used in Ranked Bedwars"));
+        defence.setItem(13,new BetterItem(Material.BED).setDisplayName(ChatColor.YELLOW + "Ranked Bedwars Defence (Wood)").setLore(ChatColor.YELLOW + "The Endstone Wood Bed defence that is used in Ranked Bedwars"));
         defence.setItem(15,new BetterItem(Material.REDSTONE_TORCH_ON).setDisplayName(ChatColor.RED + "Custom Bed Defence"));
         defence.setItem(22,new BetterItem(Material.BARRIER).setDisplayName(ChatColor.RED + "Return To Main Setting").setLore(ChatColor.YELLOW + "Return To Main Setting"));
         p.openInventory(defence);
