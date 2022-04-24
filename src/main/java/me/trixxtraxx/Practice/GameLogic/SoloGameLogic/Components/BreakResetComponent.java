@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
@@ -13,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class BreakResetComponent extends GameComponent
 {
+    @Config
     private Material mat;
 
     public BreakResetComponent(GameLogic logic, Material material)

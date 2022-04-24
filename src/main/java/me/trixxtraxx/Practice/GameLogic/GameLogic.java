@@ -51,4 +51,5 @@ public abstract class GameLogic extends ComponentClass<GameComponent>
     public abstract Map getMap();
     public abstract void applyData(String s);
     public abstract String getData();
+    public abstract void removePlayer(Player p);
 }

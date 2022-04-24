@@ -241,8 +241,8 @@ public final class Practice extends JavaPlugin
             if(args[0].equalsIgnoreCase("Blockin"))
             {
                 Player p = (Player) s;
-                //Map m = new Map(1,"Blockin1", "TestMap", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 108, 0)));
-                Map m = SQLUtil.Instance.getMap("Blockin1");
+                Map m = new Map(1,"Blockin1", "TestMap", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 108, 0)));
+                //Map m = SQLUtil.Instance.getMap("Blockin1");
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new SoloGameLogic(), new List<Player>(Collections.singletonList(p)), k, m);
@@ -253,7 +253,9 @@ public final class Practice extends JavaPlugin
                 new YKillComponent(g.getLogic(), 50);
                 new KillResetComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
-                new DropItemComponent(g.getLogic(), Material.ANVIL, new List<>(new Material[]{Material.ANVIL, Material.BED,Material.NETHER_STAR}));
+                List<Material> removeMaterials = new List(Material.ANVIL, Material.BED,Material.NETHER_STAR);
+                log(4, "removing materials: " + removeMaterials.size());
+                new DropItemComponent(g.getLogic(), Material.ANVIL, removeMaterials);
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
                 new DropToBlockinTimer(g.getLogic());
@@ -275,12 +277,12 @@ public final class Practice extends JavaPlugin
                 
                 SQLUtil.Instance.applyComponents(m);
                 
-                /*new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
+                new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
                 new BedLayerComponent(m, Material.WOOD, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 2, false);
                 new BedLayerComponent(m, Material.WOOL, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 3, false);
                 new NoMapBreakComponent(m);
                 new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
-                new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);*/
+                new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
             }
             else if(args[0].equalsIgnoreCase("Bridge"))
             {
@@ -458,6 +460,12 @@ public final class Practice extends JavaPlugin
                 }
             }
         }
+        else if(label.equalsIgnoreCase("leave")){
+            if(!(s instanceof Player)) return false;
+            Game g = Game.getGame((Player) s);
+            if(g == null) return false;
+            g.getLogic().removePlayer((Player) s);
+        }
         return false;
     }
 
@@ -467,23 +475,23 @@ public final class Practice extends JavaPlugin
         {
             if(lvl == 5)
             {
-                Instance.getLogger().info("[" + "\u001B[37mULTRA DEBUG" + "\u001B[0m] " + msg);
+                Instance.getLogger().info("[" + "\u001B[37mULTRA DEBUG" + "\u001B[0m] \u001B[37m" + msg);
             }
             if(lvl == 4)
             {
-                Instance.getLogger().info("[" + "\u001B[35mDEBUG" + "\u001B[0m] " + msg);
+                Instance.getLogger().info("[" + "\u001B[35mDEBUG" + "\u001B[0m] \u001B[35m" + msg);
             }
             if(lvl == 3)
             {
-                Instance.getLogger().info("[" + "\u001B[34mInformation" + "\u001B[0m] " + msg);
+                Instance.getLogger().info("[" + "\u001B[34mInformation" + "\u001B[0m] \u001B[34m" + msg);
             }
             if(lvl == 2)
             {
-                Instance.getLogger().info("[" + "\u001B[33mWarning" + "\u001B[0m] " + msg);
+                Instance.getLogger().info("[" + "\u001B[33mWarning" + "\u001B[0m] \u001B[33m" + msg);
             }
             if(lvl == 1)
             {
-                Instance.getLogger().info("[" + "\u001B[31mError" + "\u001B[0m] " + msg);
+                Instance.getLogger().info("[" + "\u001B[31mError" + "\u001B[0m] \u001B[31m" + msg);
             }
         }
     }

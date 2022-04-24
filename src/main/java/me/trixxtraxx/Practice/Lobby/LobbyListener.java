@@ -10,10 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 public class LobbyListener implements Listener
 {
@@ -118,5 +115,16 @@ public class LobbyListener implements Listener
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
         lobby.addPlayer(PracticePlayer.getPlayer(event.getPlayer()));
+    }
+    
+    @EventHandler
+    public void onEntityDamage(PlayerDropItemEvent event)
+    {
+        Lobby lobby = Lobby.get(event.getPlayer().getWorld());
+        if(lobby == null) return;
+        if(lobby.isDropBlocked())
+        {
+            event.setCancelled(true);
+        }
     }
 }

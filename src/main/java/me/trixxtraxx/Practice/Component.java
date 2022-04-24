@@ -1,8 +1,10 @@
 package me.trixxtraxx.Practice;
 
 import com.google.gson.Gson;
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
+import me.trixxtraxx.Practice.GameLogic.Components.CustomValue;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.ConfigItem;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
@@ -22,6 +24,10 @@ public abstract class Component
         //get all properties with the @Config annotation
         //and serialize them to a string
         StringBuilder sb = new StringBuilder();
+        if(CustomValue.class.isAssignableFrom(this.getClass()))
+        {
+            return ((CustomValue)this).getValue();
+        }
         for(Field f : this.getClass().getDeclaredFields())
         {
             if(f.isAnnotationPresent(Config.class))
@@ -30,26 +36,35 @@ public abstract class Component
                 {
                     f.setAccessible(true);
                     String name = f.getName();
-                    String value = f.get(this).toString();
-                    if(f.getType() == ItemStack.class)
+                    Object v = f.get(this);
+                    String value = "NULL";
+                    if(v != null)
                     {
-                        ItemStack i = (ItemStack) f.get(this);
-                        value = new Gson().toJson(i.serialize());
-                    }
-                    else if(f.getType() == Material.class)
-                    {
-                        value = ((Material) f.get(this)).toString();
-                    }
-                    else if(f.getType() == ConfigLocation.class)
-                    {
-                        value = ((ConfigLocation)f.get(this)).serialize();
-                    }
-                    else if(f.getType() == Region.class)
-                    {
-                        value = ((Region)f.get(this)).serialize();
+                        value = new Gson().toJson(v);
+                        //first, handle ItemStack
+                        //use toString() for Material, ConfigLocation, Region, String,boolean, int, long, double, float, short, byte
+                        if(f.getType() == ItemStack.class)
+                        {
+                            ItemStack i = (ItemStack) f.get(this);
+                            value = new Gson().toJson(i.serialize());
+                        }
+                        else if(f.getType() == Material.class ||
+                                f.getType() == ConfigLocation.class ||
+                                f.getType() == Region.class ||
+                                f.getType() == String.class ||
+                                f.getType() == boolean.class ||
+                                f.getType() == int.class ||
+                                f.getType() == long.class ||
+                                f.getType() == double.class ||
+                                f.getType() == float.class ||
+                                f.getType() == short.class ||
+                                f.getType() == byte.class)
+                        {
+                            value = v.toString();
+                        }
                     }
                     Practice.log(4,name + " = " + value);
-                    sb.append(name).append("=").append(value).append("\n");
+                    sb.append(name).append("=").append(value).append("<>");
                 }
                 catch (IllegalAccessException e)
                 {
@@ -64,9 +79,23 @@ public abstract class Component
     {
         //deserialize the data that got serialized by getData()
         //and apply it to the properties
-        String[] lines = data.split("\n");
+        Practice.log(4,"Applying data to component " + this.getClass().getSimpleName() + ": " + data);
+        if(CustomValue.class.isAssignableFrom(this.getClass()))
+        {
+            try
+            {
+                ((CustomValue) this).applyValue(data);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        String[] lines = data.split("<>");
+        Practice.log(4,"Lines: " + lines.length);
         for(String line : lines)
         {
+            Practice.log(4,"Line: " + line);
             String[] parts = line.split("=");
             if(parts.length == 2)
             {
@@ -74,6 +103,7 @@ public abstract class Component
                 {
                     Field f = this.getClass().getDeclaredField(parts[0]);
                     f.setAccessible(true);
+                    Practice.log(4,"Setting value of " + parts[0] + " to " + parts[1]);
                     
                     //deserialize to varios things if needed
                     if(f.getType() == Material.class)
@@ -114,9 +144,21 @@ public abstract class Component
                     {
                         f.set(this, Long.parseLong(parts[1]));
                     }
-                    else
+                    else if(f.getType() == short.class)
+                    {
+                        f.set(this, Short.parseShort(parts[1]));
+                    }
+                    else if(f.getType() == byte.class)
+                    {
+                        f.set(this, Byte.parseByte(parts[1]));
+                    }
+                    else if(f.getType() == String.class)
                     {
                         f.set(this, parts[1]);
+                    }
+                    else
+                    {
+                        f.set(this, new Gson().fromJson(parts[1],f.getType()));
                     }
                 }
                 catch (Exception e)

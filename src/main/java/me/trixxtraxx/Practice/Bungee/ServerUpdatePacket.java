@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 public class ServerUpdatePacket
 {
+    private boolean online;
     private String name;
     private int maxRatedPlayers;
     private List<Game> games = new List();
@@ -26,7 +27,9 @@ public class ServerUpdatePacket
         private String map;
     }
     
-    public ServerUpdatePacket(String name, int maxRatedPlayers, List<me.trixxtraxx.Practice.Gamemode.Game> games, List<me.trixxtraxx.Practice.Lobby.Lobby> lobbies) {
+    public ServerUpdatePacket(String name, int maxRatedPlayers, List<me.trixxtraxx.Practice.Gamemode.Game> games, List<me.trixxtraxx.Practice.Lobby.Lobby> lobbies)
+    {
+        this.online = true;
         this.name = name;
         this.maxRatedPlayers = maxRatedPlayers;
         for(me.trixxtraxx.Practice.Gamemode.Game game : games)
@@ -52,5 +55,10 @@ public class ServerUpdatePacket
             l.name = lobby.getName();
             this.lobbies.add(l);
         }
+    }
+    
+    public ServerUpdatePacket(String name, boolean online) {
+        this.name = name;
+        this.online = online;
     }
 }

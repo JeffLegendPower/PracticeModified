@@ -33,7 +33,7 @@ public class SoloGameLogic extends GameLogic
         player = players.get(0);
 
         loadWorld();
-        toSpawn(null);
+        toSpawn(player);
         GameLogic log = this;
         new BukkitRunnable(){
             @Override

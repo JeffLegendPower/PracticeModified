@@ -56,8 +56,11 @@ public class NewGamePacket
                 }
             }
             packets.remove(this);
+            Practice.log(4, "[NewGamePacket] Packet removed");
         }, 20 * 5);
         packets.add(this);
+    
+        Practice.log(4, "[NewGamePacket] Packet added: " + map + ", " + gamemode + ", " + kit);
     
         new BukkitRunnable()
         {
@@ -99,17 +102,28 @@ public class NewGamePacket
     public boolean update()
     {
         if(k == null || m == null || g == null) return false;
+        Practice.log(4, "[NewGamePacket] attempting to start game");
         List<Player> players = new List<Player>();
         for(String s : this.players)
         {
             Player p = Bukkit.getPlayer(s);
-            if(p == null){return false;}
+            if(p == null)
+            {
+                Practice.log(4, "[NewGamePacket] game start canceled, " + s + " is offline");
+                return false;
+            }
             players.add(p);
         }
         done = true;
         task.cancel();
         packets.remove(this);
-        new Game(g, players, k, m);
+        new BukkitRunnable(){
+            @Override
+            public void run()
+            {
+                new Game(g, players, k, m);
+            }
+        }.runTask(Practice.Instance);
         return true;
     }
     

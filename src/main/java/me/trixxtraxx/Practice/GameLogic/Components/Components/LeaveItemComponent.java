@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
 import com.google.gson.Gson;
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
@@ -10,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class LeaveItemComponent extends GameComponent
 {
+    @Config
     private Material mat;
     public LeaveItemComponent(GameLogic logic, Material mat)
     {

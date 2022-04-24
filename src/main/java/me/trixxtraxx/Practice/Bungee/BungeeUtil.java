@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.Bungee;
 
 import com.google.gson.Gson;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.MessageProvider;
+import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Practice;
@@ -28,6 +29,7 @@ public class BungeeUtil
         this.isConnected = true;
         this.name = bungee;
         this.maxRatedPlayers = maxRatedPlayerCount;
+        RegisterMessages.registerReciever(new BungeeListener());
         update();
     }
     

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
@@ -15,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class DropToBreakTimer extends TimerComponent
 {
+    @Config
     private Material mat;
     public DropToBreakTimer(GameLogic logic, Material mat)
     {

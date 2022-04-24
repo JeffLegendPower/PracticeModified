@@ -87,6 +87,7 @@ public class Region
     public static Region deserialize(String s)
     {
         String[] locs = s.split(";");
+        if(locs.length != 2) return null;
         return new Region(ConfigLocation.deserialize(locs[0]), ConfigLocation.deserialize(locs[1]));
     }
     
