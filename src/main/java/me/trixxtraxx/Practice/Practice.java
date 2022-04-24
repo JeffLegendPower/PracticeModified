@@ -241,8 +241,8 @@ public final class Practice extends JavaPlugin
             if(args[0].equalsIgnoreCase("Blockin"))
             {
                 Player p = (Player) s;
-                Map m = new Map(1,"Blockin1", "TestMap", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 108, 0)));
-                //Map m = SQLUtil.Instance.getMap("Blockin1");
+                ///Map m = new Map(1,"Blockin1", "TestMap", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 108, 0)));
+                Map m = SQLUtil.Instance.getMap("Blockin1");
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new SoloGameLogic(), new List<Player>(Collections.singletonList(p)), k, m);
@@ -277,12 +277,12 @@ public final class Practice extends JavaPlugin
                 
                 SQLUtil.Instance.applyComponents(m);
                 
-                new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
+                /*new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
                 new BedLayerComponent(m, Material.WOOD, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 2, false);
                 new BedLayerComponent(m, Material.WOOL, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 3, false);
                 new NoMapBreakComponent(m);
                 new ClearOnDropComponent(m, new Region(new Location(p.getWorld(), -5, 107, -5), new Location(p.getWorld(), 4, 112, 4)));
-                new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);
+                new BreakRegion(m, new Region(new Location(p.getWorld(), -3, 101, 3), new Location(p.getWorld(), 4, 104, -3)), true);*/
             }
             else if(args[0].equalsIgnoreCase("Bridge"))
             {
@@ -460,7 +460,8 @@ public final class Practice extends JavaPlugin
                 }
             }
         }
-        else if(label.equalsIgnoreCase("leave")){
+        else if(label.equalsIgnoreCase("leave"))
+        {
             if(!(s instanceof Player)) return false;
             Game g = Game.getGame((Player) s);
             if(g == null) return false;

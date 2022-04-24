@@ -26,7 +26,7 @@ public class LeaveItemComponent extends GameComponent
         if(e.getItem() != null && e.getItem().getType() == mat)
         {
             e.setCancelled(true);
-            e.getPlayer().performCommand("lobby");
+            e.getPlayer().performCommand("leave");
         }
     }
 }

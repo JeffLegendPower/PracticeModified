@@ -70,7 +70,10 @@ public class SoloGameLogic extends GameLogic
 
     @Override
     public void applyData(String s){}
-
+    
+    @Override
+    public void removePlayer(Player p){stop(true);}
+    
     public String getData() {return "{}";}
 
     public Player getPlayer(){return player;}

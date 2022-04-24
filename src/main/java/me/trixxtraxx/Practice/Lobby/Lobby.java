@@ -4,6 +4,8 @@ import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.*;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.MenuItem;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
+import me.trixxtraxx.Practice.Utils.ConfigLocation;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.PlayerInventory;
@@ -26,6 +28,7 @@ public class Lobby
     private List<String> blockedInventories;
     private List<PracticePlayer> players = new List<>();
     private List<LobbyItem> items = new List<>();
+    private ConfigLocation spawn;
     
     public Lobby(ConfigurationSection section){
         this.world = section.getString("world");
@@ -38,6 +41,7 @@ public class Lobby
         this.blockedInventories = new List<>(section.getStringList("blockedInventories"));
         this.blockInvMove = section.getBoolean("BlockInvMove");
         this.blockDrop = section.getBoolean("BlockDrop");
+        this.spawn = ConfigLocation.deserialize(section.getString("spawn"));
         ConfigurationSection ItemSec = section.getConfigurationSection("Items");
         for(String key : ItemSec.getKeys(false))
         {
@@ -83,6 +87,7 @@ public class Lobby
         players.add(player);
         setInv(player);
         BungeeUtil.getInstance().update();
+        player.getPlayer().teleport(spawn.getLocation(Bukkit.getWorld(world)));
     }
     public void removePlayer(PracticePlayer player){
         players.remove(player);

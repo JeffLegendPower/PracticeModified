@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.DuelGameLogic;
 
+import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Events.WinEvent;
@@ -52,7 +53,7 @@ public class DuelGameLogic extends GameLogic
     {
         for (Player p:getPlayers())
         {
-            p.teleport(new Location(Bukkit.getWorld("world"),0,100,0));
+            BungeeUtil.getInstance().toLobby(p);
         }
         map.unload(false);
         game.stop(false);
@@ -74,13 +75,13 @@ public class DuelGameLogic extends GameLogic
     public Map getMap() {return map;}
 
     @Override
-    public void applyData(String s)
-    {
-    
-    }
+    public void applyData(String s){}
 
     public String getData() {return "{}";}
-
+    
+    @Override
+    public void removePlayer(Player p){remove(p);}
+    
     public void loadWorld()
     {
         world = map.load();

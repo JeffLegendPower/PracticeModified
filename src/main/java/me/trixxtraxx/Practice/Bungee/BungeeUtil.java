@@ -6,6 +6,8 @@ import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.SQL.PracticePlayer;
+import org.bukkit.entity.Player;
 
 public class BungeeUtil
 {
@@ -40,5 +42,18 @@ public class BungeeUtil
         Practice.log(4, "Updating status for " + Game.getGames().size() + " games and " + Lobby.getLobbies().size() + " lobbies");
         
         MessageProvider.SendMessage("PracticeServerUpdate", new Gson().toJson(packet));
+    }
+    
+    public void toLobby(Player p)
+    {
+        PracticePlayer pp = PracticePlayer.getPlayer(p);
+        if(Lobby.getLobbies().size() == 0)
+        {
+            pp.toLobby();
+        }
+        else
+        {
+            Lobby.getLobbies().get(0).addPlayer(pp);
+        }
     }
 }
