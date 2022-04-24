@@ -34,7 +34,9 @@ public class Map extends ComponentClass<MapComponent>
 
     public void unload(boolean save)
     {
-        Bukkit.unloadWorld(world, save);
+        String worldName = world.getName();
+        world = null;
+        Bukkit.unloadWorld(worldName, save);
     }
 
     public String getName()

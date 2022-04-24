@@ -63,4 +63,15 @@ public class ScoreboardComponent extends GameComponent
         };
         run.runTaskTimer(Practice.Instance, 0, 1);
     }
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(GameEvent e)
+    {
+        for(FastBoard board:boards.values())
+        {
+            board.delete();
+        }
+        boards.clear();
+        if(run != null) run.cancel();
+    }
 }

@@ -22,7 +22,6 @@ public class SoloGameLogic extends GameLogic
     private Player player;
     private Game game;
     private Map map;
-    private World world;
 
     @Override
     public void start(Game gm, List<Player> players, Map m)
@@ -54,7 +53,7 @@ public class SoloGameLogic extends GameLogic
     }
 
     @Override
-    public World getWorld() {return world;}
+    public World getWorld() {return map.getWorld();}
 
     @Override
     public List<Player> getPlayers()
@@ -80,7 +79,7 @@ public class SoloGameLogic extends GameLogic
 
     public void loadWorld()
     {
-        world = map.load();
+        map.load();
     }
 
     @Override

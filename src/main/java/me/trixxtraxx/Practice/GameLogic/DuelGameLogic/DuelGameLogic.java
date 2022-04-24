@@ -25,7 +25,6 @@ public class DuelGameLogic extends GameLogic
     private Player p2;
     private Game game;
     private Map map;
-    private World world;
 
     @Override
     public void start(Game gm, List<Player> players, Map m)
@@ -60,7 +59,7 @@ public class DuelGameLogic extends GameLogic
     }
 
     @Override
-    public World getWorld() {return world;}
+    public World getWorld() {return map.getWorld();}
 
     @Override
     public List<Player> getPlayers()
@@ -82,10 +81,7 @@ public class DuelGameLogic extends GameLogic
     @Override
     public void removePlayer(Player p){remove(p);}
     
-    public void loadWorld()
-    {
-        world = map.load();
-    }
+    public void loadWorld(){map.load();}
 
     public Player getP1() {return p1;}
     public Player getP2() {return p2;}
