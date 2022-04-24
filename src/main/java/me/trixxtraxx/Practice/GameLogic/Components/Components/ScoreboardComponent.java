@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
+import me.trixxtraxx.Practice.GameEvents.AllModes.StopEvent;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
@@ -65,7 +66,7 @@ public class ScoreboardComponent extends GameComponent
     }
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onEvent(GameEvent e)
+    public void onEvent(StopEvent e)
     {
         for(FastBoard board:boards.values())
         {
