@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic;
 
+import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StopEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
@@ -47,9 +48,9 @@ public class SoloGameLogic extends GameLogic
     public void stop(boolean dc)
     {
         if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
-        player.teleport(new Location(Bukkit.getWorld("world"),0,100,0));
-        map.unload(false);
         game.stop(false);
+        BungeeUtil.getInstance().toLobby(player);
+        map.unload(false);
     }
 
     @Override

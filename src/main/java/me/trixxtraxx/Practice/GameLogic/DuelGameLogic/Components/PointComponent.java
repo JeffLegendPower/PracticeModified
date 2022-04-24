@@ -24,8 +24,8 @@ public class PointComponent extends GameComponent
     public PointComponent(GameLogic logic, int goal, String symb)
     {
         super(logic);
-        goal = goal;
-        symb = symb;
+        this.goal = goal;
+        this.symb = symb;
     }
     public PointComponent(GameLogic logic){super(logic);}
     

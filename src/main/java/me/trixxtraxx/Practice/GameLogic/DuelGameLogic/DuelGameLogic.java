@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.GameLogic.DuelGameLogic;
 
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
+import me.trixxtraxx.Practice.GameEvents.AllModes.StopEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Events.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
@@ -50,12 +51,14 @@ public class DuelGameLogic extends GameLogic
     @Override
     public void stop(boolean dc)
     {
+        if(triggerEvent(new StopEvent(this, dc)).isCanceled()) return;
+        Practice.log(3, "Stopping duel game");
+        game.stop(false);
         for (Player p:getPlayers())
         {
             BungeeUtil.getInstance().toLobby(p);
         }
         map.unload(false);
-        game.stop(false);
     }
 
     @Override

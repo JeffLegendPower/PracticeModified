@@ -89,9 +89,10 @@ public class Lobby
         BungeeUtil.getInstance().update();
         player.getPlayer().teleport(spawn.getLocation(Bukkit.getWorld(world)));
     }
-    public void removePlayer(PracticePlayer player){
+    public void removePlayer(PracticePlayer player, boolean update)
+    {
         players.remove(player);
-        BungeeUtil.getInstance().update();
+        if(update) BungeeUtil.getInstance().update();
     }
     private void setInv(PracticePlayer player){
         PlayerInventory inv = player.getPlayer().getInventory();

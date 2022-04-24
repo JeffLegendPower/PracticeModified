@@ -343,7 +343,7 @@ public final class Practice extends JavaPlugin
             {
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[1]);
-                DuelSpawnComponent spawn = new DuelSpawnComponent(3, 100, 0, 90, 0, -3, 100, 0, -90, 0);
+                DuelSpawnComponent spawn = new DuelSpawnComponent(5.5, 100, 0.5, 90, 0, -4.5, 100, 0.5, -90, 0);
                 Map m = new Map(-1, "Sumo1", "Sumo1", spawn);
                 //Kit k = SQLUtil.Instance.getKit(args[2]);
                 Kit k = new Kit("Sumo1", -1, new List<>(), -1, new HashMap<>());

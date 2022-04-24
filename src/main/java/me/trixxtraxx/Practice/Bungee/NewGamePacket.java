@@ -4,6 +4,7 @@ import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
@@ -39,6 +40,7 @@ public class NewGamePacket
     
     public void init()
     {
+        Practice.log(3, "[NewGamePacket] Packet added: " + map + ", " + gamemode + ", " + kit);
         done = false;
         task = Bukkit.getScheduler().runTaskLater(Practice.Instance, () ->
         {
@@ -59,8 +61,6 @@ public class NewGamePacket
             Practice.log(4, "[NewGamePacket] Packet removed");
         }, 20 * 5);
         packets.add(this);
-    
-        Practice.log(4, "[NewGamePacket] Packet added: " + map + ", " + gamemode + ", " + kit);
     
         new BukkitRunnable()
         {
@@ -114,9 +114,18 @@ public class NewGamePacket
             }
             players.add(p);
         }
+        if(done) return true;
         done = true;
         task.cancel();
         packets.remove(this);
+        for(Player p : players)
+        {
+            for(Lobby l: Lobby.getLobbies())
+            {
+                l.removePlayer(PracticePlayer.getPlayer(p), false);
+            }
+        }
+        Practice.log(3, "[NewGamePacket] starting game");
         new BukkitRunnable(){
             @Override
             public void run()

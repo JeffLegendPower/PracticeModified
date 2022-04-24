@@ -19,6 +19,7 @@ public class DieStopComponent extends GameComponent
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(PlayerDeathEvent e)
     {
+        Practice.log(3, "Player Death: " + e.getEntity().getName());
         if (logic instanceof DuelGameLogic) ((DuelGameLogic) logic).remove(e.getEntity());
         else logic.stop(false);
     }

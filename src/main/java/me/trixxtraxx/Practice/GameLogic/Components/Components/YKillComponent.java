@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.GameMode;
 import org.bukkit.event.Event;
@@ -26,6 +27,7 @@ public class YKillComponent extends GameComponent
     {
         if(e.getTo().getY() < ykillheight)
         {
+            Practice.log(3, "Killing Player " + e.getPlayer().getName() + " because he fell too low (" + e.getTo().getY() + " - " + ykillheight + ")");
             if(e.getPlayer().getGameMode() == GameMode.CREATIVE)e.getPlayer().setGameMode(GameMode.SURVIVAL);
             e.getPlayer().damage(999999999);
         }

@@ -35,9 +35,9 @@ public class SpawnProtComponent extends GameComponent
     public SpawnProtComponent(GameLogic logic, int spawnProt, String remaining, String starting)
     {
         super(logic);
-        spawnProt = spawnProt;
-        remaining = remaining;
-        starting = starting;
+        this.spawnProt = spawnProt;
+        this.remaining = remaining;
+        this.starting = starting;
     }
     public SpawnProtComponent(GameLogic logic){super(logic);}
     
@@ -61,7 +61,7 @@ public class SpawnProtComponent extends GameComponent
             {
                 if(left == 0)
                 {
-                        e.getPlayer().sendMessage(logic.applyPlaceholders(e.getPlayer(), starting));
+                    e.getPlayer().sendMessage(logic.applyPlaceholders(e.getPlayer(), starting));
                     cancel();
                     return;
                 }

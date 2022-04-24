@@ -90,7 +90,7 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
-        lobby.removePlayer(PracticePlayer.getPlayer(event.getPlayer()));
+        lobby.removePlayer(PracticePlayer.getPlayer(event.getPlayer()), true);
     }
     
     @EventHandler
@@ -98,7 +98,7 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getFrom());
         if(lobby == null) return;
-        lobby.removePlayer(PracticePlayer.getPlayer(event.getPlayer()));
+        lobby.removePlayer(PracticePlayer.getPlayer(event.getPlayer()), true);
     }
     
     @EventHandler
