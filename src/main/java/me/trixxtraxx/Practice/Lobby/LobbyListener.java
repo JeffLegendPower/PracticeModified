@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -123,6 +124,17 @@ public class LobbyListener implements Listener
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
         if(lobby.isDropBlocked())
+        {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent event)
+    {
+        Lobby lobby = Lobby.get(event.getEntity().getWorld());
+        if(lobby == null) return;
+        if(lobby.isHungerBlocked())
         {
             event.setCancelled(true);
         }

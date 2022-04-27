@@ -24,7 +24,7 @@ public class Lobby
     private boolean blockEntityDamage;
     private boolean blockInvMove;
     private boolean blockDrop;
-    //TODO: FOOD,
+    private boolean blockHunger;
     private List<String> blockedInventories;
     private List<PracticePlayer> players = new List<>();
     private List<LobbyItem> items = new List<>();
@@ -41,6 +41,7 @@ public class Lobby
         this.blockedInventories = new List<>(section.getStringList("blockedInventories"));
         this.blockInvMove = section.getBoolean("BlockInvMove");
         this.blockDrop = section.getBoolean("BlockDrop");
+        this.blockHunger = section.getBoolean("BlockHunger");
         this.spawn = ConfigLocation.deserialize(section.getString("spawn"));
         ConfigurationSection ItemSec = section.getConfigurationSection("Items");
         for(String key : ItemSec.getKeys(false))
@@ -80,6 +81,7 @@ public class Lobby
     public boolean isEntityDamageBlocked(){return blockEntityDamage;}
     public boolean isInvMoveBlocked(){return blockInvMove;}
     public boolean isDropBlocked(){return blockDrop;}
+    public boolean isHungerBlocked(){return blockHunger;}
     public List<String> getBlockedInventories(){return blockedInventories;}
     public LobbyItem getItem(int slot){return items.find(x -> x.getSlot() == slot);}
     public List<PracticePlayer> getPlayers(){return players;}
