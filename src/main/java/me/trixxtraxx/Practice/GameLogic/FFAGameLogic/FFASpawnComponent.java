@@ -30,7 +30,31 @@ public class FFASpawnComponent implements ISpawnComponent
         {
             currentIndex = 0;
         }
-        return spawns.get(currentIndex++).getLocation(logic.getWorld());
+        Location loc = spawns.get(currentIndex++).getLocation(logic.getWorld());
+        Location finalLoc2 = loc;
+        List<Player> players = logic.getPlayers().findAll(x -> x.getWorld() == finalLoc2.getWorld());
+        int iteraction = 0;
+        while(true)
+        {
+            iteraction++;
+            if(iteraction > 100) break;
+            Location finalLoc = loc;
+            //increase by 1 if a player is within 5 blocks
+            if(players.any(player -> player.getLocation().distance(finalLoc) < 5))
+            {
+                currentIndex++;
+                if(currentIndex >= spawns.size())
+                {
+                    currentIndex = 0;
+                }
+                loc = spawns.get(currentIndex++).getLocation(logic.getWorld());
+            }
+            else
+            {
+                break;
+            }
+        }
+        return loc;
     }
     
     @Override

@@ -7,7 +7,6 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.TriggerEvent;
-import net.minecraft.server.v1_8_R3.Items;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -37,10 +36,10 @@ public class KillArrowComponent extends GameComponent
             HashMap<Integer, Integer> order = k.getOrder(PracticePlayer.getPlayer(event.getPlayer()));
             int slot = -1;
             if(order != null){
-                slot = order.get(index);
+                //slot = order.get(index);
             }
             PlayerInventory inv = event.getPlayer().getInventory();
-            if(inv.getItem(slot) != null || slot == -1) inv.addItem(stack);
+            if(slot == -1 || inv.getItem(slot) != null) inv.addItem(stack);
             else inv.setItem(slot, stack);
         }
     }

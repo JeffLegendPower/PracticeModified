@@ -4,20 +4,16 @@ import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StopEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
-import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Events.WinEvent;
+import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Practice;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import me.TrixxTraxx.Linq.List;
 
 public class DuelGameLogic extends GameLogic

@@ -1,21 +1,21 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
+import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class DieToSpawnComponent extends GameComponent
+public class RespawnInventoryComponent extends GameComponent
 {
-    
-    public DieToSpawnComponent(GameLogic logic)
+    public RespawnInventoryComponent(GameLogic logic)
     {
         super(logic);
     }
     
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onDie(PlayerDeathEvent event)
+    public void onRespawn(ToSpawnEvent event)
     {
-        logic.toSpawn(event.getEntity());
+        event.getPlayer().getInventory().clear();
+        logic.getGame().getKit().setInventory(event.getPlayer());
     }
 }

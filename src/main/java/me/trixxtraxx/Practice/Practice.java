@@ -6,6 +6,7 @@ import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.PointComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
@@ -176,7 +177,7 @@ public final class Practice extends JavaPlugin
 
 
     public static Practice Instance;
-    private static int loglevel;
+    public static int loglevel;
     public static WorldLoader worldLoader;
 
     @Override
@@ -428,11 +429,33 @@ public final class Practice extends JavaPlugin
                 Game g = new Game(new FFALogic(), players, k, m);
                 g.getLogic().setName("OneInAChamber");
                 new NoDieComponent(g.getLogic());
+                new DieToSpawnComponent(g.getLogic());
+                new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
-                new SpawnProtComponent(g.getLogic(), 100,
-                                       ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
-                                       ChatColor.BLUE + "The Game started, go fight!"
-                );
+                new PointComponentFFA(g.getLogic(), 20);
+                new KillArrowComponent(g.getLogic());
+                new DieToSpawnComponent(g.getLogic());
+                new LeaveRemoveComponent(g.getLogic());
+                new StatComponent(g.getLogic());
+                new SpectatorRespawnComponent(g.getLogic(), 100,
+                                              ChatColor.RED + "Respawning!",
+                                              ChatColor.WHITE + "You will respawn in {Timer}s!",
+                                              ChatColor.GREEN + "Respawned!",
+                                              "",
+                                              new ConfigLocation(0, 100, 0),
+                                              false);
+                
+                new WinMessageComponent(g.getLogic(),
+                                        "§9-------------------------------------\n" +
+                                                "\n" +
+                                                "      §b{Winner}§9 won the Game!\n\n" +
+                                                "          &bTop Killers:\n" +
+                                                "§91. {Points1Player}§b {Points1}\n" +
+                                                "§92. {Points2Player}§b {Points2}\n" +
+                                                "§93. {Points3Player}§b {Points3}\n" +
+                                                "\n" +
+                                                "§9-------------------------------------");
+                
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "One in a Chamber",
                                         "" + "\n" +
@@ -449,9 +472,6 @@ public final class Practice extends JavaPlugin
                                                 "" + "\n" +
                                                 ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
-                new PointComponentFFA(g.getLogic(), 20);
-                new KillArrowComponent(g.getLogic());
-                
                 
                 new NoMapBreakComponent(m);
             }

@@ -46,8 +46,11 @@ public class ScoreboardComponent extends GameComponent
         for (Player p:e.getlogic().getPlayers())
         {
             FastBoard board = new FastBoard(p);
-            board.updateTitle(e.getlogic().applyPlaceholders(p,title));
-            board.updateLines(e.getlogic().applyPlaceholders(p, new List<>(lines.split("\n"))));
+            String startTitle = e.getlogic().applyPlaceholders(p,title);
+            List<String> startLines = e.getlogic().applyPlaceholders(p, new List<>(lines.split("\n")));
+            Practice.log(4, "Scoreboard: " + startTitle + "\n" + startLines);
+            board.updateTitle(startTitle);
+            board.updateLines(startLines);
             boards.put(p, board);
         }
         run = new BukkitRunnable()
@@ -57,8 +60,10 @@ public class ScoreboardComponent extends GameComponent
             {
                 for (Map.Entry<Player, FastBoard> entry:boards.entrySet())
                 {
-                    entry.getValue().updateTitle(e.getlogic().applyPlaceholders(entry.getKey(),title));
-                    entry.getValue().updateLines(e.getlogic().applyPlaceholders(entry.getKey(),new List<>(lines.split("\n"))));
+                    String updateTitle = e.getlogic().applyPlaceholders(entry.getKey(),title);
+                    List<String> updateLines = e.getlogic().applyPlaceholders(entry.getKey(),new List<>(lines.split("\n")));
+                    entry.getValue().updateTitle(updateTitle);
+                    entry.getValue().updateLines(updateLines);
                 }
             }
         };

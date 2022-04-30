@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.Lobby.ItemTypes.MenuItem;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -94,6 +95,7 @@ public class Lobby
         p.setMaxHealth(20);
         p.setHealth(20);
         p.setAllowFlight(false);
+        p.setGameMode(GameMode.SURVIVAL);
         p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
         setInv(player);
         BungeeUtil.getInstance().update();

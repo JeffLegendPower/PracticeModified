@@ -33,12 +33,12 @@ public class SoloGameLogic extends GameLogic
         player = players.get(0);
 
         loadWorld();
-        toSpawn(player);
         GameLogic log = this;
         new BukkitRunnable(){
             @Override
             public void run()
             {
+                toSpawn(player);
                 triggerEvent(new StartEvent(log));
             }
         }.runTaskLater(Practice.Instance,0);

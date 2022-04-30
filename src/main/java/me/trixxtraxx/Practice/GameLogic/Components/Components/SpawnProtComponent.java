@@ -23,14 +23,14 @@ import me.TrixxTraxx.Linq.List;
 public class SpawnProtComponent extends GameComponent
 {
     @Config
-    private int spawnProt;
+    protected int spawnProt;
     @Config
-    private String remaining;
+    protected String remaining;
     @Config
-    private String starting;
+    protected String starting;
 
-    private HashMap<Player, Location> prot = new HashMap<>();
-    private List<Player> tped = new List<>();
+    protected HashMap<Player, Location> prot = new HashMap<>();
+    protected List<Player> tped = new List<>();
 
     public SpawnProtComponent(GameLogic logic, int spawnProt, String remaining, String starting)
     {

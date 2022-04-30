@@ -699,16 +699,33 @@ public class SQLUtil
         {
             Statement statement = con.createStatement();
             statement.addBatch(
-                    "CREATE TABLE IF NOT EXISTS `BlockinPracticeStats` (" +
+                    "CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Stats` (" +
                             "  `" + logic.getName() + "Stats_ID` int(11) NOT NULL AUTO_INCREMENT," +
                             "  `Player_ID` int(11) NOT NULL,\n" +
                             "  PRIMARY KEY (`" + logic.getName() + "Stats_ID`),\n" +
                             "  KEY `Player` (`Player_ID`),\n" +
-                            "  CONSTRAINT `Player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON\n" +
+                            "  CONSTRAINT `" + logic.getName() + "Stats1` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON\n" +
                             "  UPDATE\n" +
                             "    NO ACTION\n" +
                             ") ENGINE = InnoDB AUTO_INCREMENT = 9 DEFAULT CHARSET = utf8mb4"
             );
+            statement.addBatch(
+                    "CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Games` (" +
+                            "  `" + logic.getName() + "Games_ID` int(11) NOT NULL AUTO_INCREMENT," +
+                            "  `Player_ID` int(11) NOT NULL,\n" +
+                            "  PRIMARY KEY (`" + logic.getName() + "Games_ID`),\n" +
+                            "  CONSTRAINT `" + logic.getName() + "Games1` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON\n" +
+                            "  UPDATE\n" +
+                            "    NO ACTION\n" +
+                            ") ENGINE = InnoDB AUTO_INCREMENT = 9 DEFAULT CHARSET = utf8mb4"
+            );
+    
+            statement.executeBatch();
+            statement.close();
+            
+            
+            statement = con.createStatement();
+            
             for(GameComponent component: logic.getComponents(IStatComponent.class))
             {
                 IStatComponent comp = (IStatComponent) component;
@@ -718,18 +735,6 @@ public class SQLUtil
                     statement.addBatch("ALTER TABLE `" + logic.getName() + "Stats`\n" + "    ADD COLUMN IF NOT EXISTS `" + sql.getName() + "` " + sql.getType());
                 }
             }
-    
-            statement = con.createStatement();
-            statement.addBatch(
-                    "CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Games` (" +
-                            "  `" + logic.getName() + "Games_ID` int(11) NOT NULL AUTO_INCREMENT," +
-                            "  `Player_ID` int(11) NOT NULL,\n" +
-                            "  PRIMARY KEY (`" + logic.getName() + "Games_ID`),\n" +
-                            "  CONSTRAINT `Player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON\n" +
-                            "  UPDATE\n" +
-                            "    NO ACTION\n" +
-                            ") ENGINE = InnoDB AUTO_INCREMENT = 9 DEFAULT CHARSET = utf8mb4"
-            );
             for(GameComponent component: logic.getComponents(IStatComponent.class))
             {
                 IStatComponent comp = (IStatComponent) component;

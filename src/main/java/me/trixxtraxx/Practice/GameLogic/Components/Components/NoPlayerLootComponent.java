@@ -5,17 +5,17 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class DieToSpawnComponent extends GameComponent
+public class NoPlayerLootComponent extends GameComponent
 {
     
-    public DieToSpawnComponent(GameLogic logic)
+    public NoPlayerLootComponent(GameLogic logic)
     {
         super(logic);
     }
     
-    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onDie(PlayerDeathEvent event)
+    @TriggerEvent
+    public void onPlayerDeath(PlayerDeathEvent e)
     {
-        logic.toSpawn(event.getEntity());
+        e.getDrops().clear();
     }
 }

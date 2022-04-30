@@ -1,5 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components;
 
+import me.TrixxTraxx.Linq.List;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Events.PointGainEvent;
@@ -16,7 +18,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PointComponentFFA extends GameComponent
+public class PointComponentFFA extends GameComponent implements IStatComponent
 {
     @Config
     private int maxPoints;
@@ -75,7 +77,7 @@ public class PointComponentFFA extends GameComponent
             if(logic instanceof FFALogic)
             {
                 FFALogic ffaLogic = (FFALogic) logic;
-                ffaLogic.win(killer);
+                ffaLogic.win(killer, false);
             }
         }
     }
@@ -84,19 +86,39 @@ public class PointComponentFFA extends GameComponent
     public String applyPlaceholder(Player p, String s)
     {
         String newS = s;
+        int index = 1;
         for(Map.Entry<Player, Integer> entry : pointMap.entrySet())
         {
+            
             newS = newS
-                    .replace("{Points" + entry.getKey().getName() + "}", String.valueOf(entry.getValue()))
-                    .replace("{Points" + entry.getKey().getName() + "Player}", entry.getKey().getName());
+                    .replace("{Points" + index + "}", String.valueOf(entry.getValue()))
+                    .replace("{Points" + index + "Player}", entry.getKey().getName());
+            index++;
         }
         //replace the placeholders above with "" if they dont exist
-        for(int i = pointMap.size(); i < logic.getPlayers().size(); i++)
+        for(int i = pointMap.size() + 1; i < logic.getPlayers().size() + 1; i++)
         {
             newS = newS
-                    .replace("{Points" + logic.getPlayers().get(i).getName() + "}", "")
-                    .replace("{Points" + logic.getPlayers().get(i).getName() + "Player}", "");
+                    .replace("{Points" + i + "}", "0")
+                    .replace("{Points" + i + "Player}", "");
         }
         return newS;
+    }
+    
+    @Override
+    public String getStat(Player p, String stat)
+    {
+        if(stat.equalsIgnoreCase("Points")){
+            return pointMap.get(p) == null ? "0" : String.valueOf(pointMap.get(p));
+        }
+        throw new IllegalArgumentException("Stat not found");
+    }
+    
+    @Override
+    public List<SQLProperty> getSQL()
+    {
+        List<SQLProperty> list = new List();
+        list.add(new SQLProperty("Points", "int(11)", "0", true));
+        return list;
     }
 }

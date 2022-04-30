@@ -16,7 +16,9 @@ public class Game
     private static List<Game> games = new List<>();
     private GameLogic logic;
     private Kit kit;
-
+    
+    private boolean started = false;
+    private boolean ended = false;
 
     public Game(GameLogic log, List<Player> players, Kit k, Map m)
     {
@@ -32,17 +34,23 @@ public class Game
         }
         games.add(this);
         logic.start(this, players, m);
+        started = true;
         BungeeUtil.getInstance().update();
     }
 
     public GameLogic getLogic() {return logic;}
 
     public Kit getKit() {return kit;}
+    
+    public boolean isStarted() {return started;}
+    
+    public boolean hasEnded() {return ended;}
 
     public void stop(boolean stopLogic)
     {
         if (stopLogic) logic.stop(true);
         games.remove(this);
+        ended = true;
     }
 
     public static Game getGame(Player p)

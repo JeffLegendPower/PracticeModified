@@ -1,11 +1,9 @@
 package me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components;
 
-import com.google.gson.Gson;
-import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
-import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Events.WinEvent;
+import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.ChatColor;
