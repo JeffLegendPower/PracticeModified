@@ -13,6 +13,7 @@ import me.trixxtraxx.Practice.TriggerEvent;
 
 import java.util.ArrayList;
 import me.TrixxTraxx.Linq.List;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class StatComponent extends GameComponent
 {
@@ -22,13 +23,13 @@ public class StatComponent extends GameComponent
         super(logic);
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = 999, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(StopEvent event)
     {
         if(!(logic instanceof SoloGameLogic)) store();
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = 999, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(ResetEvent event)
     {
         store();
@@ -43,11 +44,24 @@ public class StatComponent extends GameComponent
 
     public void createTable()
     {
-        SQLUtil.Instance.addStatsTable(logic);
+        //run async
+        new BukkitRunnable(){
+            @Override
+            public void run()
+            {
+                SQLUtil.Instance.addStatsTable(logic);
+            }
+        }.runTaskAsynchronously(Practice.Instance);
     }
 
     public void store()
     {
-        SQLUtil.Instance.storeStats(logic);
+        new BukkitRunnable(){
+            @Override
+            public void run()
+            {
+                SQLUtil.Instance.storeStats(logic);
+            }
+        }.runTaskAsynchronously(Practice.Instance);
     }
 }

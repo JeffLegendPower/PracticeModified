@@ -51,39 +51,44 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
     {
         return s.replace("{" + mat + "Timer}", getTime());
     }
+    boolean success = false;
+    
+    @TriggerEvent
+    public void onEnd(ResetEvent e){
+        success = e.wasSuccess();
+    }
+    
+    @Override
+    public List<SQLProperty> getSQL()
+    {
+        List<SQLProperty> prop = new List<>();
+        prop.add(new SQLProperty("BlockinTime", "INT (11) DEFAULT NULL", "null", true));
+        prop.add(new SQLProperty("BestBlockinTime", "DOUBLE DEFAULT NULL", "null", false));
+        return prop;
+    }
     
     @Override
     public String getStat(Player p, String stat)
     {
-        if(stat.equalsIgnoreCase("Break" + mat + "Time")) return getTicks() + "";
-        if(stat.equalsIgnoreCase("BestBreak" + mat + "Time"))
-        {
+        if(stat.equalsIgnoreCase("BlockinTime")) return getTicks() + "";
+        if(stat.equalsIgnoreCase("BestBlockinTime")){
             double thisTime = ((double)getTicks()) / 20;
-    
+            
             PracticePlayer pp = PracticePlayer.getPlayer(p);
-            if(pp == null) return thisTime + "";
-    
+            if(pp == null) return success ? thisTime + "" : "NULL";
+            
             PlayerStats stats = pp.getStats(logic.getName());
-            if(stats == null) return thisTime + "";
-    
+            if(stats == null) return success ? thisTime + "" : "NULL";
+            
             String bestString = stats.getStat("BestBlockinTime");
+            if(!success) return bestString;
             if(bestString == null || bestString.equalsIgnoreCase("null") || bestString.isEmpty()) return thisTime + "";
-    
+            
             double bestTime = Double.parseDouble(bestString);
             Practice.log(4, "Best time: " + bestTime + " This time: " + thisTime);
             if(thisTime < bestTime) return thisTime + "";
             else return bestTime + "";
         }
-    
         throw new IllegalArgumentException("Stat " + stat + " not found");
-    }
-    
-    @Override
-    public List<IStatComponent.SQLProperty> getSQL()
-    {
-        List<IStatComponent.SQLProperty> prop = new List<>();
-        prop.add(new IStatComponent.SQLProperty("Break" + mat + "Time", "INT (11) DEFAULT NULL", "null", true));
-        prop.add(new IStatComponent.SQLProperty("BestBreak" + mat + "Time", "DOUBLE DEFAULT NULL", "null", false));
-        return prop;
     }
 }

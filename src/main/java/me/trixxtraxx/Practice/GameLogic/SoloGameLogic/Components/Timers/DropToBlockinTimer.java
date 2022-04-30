@@ -75,6 +75,13 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
         return s.replace("{BlockinTimer}", getTime());
     }
     
+    boolean success = false;
+    
+    @TriggerEvent
+    public void onEnd(ResetEvent e){
+        success = e.wasSuccess();
+    }
+    
     @Override
     public List<SQLProperty> getSQL()
     {
@@ -92,12 +99,13 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
             double thisTime = ((double)getTicks()) / 20;
             
             PracticePlayer pp = PracticePlayer.getPlayer(p);
-            if(pp == null) return thisTime + "";
+            if(pp == null) return success ? thisTime + "" : "NULL";
             
             PlayerStats stats = pp.getStats(logic.getName());
-            if(stats == null) return thisTime + "";
+            if(stats == null) return success ? thisTime + "" : "NULL";
             
             String bestString = stats.getStat("BestBlockinTime");
+            if(!success) return bestString;
             if(bestString == null || bestString.equalsIgnoreCase("null") || bestString.isEmpty()) return thisTime + "";
             
             double bestTime = Double.parseDouble(bestString);

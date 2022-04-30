@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.Component;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import me.TrixxTraxx.Linq.List;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class MapEditingSession
 {
@@ -51,8 +53,13 @@ public class MapEditingSession
         map.unload(true);
         if (save)
         {
-            SQLUtil.Instance.deleteMap(map);
-            SQLUtil.Instance.addMap(map);
+            new BukkitRunnable(){
+                @Override
+                public void run(){
+                    SQLUtil.Instance.deleteMap(map);
+                    SQLUtil.Instance.addMap(map);
+                }
+            }.runTaskAsynchronously(Practice.Instance);
         }
         //tp to lobby
         player.teleport(Bukkit.getWorld("world").getSpawnLocation());

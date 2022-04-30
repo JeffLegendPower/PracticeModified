@@ -15,6 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import me.TrixxTraxx.Linq.List;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class PracticePlayer
 {
@@ -58,8 +59,14 @@ public class PracticePlayer
         Kit kit = new Kit(playerName, -1, items, -1, defaultOrder);
         kit.setNewItems(items);
         kit.setNewDefaultOrder(defaultOrder);
-        SQLUtil.Instance.addKit(kit);
-        SQLUtil.Instance.updatePlayerKit(this, kit);
+        PracticePlayer finalPlayer = this;
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                SQLUtil.Instance.addKit(kit);
+                SQLUtil.Instance.updatePlayerKit(finalPlayer, kit);
+            }
+        }.runTaskAsynchronously(Practice.Instance);
         return;
     }
     public int getPlayerId(){return playerId;}
@@ -81,9 +88,15 @@ public class PracticePlayer
         }
         cachedKit.setNewItems(items);
         cachedKit.setNewDefaultOrder(defaultOrder);
-        
-        SQLUtil.Instance.updateKit(cachedKit);
-        SQLUtil.Instance.updatePlayerKit(this, cachedKit);
+    
+        PracticePlayer finalPlayer = this;
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                SQLUtil.Instance.updateKit(cachedKit);
+                SQLUtil.Instance.updatePlayerKit(finalPlayer, cachedKit);
+            }
+        }.runTaskAsynchronously(Practice.Instance);
     }
     public void openBungeeInventory(String inv){
         MessageProvider.SendMessage("PracticeGui", new Gson().toJson(new OpenGuiRequest(playerName, inv)));

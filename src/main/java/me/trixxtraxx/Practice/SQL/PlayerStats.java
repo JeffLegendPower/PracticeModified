@@ -48,7 +48,9 @@ public class PlayerStats
         
         public String getStat(String name)
         {
-            return stats.find(x -> x.Name.equalsIgnoreCase(name)).Value;
+            GamemodeStat stat = stats.find(x -> x.Name.equalsIgnoreCase(name));
+            if(stat == null) return "";
+            return stat.Value;
         }
     }
     
@@ -66,7 +68,9 @@ public class PlayerStats
     
     public String getStat(String name)
     {
-        return stats.find(x -> x.Name.equalsIgnoreCase(name)).Value;
+        GamemodeStat stat = stats.find(x -> x.Name.equalsIgnoreCase(name));
+        if(stat == null) return "";
+        return stat.Value;
     }
     
     public void setStat(String name, String value){
