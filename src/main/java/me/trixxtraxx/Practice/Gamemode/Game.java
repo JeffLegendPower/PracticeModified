@@ -20,7 +20,6 @@ public class Game
 
     public Game(GameLogic log, List<Player> players, Kit k, Map m)
     {
-        games.add(this);
         kit = k;
         logic = log;
         for (Player p : players)
@@ -31,6 +30,7 @@ public class Game
             p.setGameMode(GameMode.SURVIVAL);
             p.getEnderChest().clear();
         }
+        games.add(this);
         logic.start(this, players, m);
         BungeeUtil.getInstance().update();
     }

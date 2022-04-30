@@ -28,7 +28,9 @@ public class Map extends ComponentClass<MapComponent>
 
     public World load()
     {
+        Practice.log(3, "Loading map " + Name);
         world = Practice.worldLoader.loadWorld(LoadName);
+        Practice.log(3, "Loaded map " + Name + " new world " + world.getName());
         return world;
     }
 

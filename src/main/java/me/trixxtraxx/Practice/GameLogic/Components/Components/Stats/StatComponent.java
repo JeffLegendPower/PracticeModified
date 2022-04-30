@@ -7,6 +7,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.TriggerEvent;
 
@@ -22,21 +23,23 @@ public class StatComponent extends GameComponent
     }
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onEvent(GameEvent event)
+    public void onEvent(StopEvent event)
     {
-        if(event instanceof StopEvent)
-        {
-            if(!(logic instanceof SoloGameLogic)) store();
-        }
-        if(event instanceof ResetEvent)
-        {
-            store();
-        }
-        if(event instanceof StartEvent)
-        {
-            createTable();
-        }
+        if(!(logic instanceof SoloGameLogic)) store();
     }
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(ResetEvent event)
+    {
+        store();
+    }
+    
+    @TriggerEvent(priority = 999, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(StartEvent event)
+    {
+        createTable();
+    }
+    
 
     public void createTable()
     {

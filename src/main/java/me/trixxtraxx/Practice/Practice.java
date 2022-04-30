@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice;
 
 import com.grinderwolf.swm.api.SlimePlugin;
 import me.TrixxTraxx.Linq.List;
+import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
@@ -9,6 +10,9 @@ import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceho
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.PointComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelSpawnComponent;
+import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.PointComponentFFA;
+import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFALogic;
+import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFASpawnComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogicListener;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.*;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings.SettingsComponent;
@@ -31,6 +35,7 @@ import me.trixxtraxx.Practice.Map.Editor.MapEditingSession;
 import me.trixxtraxx.Practice.Map.Editor.MapEditorListener;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.CacheListener;
+import me.trixxtraxx.Practice.SQL.PlayerReceiver;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import me.trixxtraxx.Practice.Utils.Region;
@@ -210,7 +215,10 @@ public final class Practice extends JavaPlugin
             log(3, "enabled kit editor");
             getServer().getPluginManager().registerEvents(new KitEditorListener(), this);
             //init kit editor
-            KitEditor.init(new Region(new Location(Bukkit.getWorld("world"), conf.getInt("KitEditor.Region.x1"), conf.getInt("KitEditor.Region.y1"), conf.getInt("KitEditor.Region.z1")), new Location(Bukkit.getWorld("world"), conf.getInt("KitEditor.Region.x2"), conf.getInt("KitEditor.Region.y2"), conf.getInt("KitEditor.Region.z2"))));
+            KitEditor.init(
+                    new Region(new Location(Bukkit.getWorld("world"), conf.getInt("KitEditor.Region.x1"), conf.getInt("KitEditor.Region.y1"), conf.getInt("KitEditor.Region.z1")), new Location(Bukkit.getWorld("world"), conf.getInt("KitEditor.Region.x2"), conf.getInt("KitEditor.Region.y2"), conf.getInt("KitEditor.Region.z2"))),
+                    conf.getString("KitEditor.world")
+            );
         }
         else log(3, "disabled kit editor");
         
@@ -225,6 +233,8 @@ public final class Practice extends JavaPlugin
         }
     
         BungeeUtil.getInstance().init(conf.getString("Bungee.Identifier"), conf.getInt("Bungee.maxRatedPlayers"));
+    
+        RegisterMessages.registerReciever(new PlayerReceiver());
     }
 
     @Override
@@ -376,6 +386,73 @@ public final class Practice extends JavaPlugin
                 new OpponentPlaceholderComponent(g.getLogic());
                 new PointComponent(g.getLogic(), 2, "⬤");
 
+                new NoMapBreakComponent(m);
+            }
+            else if(args[0].equalsIgnoreCase("Chamber"))
+            {
+                List<Player> players = new List<>();
+                players.add((Player) s);
+                //add Bukkit.getPlayer() for each argument after 2
+                for(int i = 2; i < args.length; i++)
+                {
+                    Player pl = Bukkit.getPlayer(args[i]);
+                    if(pl != null) players.add(pl);
+                }
+                FFASpawnComponent spawn = new FFASpawnComponent(
+                        new List(
+                                new ConfigLocation(55.5, 43, -65.5, 0, 0),
+                                new ConfigLocation(40.5, 38.5, -10.5, 180, 0)
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0),
+                                //new ConfigLocation(0, 0, 0)
+                        )
+                );
+                Map m = new Map(-1, "FFA1", "FFA1", spawn);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                //Kit k = new Kit("OneInAChamber", -1, new List<>(), -1, new HashMap<>());
+                SQLUtil.Instance.applyComponents(k);
+                log(3, "Starting debug Game with " + players.size() + " players\n" +
+                        "Kit: " + k.getName() + "\n" +
+                        "Map: " + m.getName());
+                Game g = new Game(new FFALogic(), players, k, m);
+                g.getLogic().setName("OneInAChamber");
+                new NoDieComponent(g.getLogic());
+                new StartInventoryComponent(g.getLogic());
+                new SpawnProtComponent(g.getLogic(), 100,
+                                       ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
+                                       ChatColor.BLUE + "The Game started, go fight!"
+                );
+                new ScoreboardComponent(g.getLogic(),
+                                        ChatColor.AQUA + "One in a Chamber",
+                                        "" + "\n" +
+                                                "§91. {Points1Player}§b {Points1}\n" +
+                                                "§92. {Points2Player}§b {Points2}\n" +
+                                                //"§93. {Points3Player}§b {Points3}\n" +
+                                                //"§94. {Points4Player}§b {Points4}\n" +
+                                                //"§95. {Points5Player}§b {Points5}\n" +
+                                                //"§96. {Points6Player}§b {Points6}\n" +
+                                                //"§97. {Points7Player}§b {Points7}\n" +
+                                                //"§98. {Points8Player}§b {Points8}\n" +
+                                                //"§99. {Points9Player}§b {Points9}\n" +
+                                                //"§910. {Points10Player}§b {Points10}\n" +
+                                                "" + "\n" +
+                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                );
+                new PointComponentFFA(g.getLogic(), 20);
+                new KillArrowComponent(g.getLogic());
+                
+                
                 new NoMapBreakComponent(m);
             }
             else if(args[0].equalsIgnoreCase("saveKit"))

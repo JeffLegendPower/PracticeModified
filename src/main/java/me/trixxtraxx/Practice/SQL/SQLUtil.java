@@ -19,6 +19,8 @@ import java.lang.reflect.Constructor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
+
 import me.TrixxTraxx.Linq.List;
 
 public class SQLUtil
@@ -243,7 +245,7 @@ public class SQLUtil
     }
     
     
-    public PracticePlayer getPlayer(Player p)
+    /*public PracticePlayer getPlayer(Player p)
     {
         try
         {
@@ -315,7 +317,7 @@ public class SQLUtil
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
     
     private int createPlayer(Player p)
     {
@@ -382,32 +384,6 @@ public class SQLUtil
             ps.setInt(2, player.getPlayerId());
             ps.executeUpdate();
             ps.close();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
-    public void updatePlayerComponents(PracticePlayer p)
-    {
-        try
-        {
-            PreparedStatement ps = con.prepareStatement(
-                    "DELETE FROM PlayerComponent INNER JOIN Player ON Player.Player_ID = PlayerComponent.Player_ID WHERE PlayerComponent.Player_ID = ?");
-            ps.setInt(1, p.getPlayerId());
-    
-            ps.executeUpdate();
-            ps.close();
-    
-    
-            Statement s = con.createStatement();
-            for(PlayerComponent comp: p.getComponents())
-            {
-                s.addBatch("INSERT INTO PlayerComponent (Player_ID, Class, Data) VALUES (" + p.getPlayerId() + ",'" + comp.getClass().getName() + "','" + comp.getData() + "')");
-            }
-            s.executeBatch();
-            s.close();
         }
         catch(Exception e)
         {
@@ -722,26 +698,45 @@ public class SQLUtil
         try
         {
             Statement statement = con.createStatement();
-            statement.addBatch("CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Stats` (" + logic.getName() + "Stats_ID` int(11) NOT NULL, `Player_ID` int(11) NOT NULL, CONSTRAINT `Player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON UPDATE NO ACTION ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+            statement.addBatch(
+                    "CREATE TABLE IF NOT EXISTS `BlockinPracticeStats` (" +
+                            "  `" + logic.getName() + "Stats_ID` int(11) NOT NULL AUTO_INCREMENT," +
+                            "  `Player_ID` int(11) NOT NULL,\n" +
+                            "  PRIMARY KEY (`" + logic.getName() + "Stats_ID`),\n" +
+                            "  KEY `Player` (`Player_ID`),\n" +
+                            "  CONSTRAINT `Player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON\n" +
+                            "  UPDATE\n" +
+                            "    NO ACTION\n" +
+                            ") ENGINE = InnoDB AUTO_INCREMENT = 9 DEFAULT CHARSET = utf8mb4"
+            );
             for(GameComponent component: logic.getComponents(IStatComponent.class))
             {
                 IStatComponent comp = (IStatComponent) component;
                 for(IStatComponent.SQLProperty sql: comp.getSQL())
                 {
                     if(sql.isPerGame()) continue;
-                    statement.addBatch("ALTER TABLE `" + logic.getName() + "Stats`\n" + "    ADD COLUMN IF NOT EXISTS `" + sql.getName() + "` " + sql.getType() + " NOT NULL DEFAULT `" + sql.getDefaultValue() + "`;");
+                    statement.addBatch("ALTER TABLE `" + logic.getName() + "Stats`\n" + "    ADD COLUMN IF NOT EXISTS `" + sql.getName() + "` " + sql.getType());
                 }
             }
     
             statement = con.createStatement();
-            statement.addBatch("CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Games` (" + logic.getName() + "Stats_ID` int(11) NOT NULL, `Player_ID` int(11) NOT NULL, CONSTRAINT `Player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON UPDATE NO ACTION ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+            statement.addBatch(
+                    "CREATE TABLE IF NOT EXISTS `" + logic.getName() + "Games` (" +
+                            "  `" + logic.getName() + "Games_ID` int(11) NOT NULL AUTO_INCREMENT," +
+                            "  `Player_ID` int(11) NOT NULL,\n" +
+                            "  PRIMARY KEY (`" + logic.getName() + "Games_ID`),\n" +
+                            "  CONSTRAINT `Player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON\n" +
+                            "  UPDATE\n" +
+                            "    NO ACTION\n" +
+                            ") ENGINE = InnoDB AUTO_INCREMENT = 9 DEFAULT CHARSET = utf8mb4"
+            );
             for(GameComponent component: logic.getComponents(IStatComponent.class))
             {
                 IStatComponent comp = (IStatComponent) component;
                 for(IStatComponent.SQLProperty sql: comp.getSQL())
                 {
                     if(!sql.isPerGame()) continue;
-                    statement.addBatch("ALTER TABLE `" + logic.getName() + "Games`\n" + "    ADD COLUMN IF NOT EXISTS `" + sql.getName() + "` " + sql.getType() + " NOT NULL;");
+                    statement.addBatch("ALTER TABLE `" + logic.getName() + "Games`\n" + "    ADD COLUMN IF NOT EXISTS `" + sql.getName() + "` " + sql.getType());
                 }
             }
             statement.executeBatch();
@@ -752,6 +747,7 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
+    
     public void storeStats(GameLogic logic)
     {
         try
@@ -773,19 +769,25 @@ public class SQLUtil
                         if(sql.isPerGame())
                         {
                             extraGameProperties += ",`" + sql.getName() + "`";
-                            extraGameValues += ",`" + comp.getStat(p, sql.getName()) + "`";
+                            extraGameValues += "," + comp.getStat(p, sql.getName());
                         }
                         else
                         {
                             extraGlobalProperties += ",`" + sql.getName() + "`";
-                            extraGlobalValues += ",`" + comp.getStat(p, sql.getName()) + "`";
+                            extraGlobalValues += "," + comp.getStat(p, sql.getName());
                         }
                     }
                 }
-                String Gamesql = "INSERT INTO `" + logic.getName() + "Games` (`Player_ID`" + extraGameProperties + ") VALUES (`" + PracticePlayer.getPlayer(p).getPlayerId() + "`" + extraGameValues + ")";
+                
+                String Gamesql = "INSERT INTO `" + logic.getName() + "Games` (`Player_ID`" + extraGameProperties + ") VALUES (" + PracticePlayer.getPlayer(p).getPlayerId() + extraGameValues + ")";
                 statement.addBatch(Gamesql);
-                String GlobalSql = "UPDATE `" + logic.getName() + "Stats` SET (" + extraGlobalProperties + ") VALUES (" + extraGlobalValues + ") WHERE `Player_ID` = `" + PracticePlayer.getPlayer(p).getPlayerId() + "`";
-                statement.addBatch(GlobalSql);
+                Practice.log(4,Gamesql);
+                if(extraGlobalProperties.length() > 1)
+                {
+                    String GlobalSql = "UPDATE `" + logic.getName() + "Stats` SET (" + extraGlobalProperties + ") VALUES (" + extraGlobalValues + ") WHERE `Player_ID` = `" + PracticePlayer.getPlayer(p).getPlayerId() + "`";
+                    statement.addBatch(GlobalSql);
+                    Practice.log(4,GlobalSql);
+                }
             }
             statement.executeBatch();
         }

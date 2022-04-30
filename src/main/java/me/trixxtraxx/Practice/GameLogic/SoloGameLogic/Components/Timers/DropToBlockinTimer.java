@@ -17,7 +17,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.util.ArrayList;
 import me.TrixxTraxx.Linq.List;
 
-public class DropToBlockinTimer extends TimerComponent
+public class DropToBlockinTimer extends TimerComponent implements IStatComponent
 {
     public DropToBlockinTimer(GameLogic logic)
     {
@@ -70,5 +70,19 @@ public class DropToBlockinTimer extends TimerComponent
     @Override
     public String applyPlaceholder(Player p, String s){
         return s.replace("{BlockinTimer}", getTime());
+    }
+    
+    @Override
+    public String getStat(Player p, String stat)
+    {
+        return getTicks() + "";
+    }
+    
+    @Override
+    public List<SQLProperty> getSQL()
+    {
+        List<SQLProperty> prop = new List<>();
+        prop.add(new SQLProperty("BlockinTime", "INT (11) DEFAULT NULL", "null", true));
+        return prop;
     }
 }

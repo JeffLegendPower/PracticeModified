@@ -8,9 +8,12 @@ import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
 import me.TrixxTraxx.Linq.List;
+
+import java.security.cert.X509Certificate;
 
 public class Lobby
 {
@@ -87,17 +90,22 @@ public class Lobby
     public List<PracticePlayer> getPlayers(){return players;}
     public void addPlayer(PracticePlayer player){
         players.add(player);
+        Player p = player.getPlayer();
+        p.setMaxHealth(20);
+        p.setHealth(20);
+        p.setAllowFlight(false);
+        p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
         setInv(player);
         BungeeUtil.getInstance().update();
-        player.getPlayer().teleport(spawn.getLocation(Bukkit.getWorld(world)));
     }
     public void removePlayer(PracticePlayer player, boolean update)
     {
         players.remove(player);
         if(update) BungeeUtil.getInstance().update();
     }
-    private void setInv(PracticePlayer player){
-        PlayerInventory inv = player.getPlayer().getInventory();
+    public void setInv(PracticePlayer player){
+        Player p = player.getPlayer();
+        PlayerInventory inv = p.getInventory();
         inv.clear();
         for(LobbyItem item : items)
         {

@@ -63,6 +63,7 @@ public class Kit extends ComponentClass<KitComponent>
         }
         return new Gson().toJson(Items);
     }
+    public List<ItemStack> getItemStacks() {return items;}
     public String getDefaultOrder(){return new Gson().toJson(defaultOrder);}
     public void setSqlId(int id){sqlId = id;}
     public void setDefaultOrderId(int id){defaultOrderId = id;}
@@ -79,9 +80,8 @@ public class Kit extends ComponentClass<KitComponent>
     private void setItems(Player p)
     {
         PlayerInventory inv = p.getInventory();
-        HashMap<Integer, Integer> order = defaultOrder;
         PracticePlayer prac = PracticePlayer.getPlayer(p);
-        if(prac.getCustomOrder(sqlId) != null) order = prac.getCustomOrder(sqlId);
+        HashMap<Integer, Integer> order = getOrder(prac);
 
         List<Integer> indexes = new List<>();
         for (int i = 0; i < items.size(); i++) indexes.add(i);
@@ -114,6 +114,14 @@ public class Kit extends ComponentClass<KitComponent>
             Practice.log(4, "Seting remaining stack: " + index + "," + stack);
             inv.addItem(stack.clone());
         }
+    }
+    
+    public HashMap<Integer, Integer> getOrder(PracticePlayer prac)
+    {
+        HashMap<Integer, Integer> order = defaultOrder;
+        Object customOrder = prac.getCustomOrder(sqlId);
+        if(customOrder != null) order = (HashMap<Integer, Integer>) customOrder;
+        return order;
     }
 
     private void clearInventory(Player p)

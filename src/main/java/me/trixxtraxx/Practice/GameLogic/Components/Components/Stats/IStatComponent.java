@@ -14,7 +14,6 @@ public interface IStatComponent
     {
         private String name;
         private String type;
-        private String defaultValue;
         private boolean isPerGame;
         
         public SQLProperty(String name, String type, String defaultValue, boolean isPerGame)
@@ -22,7 +21,6 @@ public interface IStatComponent
             this.name = name;
             this.type = type;
             this.isPerGame = isPerGame;
-            this.defaultValue = defaultValue;
         }
         
         public String getName()
@@ -38,11 +36,6 @@ public interface IStatComponent
         public boolean isPerGame()
         {
             return isPerGame;
-        }
-        
-        public String getDefaultValue()
-        {
-            return defaultValue;
         }
     }
     

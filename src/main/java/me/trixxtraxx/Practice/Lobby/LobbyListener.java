@@ -1,7 +1,10 @@
 package me.trixxtraxx.Practice.Lobby;
 
+import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -57,6 +60,7 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
+        if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer((Player) event.getPlayer())) return;
         if(lobby.getBlockedInventories().contains(event.getInventory().getTitle()))
         {
             event.setCancelled(true);
@@ -68,6 +72,7 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
+        if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(event.getPlayer())) return;
         LobbyItem item = lobby.getItem((event.getPlayer().getInventory().getHeldItemSlot()));
         if(item != null)
         {
@@ -80,6 +85,7 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getWhoClicked().getWorld());
         if(lobby == null) return;
+        if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer((Player) event.getWhoClicked())) return;
         if(lobby.isInvMoveBlocked())
         {
             event.setCancelled(true);
@@ -102,7 +108,7 @@ public class LobbyListener implements Listener
         lobby.removePlayer(PracticePlayer.getPlayer(event.getPlayer()), true);
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onLobbyJoin(PlayerChangedWorldEvent event)
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
@@ -110,7 +116,7 @@ public class LobbyListener implements Listener
         lobby.addPlayer(PracticePlayer.getPlayer(event.getPlayer()));
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onLobbyJoin(PlayerJoinEvent event)
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());

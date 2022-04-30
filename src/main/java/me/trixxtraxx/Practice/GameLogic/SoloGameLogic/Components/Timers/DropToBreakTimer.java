@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers;
 
 import com.google.gson.Gson;
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 
-public class DropToBreakTimer extends TimerComponent
+public class DropToBreakTimer extends TimerComponent implements IStatComponent
 {
     @Config
     private Material mat;
@@ -46,5 +47,19 @@ public class DropToBreakTimer extends TimerComponent
     public String applyPlaceholder(Player p, String s)
     {
         return s.replace("{" + mat + "Timer}", getTime());
+    }
+    
+    @Override
+    public String getStat(Player p, String stat)
+    {
+        return getTicks() + "";
+    }
+    
+    @Override
+    public List<IStatComponent.SQLProperty> getSQL()
+    {
+        List<IStatComponent.SQLProperty> prop = new List<>();
+        prop.add(new IStatComponent.SQLProperty("Break" + mat + "Time", "INT (11) DEFAULT NULL", "null", true));
+        return prop;
     }
 }

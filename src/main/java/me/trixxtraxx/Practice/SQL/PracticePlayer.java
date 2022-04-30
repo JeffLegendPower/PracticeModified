@@ -2,10 +2,12 @@ package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.MessageProvider;
+import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Practice;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -14,27 +16,56 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import me.TrixxTraxx.Linq.List;
 
-public class PracticePlayer extends ComponentClass<PlayerComponent>
+public class PracticePlayer
 {
     private static List<PracticePlayer> players = new List<>();
-    private Player player;
+    private String playerName;
     private int playerId;
     private HashMap<Integer, HashMap<Integer, Integer>> customKitOrders;
-    private Kit kit;
+    private List<PlayerStats> stats;
+    private int kitId;
+    private boolean queriedKit = false;
+    private Kit cachedKit = null;
     
-    public PracticePlayer(int playerId, Player p, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, Kit kit){
-        player = p;
+    public PracticePlayer(int playerId, int kitId, String playerName, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, List<PlayerStats> stats)
+    {
+        this.playerName = playerName;
         this.customKitOrders = customKitOrders;
         this.playerId = playerId;
-        this.kit = kit;
+        this.stats = stats;
+        this.kitId = kitId;
     }
     
-    public Player getPlayer(){return player;}
-    public Kit getKit(){return kit;}
+    public void resetKit(){
+        queriedKit = false;
+        cachedKit = null;
+    }
+    public Player getPlayer(){return Bukkit.getPlayer(playerName);}
+    public Kit getKit()
+    {
+        if(queriedKit) return cachedKit;
+        if(kitId == -1){
+            queriedKit = true;
+            return cachedKit;
+        }
+        Kit kit = SQLUtil.Instance.getKit(kitId);
+        queriedKit = true;
+        cachedKit = kit;
+        return kit;
+    }
+    public void createKit(List<ItemStack> items, HashMap<Integer, Integer> defaultOrder)
+    {
+        Kit kit = new Kit(playerName, -1, items, -1, defaultOrder);
+        kit.setNewItems(items);
+        kit.setNewDefaultOrder(defaultOrder);
+        SQLUtil.Instance.addKit(kit);
+        SQLUtil.Instance.updatePlayerKit(this, kit);
+        return;
+    }
     public int getPlayerId(){return playerId;}
     public HashMap<Integer, Integer> getCustomOrder(int kitId){return customKitOrders.get(kitId);}
     public void saveKit(){
-        PlayerInventory inv = player.getInventory();
+        PlayerInventory inv = getPlayer().getInventory();
         HashMap<Integer, Integer> defaultOrder = new HashMap<>();
         List<ItemStack> items = new List<>();
         for(int i = 0; i < 40; i++)
@@ -44,63 +75,63 @@ public class PracticePlayer extends ComponentClass<PlayerComponent>
             defaultOrder.put(items.size(), i);
             items.add(item);
         }
-        if(kit == null){
-            kit = new Kit(player.getName(), -1, items, -1, defaultOrder);
-            kit.setNewItems(items);
-            kit.setNewDefaultOrder(defaultOrder);
-            SQLUtil.Instance.addKit(kit);
-            SQLUtil.Instance.updatePlayerKit(this, kit);
-            return;
+        if(getKit() == null)
+        {
+            createKit(items, defaultOrder);
         }
-        kit.setNewItems(items);
-        kit.setNewDefaultOrder(defaultOrder);
+        cachedKit.setNewItems(items);
+        cachedKit.setNewDefaultOrder(defaultOrder);
         
-        SQLUtil.Instance.updateKit(kit);
-        SQLUtil.Instance.updatePlayerKit(this, kit);
+        SQLUtil.Instance.updateKit(cachedKit);
+        SQLUtil.Instance.updatePlayerKit(this, cachedKit);
     }
     public void openBungeeInventory(String inv){
-        MessageProvider.SendMessage("PracticeGui", new Gson().toJson(new OpenGuiRequest(player, inv)));
+        MessageProvider.SendMessage("PracticeGui", new Gson().toJson(new OpenGuiRequest(playerName, inv)));
     }
     public void executeBungeeCommand(String command){
-        MessageProvider.SendMessage("ExecuteCommand", new Gson().toJson(new ExecuteCommand(player, command)));
+        MessageProvider.SendMessage("ExecuteCommand", new Gson().toJson(new ExecuteCommand(playerName, command)));
     }
     public void toLobby(){
-        //TODO: implement
+        BungeeUtil.getInstance().toLobby(getPlayer());
+    }
+    public String getName(){
+        return playerName;
     }
     
     private class OpenGuiRequest{
         private String player;
         private String gui;
-        public OpenGuiRequest(Player p, String inv)
+        public OpenGuiRequest(String p, String inv)
         {
-            player = p.getName();
+            player = p;
             gui = inv;
         }
     }
     private class ExecuteCommand{
         private String player;
         private String command;
-        public ExecuteCommand(Player p, String cmd)
+        public ExecuteCommand(String p, String cmd)
         {
-            player = p.getName();
+            player = p;
             command = cmd;
         }
     }
     
-    public static PracticePlayer generatePlayer(Player p){
-        PracticePlayer prac = SQLUtil.Instance.getPlayer(p);
-        players.add(prac);
-        return prac;
+    public static PracticePlayer add(PracticePlayer p)
+    {
+        Practice.log(4, "Adding player: " + p.getName());
+        players.add(p);
+        return p;
     }
-    public static PracticePlayer removePlayer(Player p){
-        PracticePlayer prac = getPlayer(p);
-        players.remove(prac);
-        return prac;
+    public static PracticePlayer remove(PracticePlayer p){
+        Practice.log(4, "Removing player: " + p.getName());
+        players.remove(p);
+        return p;
     }
     public static PracticePlayer getPlayer(Player p){
         for (PracticePlayer prac:players)
         {
-            if(prac.player == p) return prac;
+            if(prac.playerName.equalsIgnoreCase(p.getName())) return prac;
         }
         return null;
     }
