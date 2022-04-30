@@ -98,6 +98,10 @@ public class PracticePlayer
         return playerName;
     }
     
+    //get the stats
+    public List<PlayerStats> getStats(){return stats;}
+    public PlayerStats getStats(String gm){return stats.find(x -> x.getGamemode()!= null && x.getGamemode().equalsIgnoreCase(gm));}
+    
     private class OpenGuiRequest{
         private String player;
         private String gui;

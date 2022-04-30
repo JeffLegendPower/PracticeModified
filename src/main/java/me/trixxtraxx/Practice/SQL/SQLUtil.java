@@ -1,6 +1,9 @@
 package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
+import me.trixxtraxx.Practice.Bungee.GameAddAction;
+import me.trixxtraxx.Practice.Bungee.GlobalStatUpdateAction;
+import me.trixxtraxx.Practice.Bungee.StatUpdatePacket;
 import me.trixxtraxx.Practice.Component;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
@@ -704,6 +707,7 @@ public class SQLUtil
                             "  `Player_ID` int(11) NOT NULL,\n" +
                             "  PRIMARY KEY (`" + logic.getName() + "Stats_ID`),\n" +
                             "  KEY `Player` (`Player_ID`),\n" +
+                            "  UNIQUE KEY `UniquePlayer` (`Player_ID`)," +
                             "  CONSTRAINT `" + logic.getName() + "Stats1` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON\n" +
                             "  UPDATE\n" +
                             "    NO ACTION\n" +
@@ -757,14 +761,20 @@ public class SQLUtil
     {
         try
         {
+            List<GlobalStatUpdateAction> statUpdate = new List();
+            List<GameAddAction> gameAdd = new List();
             Statement statement = con.createStatement();
             for(Player p: logic.getPlayers())
             {
                 String extraGameProperties = "";
                 String extraGameValues = "";
                 
-                String extraGlobalProperties = "";
-                String extraGlobalValues = "";
+                String globalProperties = "";
+                String globalValues = "";
+                
+                String globalUpdate = "";
+                
+                List<PlayerStats.GamemodeStat> gameStats = new List();
                 
                 for(GameComponent component: logic.getComponents(IStatComponent.class))
                 {
@@ -773,28 +783,39 @@ public class SQLUtil
                     {
                         if(sql.isPerGame())
                         {
+                            String val = comp.getStat(p, sql.getName());
+                            gameStats.add(new PlayerStats.GamemodeStat(sql.getName(), val));
                             extraGameProperties += ",`" + sql.getName() + "`";
-                            extraGameValues += "," + comp.getStat(p, sql.getName());
+                            extraGameValues += "," + val;
                         }
                         else
                         {
-                            extraGlobalProperties += ",`" + sql.getName() + "`";
-                            extraGlobalValues += "," + comp.getStat(p, sql.getName());
+                            String val = comp.getStat(p, sql.getName());
+                            statUpdate.add(new GlobalStatUpdateAction(p.getName(), logic.getName(), sql.getName(), val));
+                            globalProperties += ",`" + sql.getName() + "`";
+                            globalValues += "," + val;
+                            if(!globalUpdate.isEmpty()) globalUpdate += ",";
+                            globalUpdate += "`" + sql.getName() + "` = " + val;
                         }
                     }
                 }
+    
+                gameAdd.add(new GameAddAction(p.getName(), logic.getName(), new PlayerStats.GamemodeGame(gameStats)));
                 
                 String Gamesql = "INSERT INTO `" + logic.getName() + "Games` (`Player_ID`" + extraGameProperties + ") VALUES (" + PracticePlayer.getPlayer(p).getPlayerId() + extraGameValues + ")";
                 statement.addBatch(Gamesql);
                 Practice.log(4,Gamesql);
-                if(extraGlobalProperties.length() > 1)
-                {
-                    String GlobalSql = "UPDATE `" + logic.getName() + "Stats` SET (" + extraGlobalProperties + ") VALUES (" + extraGlobalValues + ") WHERE `Player_ID` = `" + PracticePlayer.getPlayer(p).getPlayerId() + "`";
-                    statement.addBatch(GlobalSql);
-                    Practice.log(4,GlobalSql);
-                }
+                String insertIfNotExists = "INSERT INTO `" + logic.getName() + "Stats` " +
+                        "(`Player_ID`" + globalProperties + ") " +
+                        "VALUES (" + PracticePlayer.getPlayer(p).getPlayerId() + globalValues + ") " +
+                        "ON DUPLICATE KEY UPDATE " + globalUpdate;
+                statement.addBatch(insertIfNotExists);
+                Practice.log(4,insertIfNotExists);
             }
             statement.executeBatch();
+            StatUpdatePacket pack = new StatUpdatePacket(gameAdd, statUpdate);
+            pack.update();
+            pack.send();
         }
         catch(Exception e)
         {

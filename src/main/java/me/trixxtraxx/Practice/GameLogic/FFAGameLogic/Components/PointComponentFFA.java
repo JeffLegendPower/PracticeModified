@@ -23,9 +23,9 @@ public class PointComponentFFA extends GameComponent implements IStatComponent
     @Config
     private int maxPoints;
     
-    HashMap<Player, Integer> pointMap = new HashMap<>();
-    HashMap<Player, Player> lastHit = new HashMap<>();
-    
+    protected HashMap<Player, Integer> pointMap = new HashMap<>();
+    protected HashMap<Player, Player> lastHit = new HashMap<>();
+    protected int initialPlayers = 0;
     
     public PointComponentFFA(GameLogic logic, int maxPoints){
         super(logic);
@@ -85,6 +85,7 @@ public class PointComponentFFA extends GameComponent implements IStatComponent
     @Override
     public String applyPlaceholder(Player p, String s)
     {
+        if(logic.getPlayers().size() > initialPlayers) initialPlayers = logic.getPlayers().size();
         String newS = s;
         int index = 1;
         for(Map.Entry<Player, Integer> entry : pointMap.entrySet())
@@ -96,12 +97,20 @@ public class PointComponentFFA extends GameComponent implements IStatComponent
             index++;
         }
         //replace the placeholders above with "" if they dont exist
-        for(int i = pointMap.size() + 1; i < logic.getPlayers().size() + 1; i++)
+        for(int i = pointMap.size() + 1; i < initialPlayers + 1; i++)
         {
             newS = newS
                     .replace("{Points" + i + "}", "0")
                     .replace("{Points" + i + "Player}", "");
         }
+        //add {Place}, {Name}, {Points}
+        String place = (new List<>(pointMap.keySet()).indexOf(p) + 1) + "";
+        //set place to x if the player is not in the list
+        if(!pointMap.containsKey(p)) place = "x";
+        newS = newS
+                .replace("{Place}", place)
+                .replace("{Name}", p.getName())
+                .replace("{Points}", String.valueOf(pointMap.get(p)));
         return newS;
     }
     

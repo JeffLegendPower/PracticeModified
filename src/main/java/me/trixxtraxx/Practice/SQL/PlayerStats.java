@@ -10,8 +10,8 @@ public class PlayerStats
     
     public static class GamemodeStat
     {
-        private String Name;
-        private String Value;
+        protected String Name;
+        protected String Value;
         
         public GamemodeStat(String name, Object value)
         {
@@ -28,11 +28,13 @@ public class PlayerStats
         {
             return this.Value;
         }
+        
+        public void setValue(String value){this.Value = value;}
     }
     
     public static class GamemodeGame
     {
-        List<GamemodeStat> stats = new List();
+        protected List<GamemodeStat> stats = new List();
         
         public GamemodeGame(List<GamemodeStat> stats)
         {
@@ -65,6 +67,17 @@ public class PlayerStats
     public String getStat(String name)
     {
         return stats.find(x -> x.Name.equalsIgnoreCase(name)).Value;
+    }
+    
+    public void setStat(String name, String value){
+        GamemodeStat stat = stats.find(x -> x.Name.equalsIgnoreCase(name));
+        if(stat == null) return;
+        stat.Value = value;
+    }
+    
+    public void addGame(GamemodeGame game)
+    {
+        this.games.add(game);
     }
     
     public List<GamemodeGame> getGames()
