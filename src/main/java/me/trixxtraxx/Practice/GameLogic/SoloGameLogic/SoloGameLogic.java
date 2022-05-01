@@ -20,9 +20,9 @@ import me.TrixxTraxx.Linq.List;
 
 public class SoloGameLogic extends GameLogic
 {
-    private Player player;
-    private Game game;
-    private Map map;
+    protected Player player;
+    protected Game game;
+    protected Map map;
 
     @Override
     public void start(Game gm, List<Player> players, Map m)

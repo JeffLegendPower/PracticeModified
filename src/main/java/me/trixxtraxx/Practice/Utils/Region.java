@@ -80,6 +80,16 @@ public class Region
         return loc2.getLocation(w);
     }
     
+    public ConfigLocation getLoc1()
+    {
+        return loc1;
+    }
+    
+    public ConfigLocation getLoc2()
+    {
+        return loc2;
+    }
+    
     public String serialize()
     {
         return loc1.serialize() + ";" + loc2.serialize();
@@ -94,5 +104,12 @@ public class Region
     @Override
     public String toString(){
         return serialize();
+    }
+    
+    public Region shift(int xOffset, int yOffset, int zOffset){
+        return new Region(
+                new ConfigLocation(loc1.getX() + xOffset, loc1.getY() + yOffset, loc1.getZ() + zOffset, loc1.getYaw(), loc1.getPitch()),
+                new ConfigLocation(loc2.getX() + xOffset, loc2.getY() + yOffset, loc2.getZ() + zOffset, loc2.getYaw(), loc2.getPitch())
+        );
     }
 }

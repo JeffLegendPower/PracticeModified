@@ -3,30 +3,17 @@ package me.trixxtraxx.Practice.GameLogic.SoloGameLogic;
 import com.google.gson.Gson;
 import me.trixxtraxx.Practice.Map.ISpawnComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class SoloSpawnCoponent implements ISpawnComponent
 {
-    private SoloSettings settings = new SoloSettings();
-    // no location for easy serialisation
-
-    private class SoloSettings
-    {
-        public double x;
-        public double y;
-        public double z;
-        public float yaw;
-        public float pitch;
-    }
+    private ConfigLocation loc;
 
     public SoloSpawnCoponent(Location loc)
     {
-        settings.x = loc.getX();
-        settings.y = loc.getY();
-        settings.z = loc.getZ();
-        settings.yaw = loc.getYaw();
-        settings.pitch = loc.getPitch();
+        this.loc = new ConfigLocation(loc);
     }
 
     public SoloSpawnCoponent() {}
@@ -34,18 +21,18 @@ public class SoloSpawnCoponent implements ISpawnComponent
     @Override
     public Location getSpawn(GameLogic logic, Player p)
     {
-        return new Location(logic.getWorld(), settings.x, settings.y, settings.z, settings.yaw, settings.pitch);
+        return loc.getLocation(logic.getWorld());
     }
 
     @Override
     public String getData()
     {
-        return new Gson().toJson(settings);
+        return new Gson().toJson(loc);
     }
 
     @Override
     public void applyData(String s)
     {
-        settings = new Gson().fromJson(s, SoloSettings.class);
+        loc = new Gson().fromJson(s, ConfigLocation.class);
     }
 }

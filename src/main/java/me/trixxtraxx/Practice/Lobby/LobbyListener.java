@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class LobbyListener implements Listener
 {
@@ -67,7 +68,7 @@ public class LobbyListener implements Listener
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
@@ -141,6 +142,16 @@ public class LobbyListener implements Listener
         Lobby lobby = Lobby.get(event.getEntity().getWorld());
         if(lobby == null) return;
         if(lobby.isHungerBlocked())
+        {
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onWeatherChange(WeatherChangeEvent event){
+        Lobby lobby = Lobby.get(event.getWorld());
+        if(lobby == null) return;
+        if(lobby.isWeatherBlocked())
         {
             event.setCancelled(true);
         }

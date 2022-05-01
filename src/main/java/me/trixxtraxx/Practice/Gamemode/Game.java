@@ -31,6 +31,8 @@ public class Game
             p.setFoodLevel(20);
             p.setGameMode(GameMode.SURVIVAL);
             p.getEnderChest().clear();
+            Game currentGame = getGame(p);
+            if (currentGame != null) currentGame.getLogic().removePlayer(p);
         }
         games.add(this);
         logic.start(this, players, m);
@@ -62,13 +64,14 @@ public class Game
         return null;
     }
 
-    public static Game getGame(World w)
+    public static List<Game> getGames(World w)
     {
+        List<Game> gs = new List<>();
         for (Game g : games)
         {
-            if (g.getLogic().getWorld() == w) return g;
+            if (g.getLogic().getWorld() == w) gs.add(g);
         }
-        return null;
+        return gs;
     }
     
     public static List<Game> getGames() {return games;}

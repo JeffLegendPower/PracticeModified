@@ -20,6 +20,8 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings.Settin
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToBlockinTimer;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToBreakTimer;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToResetTimer;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoScaleSpawnComponent;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoscaleLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCoponent;
 import me.trixxtraxx.Practice.Gamemode.Game;
@@ -28,10 +30,7 @@ import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Lobby.LobbyListener;
-import me.trixxtraxx.Practice.Map.Components.BedLayerComponent;
-import me.trixxtraxx.Practice.Map.Components.BreakRegion;
-import me.trixxtraxx.Practice.Map.Components.ClearOnDropComponent;
-import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
+import me.trixxtraxx.Practice.Map.Components.*;
 import me.trixxtraxx.Practice.Map.Editor.MapEditingSession;
 import me.trixxtraxx.Practice.Map.Editor.MapEditorListener;
 import me.trixxtraxx.Practice.Map.Map;
@@ -266,7 +265,7 @@ public final class Practice extends JavaPlugin
                 new DisconnectStopComponent(g.getLogic());
                 List<Material> removeMaterials = new List(Material.ANVIL, Material.BED,Material.NETHER_STAR);
                 log(4, "removing materials: " + removeMaterials.size());
-                new DropItemComponent(g.getLogic(), Material.ANVIL, removeMaterials);
+                new DropItemComponent(g.getLogic(), Material.ANVIL, removeMaterials, true);
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
                 new DropToBlockinTimer(g.getLogic());
@@ -283,7 +282,7 @@ public final class Practice extends JavaPlugin
                                 ChatColor.BLUE + "Blockin:     " + ChatColor.AQUA + "{BlockinTimer}" + "\n" +
                                 ChatColor.BLUE + "Finish:       " + ChatColor.AQUA + "{TotalTimer}" + "\n" +
                                 "" + "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
                 
                 SQLUtil.Instance.applyComponents(m);
@@ -298,22 +297,41 @@ public final class Practice extends JavaPlugin
             else if(args[0].equalsIgnoreCase("Bridge"))
             {
                 Player p = (Player) s;
-                Map m = new Map(-1,"BridgeTest", "BridgeTest", new SoloSpawnCoponent(new Location(p.getWorld(), 0, 100, 0)));
+                Map m = new Map(-1,"BridgeTest", "BridgeTest", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100, 0, -90, 0)));
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloGameLogic(), new List<>(Collections.singletonList(p)), k, m);
+                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m);
                 g.getLogic().setName("BridgePractice");
-                new PressurePlateResetComponent(g.getLogic());
+                
                 new MapResetComponent(g.getLogic());
+                new PressurePlateResetComponent(g.getLogic());
+                
                 new YKillComponent(g.getLogic(), 90);
                 new KillResetComponent(g.getLogic());
+                
                 new DisconnectStopComponent(g.getLogic());
-                new DropItemComponent(g.getLogic(), Material.WOOL, new List<>(new Material[]{Material.BED}));
+                
+                new DropItemComponent(g.getLogic(), Material.WOOL, new List<>(new Material[]{Material.BED}), false);
+                new DropToResetTimer(g.getLogic());
+                
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
-                new DropToResetTimer(g.getLogic());
-
+                new LeaveItemComponent(g.getLogic(), Material.BED);
+                new NoHungerComponent(g.getLogic());
+                new NoItemDropComponent(g.getLogic());
+                
+                new ScoreboardComponent(g.getLogic(),
+                        ChatColor.AQUA + "Bridge Practice",
+                                "\n" +
+                                ChatColor.BLUE + "Time:     " + ChatColor.AQUA + "{TotalTimer}" + "\n" +
+                                "\n" +
+                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                );
+                
                 new NoMapBreakComponent(m);
+                new AutoScaleComponent(m, 0, 0, 20,new List(new Region(new ConfigLocation(-5.5,90, -5.5,0,0), new ConfigLocation(5.5, 110, 5.5)),
+                                                                    new Region(new ConfigLocation(20.5,90, -5.5,0,0), new ConfigLocation(30.5, 110, 5.5))
+                ));
             }
             else if(args[0].equalsIgnoreCase("classic"))
             {
@@ -466,7 +484,7 @@ public final class Practice extends JavaPlugin
                                                 "\n" +
                                                 "§9{Place}. {Name}§b {Points}" +
                                                 "" + "\n" +
-                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                                ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
                 
                 new NoHungerComponent(g.getLogic());

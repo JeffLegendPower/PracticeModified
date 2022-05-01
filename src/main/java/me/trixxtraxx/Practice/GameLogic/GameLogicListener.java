@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic;
 
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -19,42 +20,49 @@ public class GameLogicListener implements Listener
 {
     public void onEvent(Event e, World w, Player p)
     {
-        Game g = Game.getGame(w);
-        if(g== null) return;
-        if(p == null)
-        {
-            g.getLogic().triggerEvent(e);
+        Game g = Game.getGame(p);
+        if(g== null) {
+            List<Game> games = Game.getGames(w);
+            for(Game gg : games) gg.getLogic().triggerEvent(e);
+            return;
         }
-        else
-        {
-            if(g.getLogic().getPlayers().contains(p)) {
-                g.getLogic().triggerEvent(e);
-            }
-        }
+        
+        g.getLogic().triggerEvent(e);
     }
 
     public void onEvent(Event e, World w, Entity en)
     {
-        Game g = Game.getGame(w);
-        if( g== null) return;
         if(en instanceof Player)
         {
             Player p = (Player) en;
-            if(g.getLogic().getPlayers().contains(p)) {
-                g.getLogic().triggerEvent(e);
+            Game g = Game.getGame(p);
+            if(g== null) {
+                List<Game> games = Game.getGames(w);
+                for(Game gg : games) gg.getLogic().triggerEvent(e);
+                return;
             }
+            
+            g.getLogic().triggerEvent(e);
             return;
         }
         
         if(en instanceof Projectile && ((Projectile)en).getShooter() instanceof Player){
             Player p = (Player)((Projectile)en).getShooter();
-            if(g.getLogic().getPlayers().contains(p)) {
-                g.getLogic().triggerEvent(e);
+            Game g = Game.getGame(p);
+            if(g== null) {
+                List<Game> games = Game.getGames(w);
+                for(Game gg : games) gg.getLogic().triggerEvent(e);
+                return;
             }
+            g.getLogic().triggerEvent(e);
             return;
         }
         
-        g.getLogic().triggerEvent(e);
+        List<Game> games = Game.getGames(w);
+        for(Game g : games)
+        {
+            g.getLogic().triggerEvent(e);
+        }
     }
 
     @EventHandler
@@ -118,7 +126,7 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(EntityDamageByEntityEvent   e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
-    public void onEventList(EntityDamageEvent   e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
+    public void onEventList(EntityDamageEvent e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
     public void onEventList(EntityDeathEvent  e) {if(!(e.getEntity() instanceof Player)) onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
@@ -139,8 +147,6 @@ public class GameLogicListener implements Listener
     public void onEventList(EntityTargetLivingEntityEvent   e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
     public void onEventList(EntityTeleportEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
-    @EventHandler
-    public void onEventList(ExpBottleEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
     public void onEventList(ExplosionPrimeEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler

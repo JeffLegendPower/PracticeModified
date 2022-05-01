@@ -50,13 +50,13 @@ public abstract class ComponentClass<E extends Component>
     
     public <T> T triggerEvent(T e)
     {
-        if(e.getClass() == DropEvent.class) Practice.log(4, "Triggering " + getClass().getSimpleName() + "; checking " + getComponents().size() + " components");
+        if(e.getClass() == DropEvent.class) Practice.log(5, "Triggering " + getClass().getSimpleName() + "; checking " + getComponents().size() + " components");
         List<MethodData> methods = new List<>();
         for(Component comp: getComponents())
         {
             Class<?> c = comp.getClass();
             //get all methods that have the annotation @TriggerEvent, and call them in order of their priority from lowest to highest
-            if(e.getClass() == DropEvent.class) Practice.log(4, "Checking Component: " + c.getSimpleName());
+            if(e.getClass() == DropEvent.class) Practice.log(5, "Checking Component: " + c.getSimpleName());
             for(Method m: c.getMethods())
             {
                 TriggerEvent eventAnnotation = m.getAnnotation(TriggerEvent.class);
@@ -64,7 +64,7 @@ public abstract class ComponentClass<E extends Component>
                 {
                     //continue if more then 1 parameter is given or the parameter cant be cast from the event
                     if(m.getParameterCount() != 1 || !m.getParameterTypes()[0].isAssignableFrom(e.getClass())) continue;
-                    if(e.getClass() == DropEvent.class) Practice.log(4, "Found drop event method: " + m.getName() + " in " + c.getSimpleName());
+                    if(e.getClass() == DropEvent.class) Practice.log(5, "Found drop event method: " + m.getName() + " in " + c.getSimpleName());
                     methods.add(new MethodData()
                     {
                         {

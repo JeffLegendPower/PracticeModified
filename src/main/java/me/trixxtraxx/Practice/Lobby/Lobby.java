@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.Lobby;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.*;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.MenuItem;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import org.bukkit.Bukkit;
@@ -29,6 +30,7 @@ public class Lobby
     private boolean blockInvMove;
     private boolean blockDrop;
     private boolean blockHunger;
+    private boolean blockWeather;
     private List<String> blockedInventories;
     private List<PracticePlayer> players = new List<>();
     private List<LobbyItem> items = new List<>();
@@ -46,6 +48,7 @@ public class Lobby
         this.blockInvMove = section.getBoolean("BlockInvMove");
         this.blockDrop = section.getBoolean("BlockDrop");
         this.blockHunger = section.getBoolean("BlockHunger");
+        this.blockWeather = section.getBoolean("BlockWeather");
         this.spawn = ConfigLocation.deserialize(section.getString("spawn"));
         ConfigurationSection ItemSec = section.getConfigurationSection("Items");
         for(String key : ItemSec.getKeys(false))
@@ -86,15 +89,18 @@ public class Lobby
     public boolean isInvMoveBlocked(){return blockInvMove;}
     public boolean isDropBlocked(){return blockDrop;}
     public boolean isHungerBlocked(){return blockHunger;}
+    public boolean isWeatherBlocked(){return blockWeather;}
     public List<String> getBlockedInventories(){return blockedInventories;}
     public LobbyItem getItem(int slot){return items.find(x -> x.getSlot() == slot);}
     public List<PracticePlayer> getPlayers(){return players;}
     public void addPlayer(PracticePlayer player){
+        Practice.log(4, "Adding player " + player.getName() + " to lobby " + name);
         players.add(player);
         Player p = player.getPlayer();
         p.setMaxHealth(20);
         p.setHealth(20);
         p.setAllowFlight(false);
+        p.setNoDamageTicks(20);
         p.setGameMode(GameMode.SURVIVAL);
         p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
         setInv(player);
@@ -102,8 +108,9 @@ public class Lobby
     }
     public void removePlayer(PracticePlayer player, boolean update)
     {
-        players.remove(player);
-        if(update) BungeeUtil.getInstance().update();
+        if(players.remove(player))
+            if(update)
+                BungeeUtil.getInstance().update();
     }
     public void setInv(PracticePlayer player){
         Player p = player.getPlayer();

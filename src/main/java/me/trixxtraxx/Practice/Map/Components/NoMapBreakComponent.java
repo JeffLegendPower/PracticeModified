@@ -9,8 +9,10 @@ import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import me.TrixxTraxx.Linq.List;
 
 public class NoMapBreakComponent extends MapComponent
 {
+    private List<Block> blocks = new List<>();
     
     public NoMapBreakComponent(Map map)
     {
@@ -28,6 +31,18 @@ public class NoMapBreakComponent extends MapComponent
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
     public void onEvent(BlockBreakEvent e)
     {
-        e.setCancelled(true);
+        if(blocks.contains(e.getBlock())) e.setCancelled(true);
+    }
+    
+    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(BlockPlaceEvent e)
+    {
+        blocks.add(e.getBlock());
+    }
+    
+    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(ResetEvent e)
+    {
+        blocks.clear();
     }
 }

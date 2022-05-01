@@ -46,8 +46,8 @@ public class ConfigLocation
     public double getX(){return x;}
     public double getY(){return y;}
     public double getZ(){return z;}
-    public double getYaw(){return yaw;}
-    public double getPitch(){return pitch;}
+    public float getYaw(){return yaw;}
+    public float getPitch(){return pitch;}
 
     public Location getLocation(World w) {return new Location(w, x,y,z,yaw,pitch);}
     

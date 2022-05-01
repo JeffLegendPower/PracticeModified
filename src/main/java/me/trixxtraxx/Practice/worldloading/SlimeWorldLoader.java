@@ -8,6 +8,8 @@ import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import java.util.Random;
+
 public class SlimeWorldLoader implements WorldLoader
 {
     private SlimeLoader loader;
@@ -38,7 +40,7 @@ public class SlimeWorldLoader implements WorldLoader
 
             SlimeWorld world = plugin.loadWorld(loader, name, true, properties);
             mapCount++;
-            world = world.clone(name + "-" + mapCount);
+            world = world.clone(name + "-" + mapCount + new Random().nextInt(100));
             plugin.generateWorld(world);
             return Bukkit.getWorld(world.getName());
         }
