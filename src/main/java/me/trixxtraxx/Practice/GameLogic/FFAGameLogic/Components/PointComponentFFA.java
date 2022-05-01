@@ -15,6 +15,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,9 +106,31 @@ public class PointComponentFFA extends GameComponent implements IStatComponent
                     .replace("{Points" + i + "Player}", "");
         }
         //add {Place}, {Name}, {Points}
-        String place = (new List<>(pointMap.keySet()).indexOf(p) + 1) + "";
+        //sort pointmap by points
+        List<Map.Entry<Player, Integer>> list = new List();
+        for(Map.Entry<Player, Integer> entry : pointMap.entrySet())
+        {
+            list.add(entry);
+        }
+        Collections.sort(list, (a, b) -> b.getValue().compareTo(a.getValue()));
+        //init String place from the index of Player p in pointMap
+        String place = "";
         //set place to x if the player is not in the list
         if(!pointMap.containsKey(p)) place = "x";
+        else
+        {
+            index = 1;
+            for(Map.Entry<Player, Integer> entry: list)
+            {
+                if(entry.getKey().equals(p))
+                {
+                    place = String.valueOf(index);
+                    break;
+                }
+                index++;
+            }
+        }
+        
         newS = newS
                 .replace("{Place}", place)
                 .replace("{Name}", p.getName())

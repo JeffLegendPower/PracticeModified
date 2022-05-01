@@ -53,16 +53,16 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
     public List<SQLProperty> getSQL()
     {
         List<SQLProperty> prop = new List<>();
-        prop.add(new SQLProperty("BlockinTime", "INT (11) DEFAULT NULL", "null", true));
-        prop.add(new SQLProperty("BestBlockinTime", "DOUBLE DEFAULT NULL", "null", false));
+        prop.add(new SQLProperty("BreakTime", "INT (11) DEFAULT NULL", "null", true));
+        prop.add(new SQLProperty("BestBreakTime", "DOUBLE DEFAULT NULL", "null", false));
         return prop;
     }
     
     @Override
     public String getStat(Player p, String stat)
     {
-        if(stat.equalsIgnoreCase("BlockinTime")) return getTicks() + "";
-        if(stat.equalsIgnoreCase("BestBlockinTime")){
+        if(stat.equalsIgnoreCase("BreakTime")) return getTicks() + "";
+        if(stat.equalsIgnoreCase("BestBreakTime")){
             double thisTime = ((double)getTicks()) / 20;
             
             PracticePlayer pp = PracticePlayer.getPlayer(p);

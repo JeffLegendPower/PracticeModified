@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.Gamemode.Game;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.block.*;
@@ -42,11 +43,18 @@ public class GameLogicListener implements Listener
             if(g.getLogic().getPlayers().contains(p)) {
                 g.getLogic().triggerEvent(e);
             }
+            return;
         }
-        else
-        {
-            g.getLogic().triggerEvent(e);
+        
+        if(en instanceof Projectile && ((Projectile)en).getShooter() instanceof Player){
+            Player p = (Player)((Projectile)en).getShooter();
+            if(g.getLogic().getPlayers().contains(p)) {
+                g.getLogic().triggerEvent(e);
+            }
+            return;
         }
+        
+        g.getLogic().triggerEvent(e);
     }
 
     @EventHandler
@@ -185,6 +193,10 @@ public class GameLogicListener implements Listener
     public void onEventList(PlayerChatTabCompleteEvent e) {onEvent( e, e.getPlayer().getWorld(), e.getPlayer());}
     @EventHandler
     public void onEventList(PlayerCommandPreprocessEvent e) {onEvent( e, e.getPlayer().getWorld(), e.getPlayer());}
+    @EventHandler
+    public void onEventList(ProjectileHitEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
+    @EventHandler
+    public void onEventList(ProjectileLaunchEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
     public void onEventList(PlayerDropItemEvent e) {onEvent( e, e.getPlayer().getWorld(), e.getPlayer());}
     @EventHandler

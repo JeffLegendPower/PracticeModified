@@ -805,6 +805,7 @@ public class SQLUtil
                 String Gamesql = "INSERT INTO `" + logic.getName() + "Games` (`Player_ID`" + extraGameProperties + ") VALUES (" + PracticePlayer.getPlayer(p).getPlayerId() + extraGameValues + ")";
                 statement.addBatch(Gamesql);
                 Practice.log(4,Gamesql);
+                if(globalUpdate.isEmpty()) continue;
                 String insertIfNotExists = "INSERT INTO `" + logic.getName() + "Stats` " +
                         "(`Player_ID`" + globalProperties + ") " +
                         "VALUES (" + PracticePlayer.getPlayer(p).getPlayerId() + globalValues + ") " +

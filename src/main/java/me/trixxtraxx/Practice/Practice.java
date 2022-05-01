@@ -461,14 +461,18 @@ public final class Practice extends JavaPlugin
                                         "" + "\n" +
                                                 "§91. {Points1Player}§b {Points1}\n" +
                                                 "§92. {Points2Player}§b {Points2}\n" +
-                                                "§93. {Points3Player}§b {Points3}\n" +
-                                                "§94. {Points4Player}§b {Points4}\n" +
+                                                //"§93. {Points3Player}§b {Points3}\n" +
+                                                //"§94. {Points4Player}§b {Points4}\n" +
                                                 "\n" +
                                                 "§9{Place}. {Name}§b {Points}" +
                                                 "" + "\n" +
                                                 ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 
+                new NoHungerComponent(g.getLogic());
+                new NoFallDamageComponent(g.getLogic());
+                new NoArrowPickupComponent(g.getLogic());
+                new NoItemDropComponent(g.getLogic());
                 new NoMapBreakComponent(m);
             }
             else if(args[0].equalsIgnoreCase("saveKit"))
