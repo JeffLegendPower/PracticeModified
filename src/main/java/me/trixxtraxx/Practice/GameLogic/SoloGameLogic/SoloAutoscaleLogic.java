@@ -124,12 +124,13 @@ public class SoloAutoscaleLogic extends SoloGameLogic
     @Override
     public void stop(boolean dc)
     {
-        game.stop(false);
         if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
         BungeeUtil.getInstance().toLobby(player);
+        game.stop(false);
         List<Game> games = Game.getGames().findAll(x -> x.getLogic().getMap() != null && x.getLogic().getWorld() == getWorld());
         if(games.size() == 0) map.unload(false);
-        else{
+        else
+        {
             ((AutoScaleComponent)map.getComponents(AutoScaleComponent.class).get(0)).removeScale(getScale());
         }
     }

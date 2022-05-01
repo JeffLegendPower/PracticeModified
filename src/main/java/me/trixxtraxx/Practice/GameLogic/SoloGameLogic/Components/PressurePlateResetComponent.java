@@ -27,7 +27,8 @@ public class PressurePlateResetComponent extends GameComponent
         {
             if (logic instanceof SoloGameLogic)
             {
-                ((SoloGameLogic) logic).reset(true);
+                SoloGameLogic soloLogic = (SoloGameLogic) logic;
+                if(soloLogic.getPlayer().getLocation().distance(e.getBlock().getLocation()) < 2) soloLogic.reset(true);
             }
         }
     }

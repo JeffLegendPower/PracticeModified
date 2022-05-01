@@ -319,6 +319,7 @@ public final class Practice extends JavaPlugin
                 new LeaveItemComponent(g.getLogic(), Material.BED);
                 new NoHungerComponent(g.getLogic());
                 new NoItemDropComponent(g.getLogic());
+                new ResetHealComponent(g.getLogic());
                 
                 new ScoreboardComponent(g.getLogic(),
                         ChatColor.AQUA + "Bridge Practice",
@@ -327,6 +328,9 @@ public final class Practice extends JavaPlugin
                                 "\n" +
                                 ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
+                
+                new StatComponent(g.getLogic());
+                new SuccessStat(g.getLogic());
                 
                 new NoMapBreakComponent(m);
                 new AutoScaleComponent(m, 0, 0, 20,new List(new Region(new ConfigLocation(-5.5,90, -5.5,0,0), new ConfigLocation(5.5, 110, 5.5)),
