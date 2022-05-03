@@ -144,4 +144,16 @@ public class NewGamePacket
         }
         return null;
     }
+    public static void start(List<Player> players, String gamemode, String kit, String map){
+        NewGamePacket n = new NewGamePacket();
+        n.type = Type.SOLO;
+        n.gamemode = gamemode;
+        n.kit = kit;
+        n.map = map;
+        n.players = new List<String>();
+        for(Player p : players){
+            n.players.add(p.getName());
+        }
+        n.init();
+    }
 }

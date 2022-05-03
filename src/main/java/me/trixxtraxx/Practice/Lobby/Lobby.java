@@ -59,10 +59,6 @@ public class Lobby
             {
                 items.add(new CustomGamemodeItem(itemSec));
             }
-            else if("STATS".equals(Type))
-            {
-                items.add(new StatsItem(itemSec));
-            }
             else if("PARTIES".equals(Type))
             {
                 items.add(new PartyItem(itemSec));

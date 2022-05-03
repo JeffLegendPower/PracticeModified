@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.Lobby;
 
 import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -75,6 +76,21 @@ public class LobbyListener implements Listener
         if(lobby == null) return;
         if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(event.getPlayer())) return;
         LobbyItem item = lobby.getItem((event.getPlayer().getInventory().getHeldItemSlot()));
+        if(item != null)
+        {
+            item.onClick(event);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onEntityInteract(EntityDamageByEntityEvent event)
+    {
+        Practice.log(4, "EntityDamageByEntityEvent called");
+        if(!(event.getEntity() instanceof Player)) return;
+        Lobby lobby = Lobby.get(event.getEntity().getWorld());
+        if(lobby == null) return;
+        Player p = (Player) event.getDamager();
+        LobbyItem item = lobby.getItem(p.getInventory().getHeldItemSlot());
         if(item != null)
         {
             item.onClick(event);

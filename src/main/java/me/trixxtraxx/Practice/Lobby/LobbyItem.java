@@ -5,6 +5,8 @@ import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,4 +39,5 @@ public abstract class LobbyItem
     }
     
     public abstract void onClick(PlayerInteractEvent interact);
+    public abstract void onClick(EntityDamageByEntityEvent interact);
 }

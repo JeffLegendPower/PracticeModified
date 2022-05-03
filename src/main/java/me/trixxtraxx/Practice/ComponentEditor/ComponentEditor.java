@@ -103,7 +103,7 @@ public class ComponentEditor
         inv.lock(4);
         
         inv.setItem(50, AddComponent);
-        inv.OnClickSlot(50, e -> {
+        inv.onClickSlot(50, e -> {
             e.setCancelled(true);
             page = 0;
             gui.clear();
@@ -130,14 +130,14 @@ public class ComponentEditor
         });
         
         inv.setItem(36, BackArrow);
-        inv.OnClickSlot(36, e -> {
+        inv.onClickSlot(36, e -> {
             e.setCancelled(true);
             if(page > 0) page--;
             renderMenu();
         });
         
         inv.setItem(44, NextArrow);
-        inv.OnClickSlot(44, e -> {
+        inv.onClickSlot(44, e -> {
             e.setCancelled(true);
             if(page < (components.size() / 28)) page++;
             renderMenu();
@@ -203,7 +203,7 @@ public class ComponentEditor
                 Practice.log(4, "Setting item at " + i + " to " + componentItems.get(components.get(index).getClass()));
     
                 int finalIndex = index;
-                inv.OnClickSlot(i, e -> {
+                inv.onClickSlot(i, e -> {
                     Component c = components.get(finalIndex);
                     new BukkitRunnable()
                     {
@@ -267,7 +267,7 @@ public class ComponentEditor
         final BetterInv inv = gui;
         //set back and forward arrow, make a border with gray glass and put the component classes Listed
         inv.setItem(36, BackArrow);
-        inv.OnClickSlot(36, e -> {
+        inv.onClickSlot(36, e -> {
             //remove page
             if(page > 0) page--;
             inv.clear();
@@ -275,7 +275,7 @@ public class ComponentEditor
         });
         
         inv.setItem(44, NextArrow);
-        inv.OnClickSlot(44, e -> {
+        inv.onClickSlot(44, e -> {
             //add page
             if(page < (componentItems.size() / 28)) page++;
             inv.clear();
@@ -283,7 +283,7 @@ public class ComponentEditor
         });
         
         inv.setItem(49, BackToMenu);
-        inv.OnClickSlot(49, e -> {
+        inv.onClickSlot(49, e -> {
             e.setCancelled(true);
             page = 0;
             inv.clear();
@@ -329,7 +329,7 @@ public class ComponentEditor
                 
                 int finalIndex = index;
                 
-                inv.OnClickSlot(i, e ->
+                inv.onClickSlot(i, e ->
                 {
                     e.setCancelled(true);
                     inv.clear();
@@ -444,7 +444,7 @@ public class ComponentEditor
         
         //set back and forwars at slots 48 and 50
         inv.setItem(48, BackArrow);
-        inv.OnClickSlot(48, e -> {
+        inv.onClickSlot(48, e -> {
             //remove page
             if(page > 0) page--;
             e.setCancelled(true);
@@ -453,7 +453,7 @@ public class ComponentEditor
         });
         
         inv.setItem(50, NextArrow);
-        inv.OnClickSlot(50, e -> {
+        inv.onClickSlot(50, e -> {
             //add page
             if(page < (settings.size() / 18)) page++;
             e.setCancelled(true);
@@ -462,7 +462,7 @@ public class ComponentEditor
         });
         
         inv.setItem(49, BackToMenu);
-        inv.OnClickSlot(49, e -> {
+        inv.onClickSlot(49, e -> {
             e.setCancelled(true);
             page = 0;
             inv.clear();
@@ -488,7 +488,7 @@ public class ComponentEditor
             {
                 item = new BetterItem(Material.SIGN);
                 inv.setItem(i + 9, new BetterItem(Material.BOOK).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + (String) setting.value +ChatColor.AQUA + "\n\n§7Click to change"));
-                inv.OnClickSlot(i + 9, e -> {
+                inv.onClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                    //TODO: close inventory and wait for text
                    inv.close();
@@ -501,7 +501,7 @@ public class ComponentEditor
                 short data = (short) (value ? 10 : 8);
                 inv.setItem(i + 9, new BetterItem(Material.INK_SACK, 1, data).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(value) +ChatColor.AQUA + "\n\nClick to toggle"));
                 final int newIndex = i + 9;
-                inv.OnClickSlot(i + 9, e -> {
+                inv.onClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                     //toggle value
                     boolean newvalue = !((boolean)setting.value);
@@ -516,7 +516,7 @@ public class ComponentEditor
                 item = new BetterItem(Material.PAPER);
                 inv.setItem(i + 9, new BetterItem(Material.PAPER, (int) setting.value).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + String.valueOf(setting.value) + "\n\n" + ChatColor.AQUA + "Right click to increase by 1\nLeft click to decrease by 1"));
                 int newIndex = i + 9;
-                inv.OnClickSlot(i + 9, e -> {
+                inv.onClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                     //increment if right else decrement
                     if(e.getAction() == InventoryAction.PICKUP_HALF)
@@ -540,7 +540,7 @@ public class ComponentEditor
                 );
                 
                 final int newIndex = i + 9;
-                inv.OnClickSlot(i + 9, e -> {
+                inv.onClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                 });
                 
@@ -566,7 +566,7 @@ public class ComponentEditor
                 );
                 
                 final int newIndex = i + 9;
-                inv.OnClickSlot(i + 9, e -> {
+                inv.onClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                 });
                 
@@ -590,7 +590,7 @@ public class ComponentEditor
                 inv.setItem(i + 9, new BetterItem(Material.EMPTY_MAP).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + "X: " + value.getX() + "\nY: " + value.getY() + "\nZ: " + value.getZ() + "\n\n" + ChatColor.AQUA + "Click to set to current location"));
     
                 final int newIndex = i + 9;
-                inv.OnClickSlot(i + 9, e -> {
+                inv.onClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                     try
                     {
@@ -614,7 +614,7 @@ public class ComponentEditor
                 inv.setItem(i + 9, new BetterItem(Material.MAP).setDisplayName(ChatColor.DARK_BLUE + "Set " + setting.getName()).setLore(ChatColor.DARK_BLUE + "X1: " + loc1.getBlockX() + "\nY1: " + loc1.getBlockY() + "\nZ1: " + loc1.getBlockZ() + "\n\nX2: " + loc2.getBlockX() + "\nY2: " + loc2.getBlockY() + "\nZ2: " + loc2.getBlockZ() + "\n\n" + ChatColor.AQUA + "Left click to set 1st location\nRight click to set 2nd location"));
                 
                 final int newIndex = i + 9;
-                inv.OnClickSlot(i + 9, e -> {
+                inv.onClickSlot(i + 9, e -> {
                     e.setCancelled(true);
                     try
                     {
