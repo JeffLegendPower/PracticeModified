@@ -98,5 +98,11 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>me.TrixxTraxx</groupId>
+            <artifactId>StringStorer</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

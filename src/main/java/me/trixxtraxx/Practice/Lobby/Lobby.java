@@ -1,8 +1,8 @@
 package me.trixxtraxx.Practice.Lobby;
 
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.*;
-import me.trixxtraxx.Practice.Lobby.ItemTypes.MenuItem;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
@@ -12,10 +12,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
-
-import me.TrixxTraxx.Linq.List;
-
-import java.security.cert.X509Certificate;
 
 public class Lobby
 {
