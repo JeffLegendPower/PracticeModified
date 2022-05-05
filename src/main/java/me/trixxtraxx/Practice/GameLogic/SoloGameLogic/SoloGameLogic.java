@@ -27,7 +27,10 @@ public class SoloGameLogic extends GameLogic
     @Override
     public void start(Game gm, List<Player> players, Map m)
     {
-        if(players.size() != 1) return;
+        if(players.size() != 1){
+            game.stop(false);
+            return;
+        }
         map = m;
         game = gm;
         player = players.get(0);

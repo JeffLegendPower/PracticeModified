@@ -50,9 +50,9 @@ public class Game
 
     public void stop(boolean stopLogic)
     {
-        if (stopLogic) logic.stop(true);
         games.remove(this);
         ended = true;
+        if (stopLogic) logic.stop(true);
     }
 
     public static Game getGame(Player p)

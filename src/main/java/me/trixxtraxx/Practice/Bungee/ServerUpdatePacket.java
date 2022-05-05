@@ -35,8 +35,10 @@ public class ServerUpdatePacket
         for(me.trixxtraxx.Practice.Gamemode.Game game : games)
         {
             Game g = new Game();
+            if(game == null) continue;
             for(Player p: game.getLogic().getPlayers())
             {
+                if(p == null) continue;
                 g.players.add(p.getName());
             }
             g.gamemode = game.getLogic().getName();
@@ -48,9 +50,12 @@ public class ServerUpdatePacket
         for(me.trixxtraxx.Practice.Lobby.Lobby lobby : lobbies)
         {
             Lobby l = new Lobby();
+            if(lobby == null) continue;
             for(PracticePlayer p: lobby.getPlayers())
             {
-                l.players.add(p.getPlayer().getName());
+                Player pl = p.getPlayer();
+                if(pl == null) continue;
+                l.players.add(pl.getName());
             }
             l.name = lobby.getName();
             this.lobbies.add(l);

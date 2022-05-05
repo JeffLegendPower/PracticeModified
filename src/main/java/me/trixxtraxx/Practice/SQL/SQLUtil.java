@@ -78,6 +78,10 @@ public class SQLUtil
     
     public void applyComponents(Kit k)
     {
+        if(k == null){
+            Practice.log(1, "Tried to apply components to null kit");
+            return;
+        }
         try
         {
             PreparedStatement ps = con.prepareStatement(
@@ -107,6 +111,10 @@ public class SQLUtil
     
     public void applyComponents(GameLogic logic)
     {
+        if(logic == null){
+            Practice.log(1, "Tried to apply components to null logic");
+            return;
+        }
         try
         {
             PreparedStatement ps = con.prepareStatement(
@@ -136,6 +144,10 @@ public class SQLUtil
     
     public void applyComponents(Map m)
     {
+        if(m == null){
+            Practice.log(1, "Tried to apply components to null map");
+            return;
+        }
         try
         {
             Practice.log(4, "Applying components to map " + m.getName());

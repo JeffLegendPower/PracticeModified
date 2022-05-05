@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.Map.Components;
 
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
+import me.trixxtraxx.Practice.GameLogic.Components.CustomValue;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.Practice;
@@ -14,7 +15,7 @@ import org.bukkit.World;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class AutoScaleComponent extends MapComponent
+public class AutoScaleComponent extends MapComponent implements CustomValue
 {
     @Config
     private double xOffset;
@@ -130,5 +131,35 @@ public class AutoScaleComponent extends MapComponent
     {
         blocks = scale.getStorage();
         regions = scale.regions;
+    }
+    
+    @Override
+    public String getValue()
+    {
+        //serialize everything with @Config annotation and serialize each region seperately
+        StringBuilder sb = new StringBuilder();
+        sb.append(xOffset + "|").append(yOffset + "|").append(zOffset + "|");
+        for(Region r : regions)
+        {
+            sb.append(r.serialize() + "|");
+        }
+        return sb.toString();
+    }
+    
+    @Override
+    public void applyValue(String value)
+    {
+        String[] split = value.split("\\|");
+        xOffset = Double.parseDouble(split[0]);
+        yOffset = Double.parseDouble(split[1]);
+        zOffset = Double.parseDouble(split[2]);
+        regions = new List<>();
+        for(int i = 3; i < split.length; i++)
+        {
+            String reg = split[i];
+            if(reg.isEmpty()) continue;
+            Practice.log(4, "Adding region: " + split[i]);
+            regions.add(Region.deserialize(reg));
+        }
     }
 }

@@ -27,6 +27,7 @@ public class KillResetComponent extends GameComponent
             e.getEntity().setHealth(20);
             //tried 1 and 2 and 10 didnt work :C
             e.getEntity().setNoDamageTicks(20);
+            //running it immediately is causing issues with the fake death
             new BukkitRunnable()
             {
                 @Override

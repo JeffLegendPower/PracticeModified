@@ -26,7 +26,10 @@ public class DuelGameLogic extends GameLogic
     @Override
     public void start(Game gm, List<Player> players, Map m)
     {
-        if(players.size()!= 2) return;
+        if(players.size()!= 2){
+            game.stop(false);
+            return;
+        }
         map = m;
         game = gm;
         p1 = players.get(0);

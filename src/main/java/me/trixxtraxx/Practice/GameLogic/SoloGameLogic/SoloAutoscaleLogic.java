@@ -125,8 +125,8 @@ public class SoloAutoscaleLogic extends SoloGameLogic
     public void stop(boolean dc)
     {
         if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
-        BungeeUtil.getInstance().toLobby(player);
         game.stop(false);
+        BungeeUtil.getInstance().toLobby(player);
         List<Game> games = Game.getGames().findAll(x -> x.getLogic().getMap() != null && x.getLogic().getWorld() == getWorld());
         if(games.size() == 0) map.unload(false);
         else

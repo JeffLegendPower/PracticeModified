@@ -154,7 +154,7 @@ public abstract class Component
                     }
                     else if(f.getType() == String.class)
                     {
-                        f.set(this, parts[1]);
+                        f.set(this, parts[1].replace("\\n", "\n"));
                     }
                     else
                     {
