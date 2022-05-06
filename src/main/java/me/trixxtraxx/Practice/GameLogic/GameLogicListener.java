@@ -122,10 +122,6 @@ public class GameLogicListener implements Listener
     @EventHandler
     public void onEventList(EntityCreatePortalEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
-    public void onEventList(EntityDamageByBlockEvent  e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
-    @EventHandler
-    public void onEventList(EntityDamageByEntityEvent   e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
-    @EventHandler
     public void onEventList(EntityDamageEvent e) {onEvent( e, e.getEntity().getWorld(), e.getEntity());}
     @EventHandler
     public void onEventList(EntityDeathEvent  e) {if(!(e.getEntity() instanceof Player)) onEvent( e, e.getEntity().getWorld(), e.getEntity());}

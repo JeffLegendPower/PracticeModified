@@ -5,6 +5,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ public class PointComponent extends GameComponent
     @Config
     boolean onWin = true;
     @Config
-    boolean onHit = true;
+    boolean onHit = false;
 
     private int p1 = 0;
     private int p2 = 0;
@@ -30,6 +31,8 @@ public class PointComponent extends GameComponent
         super(logic);
         this.goal = goal;
         this.symb = symb;
+        this.onWin = onWin;
+        this.onHit = onHit;
     }
     public PointComponent(GameLogic logic){super(logic);}
     
@@ -61,6 +64,7 @@ public class PointComponent extends GameComponent
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(EntityDamageByEntityEvent e)
     {
+        Practice.log(4, "EntityDamageByEntityEvent triggered");
         if(!onHit) return;
         if (!(logic instanceof DuelGameLogic)) return;
         DuelGameLogic log = (DuelGameLogic) logic;
@@ -79,17 +83,39 @@ public class PointComponent extends GameComponent
             }
         }
         else return;
-        if(log.getP1() == p2) this.p1++;
-        if(log.getP2() == p2) this.p2++;
+        Practice.log(4, "Adding Point to " + p2.getName());
+        if(log.getP1() == p2) {
+            this.p1++;
+            if(this.p1 >= goal)
+            {
+                DuelGameLogic logic = (DuelGameLogic) this.logic;
+                logic.win(logic.getP1());
+            }
+        }
+        if(log.getP2() == p2)  {
+            this.p2++;
+            if(this.p2 >= goal)
+            {
+                DuelGameLogic logic = (DuelGameLogic) this.logic;
+                logic.win(logic.getP2());
+            }
+        }
     }
 
     @Override
     public String applyPlaceholder(Player p, String s)
     {
         if (!(logic instanceof DuelGameLogic)) return s;
-        if(goal > 5)
+        if(goal > 5 || symb.isEmpty())
         {
-            return s.replace("{Points1}", p1 + "").replace("{Points2}", p2 + "");
+            if (((DuelGameLogic) logic).getP1() == p)
+            {
+                return s.replace("{Points1}", p1 + "").replace("{Points2}", p2 + "");
+            }
+            else
+            {
+                return s.replace("{Points1}", p2 + "").replace("{Points2}", p1 + "");
+            }
         }
         String points1 = ChatColor.BLUE + "";
         String points2 = ChatColor.BLUE + "";

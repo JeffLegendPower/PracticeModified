@@ -150,7 +150,7 @@ public final class Practice extends JavaPlugin
     // - handles inventory
     // - has a component editor
 
-    // Gamemode List:
+    // Gamemode List
     // Solo:
     // - Blocking Practice
     // - Bridge Practice
@@ -376,7 +376,7 @@ public final class Practice extends JavaPlugin
             {
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[2]);
-                DuelSpawnComponent spawn = new DuelSpawnComponent();
+                DuelSpawnComponent spawn = new DuelSpawnComponent(30, 100, 0, 0, 0, -30, 100, 0, 180, 0);
                 Map m = new Map(-1,"Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
@@ -388,14 +388,16 @@ public final class Practice extends JavaPlugin
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
 
+                new NoHungerComponent(g.getLogic());
+
                 new StartInventoryComponent(g.getLogic());
-                new SpawnProtComponent(g.getLogic(), 100,
+                /*new SpawnProtComponent(g.getLogic(), 100,
                         ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
                         ChatColor.BLUE + "The Game started, go fight!"
-                );
+                );*/
 
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Sumo",
+                        ChatColor.AQUA + "Boxxing",
                         "" + "\n" +
                                 ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
                                 "" + "\n" +
@@ -406,10 +408,14 @@ public final class Practice extends JavaPlugin
                                 "" + "\n" +
                                 ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
+                new WinMessageComponent(g.getLogic(),
+                        ChatColor.BLUE + "{Winner} won the game!\n"
+                );
 
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
+                new PointComponent(g.getLogic(), 100, "", false, true);
 
                 new NoMapBreakComponent(m);
             }
@@ -435,7 +441,7 @@ public final class Practice extends JavaPlugin
                 );
                 new ScoreboardComponent(g.getLogic(),
                         ChatColor.AQUA + "Sumo",
-                                "" + "\n" +
+                        "" + "\n" +
                                 ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
                                 "" + "\n" +
                                 ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +

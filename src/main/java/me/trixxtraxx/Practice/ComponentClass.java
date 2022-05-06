@@ -1,18 +1,13 @@
 package me.trixxtraxx.Practice;
 
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
-import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
-import me.trixxtraxx.Practice.Kit.KitComponent;
-import me.trixxtraxx.Practice.Map.MapComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Comparator;
-import me.TrixxTraxx.Linq.List;
 
 public abstract class ComponentClass<E extends Component>
 {
@@ -56,7 +51,7 @@ public abstract class ComponentClass<E extends Component>
         {
             Class<?> c = comp.getClass();
             //get all methods that have the annotation @TriggerEvent, and call them in order of their priority from lowest to highest
-            if(e.getClass() == DropEvent.class) Practice.log(5, "Checking Component: " + c.getSimpleName());
+            if(e.getClass() == EntityDamageByEntityEvent.class) Practice.log(5, "Checking Component: " + c.getSimpleName());
             for(Method m: c.getMethods())
             {
                 TriggerEvent eventAnnotation = m.getAnnotation(TriggerEvent.class);
@@ -64,7 +59,7 @@ public abstract class ComponentClass<E extends Component>
                 {
                     //continue if more then 1 parameter is given or the parameter cant be cast from the event
                     if(m.getParameterCount() != 1 || !m.getParameterTypes()[0].isAssignableFrom(e.getClass())) continue;
-                    if(e.getClass() == DropEvent.class) Practice.log(5, "Found drop event method: " + m.getName() + " in " + c.getSimpleName());
+                    if(e.getClass() == EntityDamageByEntityEvent.class) Practice.log(5, "Found EntityDamageByEntityEvent method: " + m.getName() + " in " + c.getSimpleName());
                     methods.add(new MethodData()
                     {
                         {

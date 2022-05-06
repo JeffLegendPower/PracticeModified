@@ -13,12 +13,12 @@ public class NoDamageComponent extends GameComponent
         super(logic);
     }
 
-    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent
     public void onDamage(EntityDamageEvent event)
     {
         if(event.getEntity() instanceof Player)
         {
-            event.setCancelled(true);
+            event.setDamage(0);
         }
     }
 }
