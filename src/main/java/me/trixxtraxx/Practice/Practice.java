@@ -23,14 +23,14 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Timers.DropToRe
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoScaleSpawnComponent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoscaleLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
-import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloSpawnCoponent;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Lobby.LobbyListener;
-import me.trixxtraxx.Practice.Map.Components.*;
+import me.trixxtraxx.Practice.Map.Components.AutoScaleComponent;
+import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
 import me.trixxtraxx.Practice.Map.Editor.MapEditingSession;
 import me.trixxtraxx.Practice.Map.Editor.MapEditorListener;
 import me.trixxtraxx.Practice.Map.Map;
@@ -372,6 +372,47 @@ public final class Practice extends JavaPlugin
 
                 new NoMapBreakComponent(m);
             }
+            else if(args[0].equalsIgnoreCase("Boxxing"))
+            {
+                Player p = (Player) s;
+                Player p2 = Bukkit.getPlayer(args[2]);
+                DuelSpawnComponent spawn = new DuelSpawnComponent();
+                Map m = new Map(-1,"Practice1", "Practice1", spawn);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                SQLUtil.Instance.applyComponents(k);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m);
+                g.getLogic().setName("Classic");
+                new YKillComponent(g.getLogic(), 90);
+                new NoDamageComponent(g.getLogic());
+
+                new DisconnectStopComponent(g.getLogic());
+                new DieStopComponent(g.getLogic());
+
+                new StartInventoryComponent(g.getLogic());
+                new SpawnProtComponent(g.getLogic(), 100,
+                        ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
+                        ChatColor.BLUE + "The Game started, go fight!"
+                );
+
+                new ScoreboardComponent(g.getLogic(),
+                        ChatColor.AQUA + "Sumo",
+                        "" + "\n" +
+                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
+                                "{Points1}" + "\n" +
+                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
+                                "{Points2}" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                );
+
+                new PlayerPlaceholderComponent(g.getLogic());
+                new MapNamePlaceholderComponent(g.getLogic());
+                new OpponentPlaceholderComponent(g.getLogic());
+
+                new NoMapBreakComponent(m);
+            }
             else if(args[0].equalsIgnoreCase("sumo"))
             {
                 Player p = (Player) s;
@@ -407,7 +448,7 @@ public final class Practice extends JavaPlugin
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
-                new PointComponent(g.getLogic(), 2, "⬤");
+                new PointComponent(g.getLogic(), 2, "⬤", true, false);
 
                 new NoMapBreakComponent(m);
             }

@@ -1,13 +1,15 @@
 package me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components;
 
+import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
-import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class PointComponent extends GameComponent
 {
@@ -15,11 +17,15 @@ public class PointComponent extends GameComponent
     private int goal;
     @Config
     private String symb;
+    @Config
+    boolean onWin = true;
+    @Config
+    boolean onHit = true;
 
     private int p1 = 0;
     private int p2 = 0;
 
-    public PointComponent(GameLogic logic, int goal, String symb)
+    public PointComponent(GameLogic logic, int goal, String symb, boolean onWin, boolean onHit)
     {
         super(logic);
         this.goal = goal;
@@ -27,9 +33,10 @@ public class PointComponent extends GameComponent
     }
     public PointComponent(GameLogic logic){super(logic);}
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.NONE)
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(WinEvent e)
     {
+        if(!onWin) return;
         if (!(logic instanceof DuelGameLogic)) return;
         DuelGameLogic log = (DuelGameLogic) logic;
         int cur = 0;
@@ -51,10 +58,39 @@ public class PointComponent extends GameComponent
         }
     }
 
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onEvent(EntityDamageByEntityEvent e)
+    {
+        if(!onHit) return;
+        if (!(logic instanceof DuelGameLogic)) return;
+        DuelGameLogic log = (DuelGameLogic) logic;
+        if(!(e.getEntity() instanceof Player)) return;
+        Player p2 = null;
+        if(e.getDamager() instanceof Player)
+        {
+            p2 = (Player) e.getDamager();
+        }
+        else if(e.getDamager() instanceof Projectile)
+        {
+            Projectile proj = (org.bukkit.entity.Projectile) e.getDamager();
+            if(proj.getShooter() instanceof Player)
+            {
+                p2 = (Player) proj.getShooter();
+            }
+        }
+        else return;
+        if(log.getP1() == p2) this.p1++;
+        if(log.getP2() == p2) this.p2++;
+    }
+
     @Override
     public String applyPlaceholder(Player p, String s)
     {
         if (!(logic instanceof DuelGameLogic)) return s;
+        if(goal > 5)
+        {
+            return s.replace("{Points1}", p1 + "").replace("{Points2}", p2 + "");
+        }
         String points1 = ChatColor.BLUE + "";
         String points2 = ChatColor.BLUE + "";
         for (int i = 0; i < p1; i++)
