@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.Utils.Region;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -56,6 +57,8 @@ public class KitEditor
     {
         players.add(p);
         setInventory(p);
+        p.setGameMode(GameMode.CREATIVE);
+        p.setAllowFlight(false);
         p.sendMessage("§9You are now in the kit editing area!");
         p.sendMessage("§bYou can edit your kit here, you can save it by exiting the area");
     }
@@ -67,6 +70,7 @@ public class KitEditor
         pp.saveKit();
         p.getInventory().clear();
         p.getInventory().setArmorContents(null);
+        p.setGameMode(GameMode.SURVIVAL);
         p.sendMessage("§9You are no longer in the kit editing area!");
         p.sendMessage("§bYour kit has been saved!");
         Lobby l = Lobby.get(Bukkit.getWorld("world"));

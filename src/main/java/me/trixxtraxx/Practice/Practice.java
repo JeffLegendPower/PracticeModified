@@ -7,10 +7,12 @@ import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.BedComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.PointComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelSpawnComponent;
+import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.InvisPracticeComponent;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.PointComponentFFA;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFALogic;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFASpawnComponent;
@@ -29,8 +31,7 @@ import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Lobby.LobbyListener;
-import me.trixxtraxx.Practice.Map.Components.AutoScaleComponent;
-import me.trixxtraxx.Practice.Map.Components.NoMapBreakComponent;
+import me.trixxtraxx.Practice.Map.Components.*;
 import me.trixxtraxx.Practice.Map.Editor.MapEditingSession;
 import me.trixxtraxx.Practice.Map.Editor.MapEditorListener;
 import me.trixxtraxx.Practice.Map.Map;
@@ -337,38 +338,261 @@ public final class Practice extends JavaPlugin
                                                                     new Region(new ConfigLocation(20.5,90, -5.5,0,0), new ConfigLocation(30.5, 110, 5.5))
                 ));
             }
-            else if(args[0].equalsIgnoreCase("classic"))
+            else if(args[0].equalsIgnoreCase("Jump"))
             {
                 Player p = (Player) s;
-                Player p2 = Bukkit.getPlayer(args[1]);
-                DuelSpawnComponent spawn = new DuelSpawnComponent();
+                Map m = new Map(-1,"JumpWorld", "JumpWorld", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100.1, 0, 0, 0)));
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                SQLUtil.Instance.applyComponents(k);
+                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m);
+                g.getLogic().setName(args[1]);
+                
+                new MapResetComponent(g.getLogic());
+    
+                new YKillComponent(g.getLogic(), 90);
+                new KillResetComponent(g.getLogic());
+    
+                new DisconnectStopComponent(g.getLogic());
+                new DropToResetTimer(g.getLogic());
+    
+                new StartInventoryComponent(g.getLogic());
+                new InventoryOnResetComponent(g.getLogic());
+                new LeaveItemComponent(g.getLogic(), Material.BED);
+                new NoHungerComponent(g.getLogic());
+                new NoItemDropComponent(g.getLogic());
+                new ResetHealComponent(g.getLogic());
+    
+                new ScoreboardComponent(g.getLogic(),
+                                        ChatColor.AQUA + "FB/TNT Jump Practice",
+                                        "\n" +
+                                                ChatColor.BLUE + "Distance:     " + ChatColor.AQUA + "{Distance}" + "\n" +
+                                                "\n" +
+                                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                );
+    
+                new StatComponent(g.getLogic());
+                new SuccessStat(g.getLogic());
+                new NoFallDamageComponent(g.getLogic());
+    
+                new NoMapBreakComponent(m);
+                new AutoScaleComponent(m, 0, 0, 20, new List(new Region(new ConfigLocation(-5.5,90, -5.5,0,0), new ConfigLocation(5.5, 110, 5.5)),
+                                                            new Region(new ConfigLocation(20.5,90, -5.5,0,0), new ConfigLocation(30.5, 110, 5.5))
+                ));
+                
+                new JumpComponent(g.getLogic(), Material.GOLD_BLOCK);
+            }
+            else if(args[0].equalsIgnoreCase("Invis"))
+            {
+                List<Player> players = new List<>();
+                players.add((Player) s);
+                //add Bukkit.getPlayer() for each argument after 2
+                for(int i = 2; i < args.length; i++)
+                {
+                    Player pl = Bukkit.getPlayer(args[i]);
+                    if(pl != null) players.add(pl);
+                }
+                FFASpawnComponent spawn = new FFASpawnComponent(
+                        new List(
+                                new ConfigLocation(4.5, 84, -76.5, 20, -20),
+                                new ConfigLocation(-2.5, 88, -74.5, 0, -15),
+                                new ConfigLocation(-9.5,84,-75.5,-20,-24)
+                        )
+                );
+                Map m = new Map(-1, "ToxicInvisPractice", "ToxicInvisPractice", spawn);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                //Kit k = new Kit("OneInAChamber", -1, new List<>(), -1, new HashMap<>());
+                SQLUtil.Instance.applyComponents(k);
+                log(3, "Starting debug Game with " + players.size() + " players");
+                
+                Game g = new Game(new FFALogic(), players, k, m);
+                g.getLogic().setName("InvisPractice");
+                
+                new NoDieComponent(g.getLogic());
+                new DieToSpawnComponent(g.getLogic());
+                new RespawnInventoryComponent(g.getLogic());
+                
+                new StartInventoryComponent(g.getLogic());
+                
+                new KillArrowComponent(g.getLogic());
+                new DieToSpawnComponent(g.getLogic());
+                new LeaveRemoveComponent(g.getLogic());
+                new StatComponent(g.getLogic());
+                new SpectatorRespawnComponent(g.getLogic(), 100,
+                                              ChatColor.RED + "Respawning!",
+                                              ChatColor.WHITE + "You will respawn in {Timer}s!",
+                                              ChatColor.GREEN + "Respawned!",
+                                              "",
+                                              false);
+    
+                new WinMessageComponent(g.getLogic(),
+                                        "§9-------------------------------------\n" +
+                                                "\n" +
+                                                "      §b{Winner}§9 won the Game!\n\n" +
+                                                "          &bTop Killers:\n" +
+                                                "§91. {Points1Player}§b {Points1}\n" +
+                                                "§92. {Points2Player}§b {Points2}\n" +
+                                                "§93. {Points3Player}§b {Points3}\n" +
+                                                "\n" +
+                                                "§9-------------------------------------");
+    
+                new ScoreboardComponent(g.getLogic(),
+                                        ChatColor.AQUA + "Invis Practice",
+                                        "" + "\n" +
+                                                "§9Time Left: §b{TimeLeft}\n" +
+                                                "" + "\n" +
+                                                "§91. {Points1Player}§b {Points1}\n" +
+                                                "§92. {Points2Player}§b {Points2}\n" +
+                                                //"§93. {Points3Player}§b {Points3}\n" +
+                                                //"§94. {Points4Player}§b {Points4}\n" +
+                                                "\n" +
+                                                "You:\n" +
+                                                "§9{Place}. {Name}§b {Points}" +
+                                                "" + "\n" +
+                                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                );
+    
+                new NoHungerComponent(g.getLogic());
+                new NoItemDropComponent(g.getLogic());
+                new InvisPracticeComponent(g.getLogic(), 3, 60, "InvisPractice_Attacker");
+                new InvisPracticeSpawnProvider(m, new ConfigLocation(0,100,0, 180, 0));
+                new MapResetComponent(g.getLogic());
+                
+                new NoMapBreakComponent(m);
+                new BreakRegion(m, new Region(new ConfigLocation(0.5,84, -77.5), new ConfigLocation(-5.5, 88, -70.5)), true);
+                new KillHeightComponent(m, 50);
+                new HeightLimitComponent(m, 100);
+            }
+            else if(args[0].equalsIgnoreCase("BedFight"))
+            {
+                Player p = (Player) s;
+                Player p2 = Bukkit.getPlayer(args[2]);
+                DuelSpawnComponent spawn = new DuelSpawnComponent(0.5, 100, 17.5, 180, 0, 0.5, 100, -17.5, 0, 0);
+                Map m = new Map(-1, "BedFight1", "BedFight1", spawn);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                //Kit k = new Kit("", -1, new List<>(), -1, new HashMap<>());
+                SQLUtil.Instance.applyComponents(k);
+                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
+                g.getLogic().setName("BedFight");
+                new NoDieComponent(g.getLogic());
+                new DisconnectStopComponent(g.getLogic());
+                new DieToSpawnComponent(g.getLogic());
+                new NoItemDropComponent(g.getLogic());
+                
+                new RespawnInventoryComponent(g.getLogic());
+                new StartInventoryComponent(g.getLogic());
+                new SpectatorRespawnComponent(g.getLogic(), 60,
+                                              ChatColor.RED + "Respawning!",
+                                              ChatColor.WHITE + "You will respawn in {Timer}s!",
+                                              ChatColor.GREEN + "Respawned!",
+                                              "",
+                                              false);
+                
+                new ScoreboardComponent(g.getLogic(),
+                                        ChatColor.AQUA + "Bed Fight",
+                                        "" + "\n" +
+                                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+                                                "" + "\n" +
+                                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
+                                                ChatColor.BLUE + "Bed: " + ChatColor.AQUA + "{PlayerBed}" + "\n" +
+                                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
+                                                ChatColor.BLUE + "Bed: " + ChatColor.AQUA + "{OpponentBed}" + "\n" +
+                                                "" + "\n" +
+                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                );
+    
+                new WinMessageComponent(g.getLogic(),
+                                        "§9-------------------------------------\n" +
+                                                "\n" +
+                                                "      §b{Winner}§9 won the Game!\n" +
+                                                "\n" +
+                                                "§9-------------------------------------");
+                
+                new PlayerPlaceholderComponent(g.getLogic());
+                new MapNamePlaceholderComponent(g.getLogic());
+                new OpponentPlaceholderComponent(g.getLogic());
+                new BedComponent(g.getLogic());
+                
+                new StatComponent(g.getLogic());
+    
+                new NoMapBreakComponent(m);
+                new BreakRegion(m, new Region(new ConfigLocation(1.5,100, -21.5), new ConfigLocation(5.5, 102, -26.5)), true);
+                new BreakRegion(m, new Region(new ConfigLocation(-1.5,100, 21.5), new ConfigLocation(-5.5, 102, 26.5)), true);
+                new KillHeightComponent(m, 90);
+                new HeightLimitComponent(m, 107);
+            }
+            else if(args[0].equalsIgnoreCase("TopFight"))
+            {
+                Player p = (Player) s;
+                Player p2 = Bukkit.getPlayer(args[2]);
+                DuelSpawnComponent spawn = new DuelSpawnComponent(34.5, 93, 0.5, 90, 0, -29.5, 93, 1.5, -90, 0);
+                Map m = new Map(-1, "TopBridgeFight1", "TopBridgeFight1", spawn);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                //Kit k = new Kit("Sumo1", -1, new List<>(), -1, new HashMap<>());
+                SQLUtil.Instance.applyComponents(k);
+                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
+                g.getLogic().setName("TopBridgeFight");
+                new NoDieComponent(g.getLogic());
+                new DisconnectStopComponent(g.getLogic());
+                new DieStopComponent(g.getLogic());
+                new StartInventoryComponent(g.getLogic());
+                new RespawnInventoryComponent(g.getLogic());
+                new NoItemDropComponent(g.getLogic());
+                new SpawnProtComponent(g.getLogic(), 40,
+                                       ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
+                                       ChatColor.BLUE + "The Game started, go fight!"
+                );
+                new ScoreboardComponent(g.getLogic(),
+                                        ChatColor.AQUA + "Top Fight",
+                                        "" + "\n" +
+                                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+                                                "" + "\n" +
+                                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
+                                                "{Points1}" + "\n" +
+                                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
+                                                "{Points2}" + "\n" +
+                                                "" + "\n" +
+                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                );
+                new PlayerPlaceholderComponent(g.getLogic());
+                new MapNamePlaceholderComponent(g.getLogic());
+                new OpponentPlaceholderComponent(g.getLogic());
+                new PointComponent(g.getLogic(), 3, "⬤", true, false);
+    
+                new NoMapBreakComponent(m);
+                new KillHeightComponent(m, 75);
+            }
+            else if(args[0].equalsIgnoreCase("uhc"))
+            {
+                Player p = (Player) s;
+                Player p2 = Bukkit.getPlayer(args[2]);
+                DuelSpawnComponent spawn = new DuelSpawnComponent(30, 100, 0, 0, 0, -30, 100, 0, 180, 0);
                 Map m = new Map(-1,"Practice1", "Practice1", spawn);
-                Kit k = SQLUtil.Instance.getKit(args[2]);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m);
-                g.getLogic().setName("Classic");
+                g.getLogic().setName("UHC");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
-                new SpawnProtComponent(g.getLogic(), 100,
+                /*new SpawnProtComponent(g.getLogic(), 100,
                         ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
-                        ChatColor.BLUE + "The Game started, go fight!"
-                );
+                        ChatColor.BLUE + "The Game started, go fight!");*/
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Classic",
+                        ChatColor.AQUA + "UHC",
                                 "" + "\n" +
                                 ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-                                "" + "\n" +
+                                "\n" +
                                 ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
                                 ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "" + "\n" +
+                                "\n" +
                                 ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
+                new NoRegenComponent(g.getLogic());
 
                 new NoMapBreakComponent(m);
             }
@@ -468,27 +692,27 @@ public final class Practice extends JavaPlugin
                     Player pl = Bukkit.getPlayer(args[i]);
                     if(pl != null) players.add(pl);
                 }
+                /*FFASpawnComponent spawn = new FFASpawnComponent(
+                        new List(
+                                new ConfigLocation(-14.5, 95, 2.5, 20, 0),
+                                new ConfigLocation(-9.5, 87, -0.5, 16, 0),
+                                new ConfigLocation(-18.5, 80, 10.5, 0, -30),
+                                new ConfigLocation(-14.5, 78, -0.5, 10, -15),
+                                new ConfigLocation(-23.5,87,10,-124,0),
+                                new ConfigLocation(-14.5, 87, 4.5, 80, 0),
+                                new ConfigLocation(-25.5, 93, 28.5, -90, 0),
+                                new ConfigLocation(-6.5,87,25.5,140,0)
+                        )
+                );*/
                 FFASpawnComponent spawn = new FFASpawnComponent(
                         new List(
-                                new ConfigLocation(55.5, 43, -65.5, 0, 0),
-                                new ConfigLocation(40.5, 38.5, -10.5, 180, 0)
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0),
-                                //new ConfigLocation(0, 0, 0)
+                                new ConfigLocation(-11.5,81,-43.5,22,-40),
+                                new ConfigLocation(-26.5,89,-49.5,-60,10),
+                                new ConfigLocation(-9.5, 87, -56.5, 16, 0),
+                                new ConfigLocation(-22.5,87,-33.5,-150,0)
                         )
                 );
-                Map m = new Map(-1, "FFA1", "FFA1", spawn);
+                Map m = new Map(-1, "CityChamber", "CityChamber", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("OneInAChamber", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
@@ -511,7 +735,6 @@ public final class Practice extends JavaPlugin
                                               ChatColor.WHITE + "You will respawn in {Timer}s!",
                                               ChatColor.GREEN + "Respawned!",
                                               "",
-                                              new ConfigLocation(0, 100, 0),
                                               false);
                 
                 new WinMessageComponent(g.getLogic(),
@@ -531,11 +754,11 @@ public final class Practice extends JavaPlugin
                                                 "§91. {Points1Player}§b {Points1}\n" +
                                                 "§92. {Points2Player}§b {Points2}\n" +
                                                 "§93. {Points3Player}§b {Points3}\n" +
-                                                "§94. {Points4Player}§b {Points4}\n" +
-                                                "§95. {Points5Player}§b {Points5}\n" +
-                                                "§96. {Points6Player}§b {Points6}\n" +
-                                                "§97. {Points7Player}§b {Points7}\n" +
-                                                "§98. {Points8Player}§b {Points8}\n" +
+                                                //"§94. {Points4Player}§b {Points4}\n" +
+                                                //"§95. {Points5Player}§b {Points5}\n" +
+                                                //"§96. {Points6Player}§b {Points6}\n" +
+                                                //"§97. {Points7Player}§b {Points7}\n" +
+                                                //"§98. {Points8Player}§b {Points8}\n" +
                                                 "\n" +
                                                 "You:\n" +
                                                 "§9{Place}. {Name}§b {Points}" +
@@ -548,6 +771,7 @@ public final class Practice extends JavaPlugin
                 new NoArrowPickupComponent(g.getLogic());
                 new NoItemDropComponent(g.getLogic());
                 new NoMapBreakComponent(m);
+                new ElevatorComponent(m, Material.WOOL);
             }
             else if(args[0].equalsIgnoreCase("saveKit"))
             {

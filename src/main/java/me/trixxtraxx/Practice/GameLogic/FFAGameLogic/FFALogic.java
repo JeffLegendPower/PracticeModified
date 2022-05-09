@@ -91,6 +91,7 @@ public class FFALogic extends GameLogic
     {
         if(game.hasEnded()) return;
         players.remove(p);
+        BungeeUtil.getInstance().toLobby(p);
         if(players.size() == 1) win(players.first(), true);
     }
     

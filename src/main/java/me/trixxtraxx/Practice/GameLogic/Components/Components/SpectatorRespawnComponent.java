@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
 import me.TrixxTraxx.Linq.List;
+import me.trixxtraxx.Practice.GameEvents.AllModes.SpectatorRespawnEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
@@ -28,13 +29,12 @@ public class SpectatorRespawnComponent extends GameComponent
     @Config
     protected String startingSubtitle;
     @Config
-    protected ConfigLocation spectatorSpawn;
-    @Config
     protected boolean onStart;
     
     protected boolean started = false;
     protected HashMap<Player, Location> prot = new HashMap<>();
-    public SpectatorRespawnComponent(GameLogic logic, int spawnProt, String remainingTitle, String remainingSubtitle, String startingTitle, String startingSubtitle, ConfigLocation spectatorSpawn, boolean onStart)
+    
+    public SpectatorRespawnComponent(GameLogic logic, int spawnProt, String remainingTitle, String remainingSubtitle, String startingTitle, String startingSubtitle, boolean onStart)
     {
         super(logic);
         this.spawnProt = spawnProt;
@@ -42,8 +42,8 @@ public class SpectatorRespawnComponent extends GameComponent
         this.remainingSubtitle = remainingSubtitle;
         this.startingTitle = startingTitle;
         this.startingSubtitle = startingSubtitle;
-        this.spectatorSpawn = spectatorSpawn;
         this.onStart = onStart;
+        started = onStart;
     }
     
     public SpectatorRespawnComponent(GameLogic logic)
@@ -54,11 +54,13 @@ public class SpectatorRespawnComponent extends GameComponent
     @TriggerEvent(priority = 1)
     public void onEvent(ToSpawnEvent e)
     {
-        if(prot.get(e.getPlayer()) != null || !onStart) return;
-        Practice.log(4, "SpectatorRespawnComponent: " + e.getPlayer().getName());
+        Practice.log(4, "SpectatorRespawnComponent: " + e.getPlayer().getName() + " 1");
+        if(prot.get(e.getPlayer()) != null || !started) return;
+        Practice.log(4, "SpectatorRespawnComponent: " + e.getPlayer().getName() + " 2");
+        if(logic.triggerEvent(new SpectatorRespawnEvent(logic, e.getPlayer())).isCanceled()) return;
+        Practice.log(4, "SpectatorRespawnComponent: " + e.getPlayer().getName() + " 3");
         e.setCanceled(true);
         prot.put(e.getPlayer(), e.getLoc());
-        e.getPlayer().teleport(spectatorSpawn.getLocation(logic.getWorld()));
         e.getPlayer().setGameMode(org.bukkit.GameMode.SPECTATOR);
         new BukkitRunnable()
         {
@@ -66,6 +68,10 @@ public class SpectatorRespawnComponent extends GameComponent
             @Override
             public void run()
             {
+                if(logic.getGame().hasEnded()) {
+                    cancel();
+                    return;
+                }
                 if(left == 0)
                 {
                     e.getPlayer().setGameMode(org.bukkit.GameMode.SURVIVAL);
@@ -92,6 +98,6 @@ public class SpectatorRespawnComponent extends GameComponent
     
     @TriggerEvent
     public void onStart(StartEvent e){
-        onStart = true;
+        started = true;
     }
 }

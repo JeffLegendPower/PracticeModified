@@ -108,6 +108,7 @@ public class Lobby
         Player p = player.getPlayer();
         PlayerInventory inv = p.getInventory();
         inv.clear();
+        inv.setArmorContents(null);
         for(LobbyItem item : items)
         {
             inv.setItem(item.getSlot(), item.getItem());

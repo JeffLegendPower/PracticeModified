@@ -31,6 +31,9 @@ public abstract class GameLogic extends ComponentClass<GameComponent>
 
     public String getName(){return name;}
     public int getId(){return id;}
+    public void broadcast(String s){
+        getPlayers().forEach(p -> p.sendMessage(s));
+    }
     
     @Override
     public <T> T triggerEvent(T e)

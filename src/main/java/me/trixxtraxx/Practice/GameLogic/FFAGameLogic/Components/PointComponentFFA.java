@@ -11,6 +11,7 @@ import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -29,7 +30,8 @@ public class PointComponentFFA extends GameComponent implements IStatComponent
     protected HashMap<Player, Player> lastHit = new HashMap<>();
     protected int initialPlayers = 0;
     
-    public PointComponentFFA(GameLogic logic, int maxPoints){
+    public PointComponentFFA(GameLogic logic, int maxPoints)
+    {
         super(logic);
         this.maxPoints = maxPoints;
     }

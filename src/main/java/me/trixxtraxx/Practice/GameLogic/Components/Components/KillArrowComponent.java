@@ -49,7 +49,7 @@ public class KillArrowComponent extends GameComponent
     {
         if(event.getDamager() instanceof Projectile && event.getEntity() instanceof Player)
         {
-            event.setDamage(999999999);
+            if(((Projectile)event.getDamager()).getShooter() != event.getEntity()) event.setDamage(999999999);
         }
     }
 }
