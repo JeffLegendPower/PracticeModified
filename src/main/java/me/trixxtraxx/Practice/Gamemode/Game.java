@@ -4,6 +4,7 @@ import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Map;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -22,21 +23,35 @@ public class Game
 
     public Game(GameLogic log, List<Player> players, Kit k, Map m)
     {
-        kit = k;
-        logic = log;
-        for (Player p : players)
+        try
         {
-            p.setNoDamageTicks(20);
-            p.setHealth(p.getMaxHealth());
-            p.setFoodLevel(20);
-            p.setGameMode(GameMode.SURVIVAL);
-            p.getEnderChest().clear();
-            Game currentGame = getGame(p);
-            if (currentGame != null) currentGame.getLogic().removePlayer(p);
+            kit = k;
+            logic = log;
+            for(Player p: players)
+            {
+                p.setNoDamageTicks(20);
+                p.setHealth(p.getMaxHealth());
+                p.setFoodLevel(20);
+                p.setGameMode(GameMode.SURVIVAL);
+                p.getEnderChest().clear();
+                Game currentGame = getGame(p);
+                if(currentGame != null) currentGame.getLogic().removePlayer(p);
+            }
+            games.add(this);
+            logic.start(this, players, m);
+            started = true;
         }
-        games.add(this);
-        logic.start(this, players, m);
-        started = true;
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            if(log != null) log.stop(true);
+            stop(false);
+            if(players != null){
+                for(Player p : players){
+                    p.sendMessage(ChatColor.RED + "Something went wrong");
+                }
+            }
+        }
         BungeeUtil.getInstance().update();
     }
 

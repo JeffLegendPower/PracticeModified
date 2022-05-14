@@ -6,6 +6,7 @@ import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoscaleLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.SQLUtil;

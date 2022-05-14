@@ -1,18 +1,22 @@
 package me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components;
 
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class PointComponent extends GameComponent
+public class PointComponent extends GameComponent implements IStatComponent
 {
     @Config
     private int goal;
@@ -57,7 +61,15 @@ public class PointComponent extends GameComponent
         if (cur < goal)
         {
             e.setCanceled(true);
-            for (Player p : logic.getPlayers()) logic.toSpawn(p);
+            logic.triggerEvent(new ResetEvent(logic, false));
+            new BukkitRunnable()
+            {
+                @Override
+                public void run()
+                {
+                    for (Player p : logic.getPlayers()) logic.toSpawn(p);
+                }
+            }.runTaskLater(Practice.Instance, 0);
         }
     }
 
@@ -145,5 +157,25 @@ public class PointComponent extends GameComponent
         {
             return s.replace("{Points2}", points1).replace("{Points1}", points2);
         }
+    }
+    
+    @Override
+    public List<SQLProperty> getSQL()
+    {
+        List<SQLProperty> list = new List<>();
+        list.add(new SQLProperty("Points", "int(11) NOT NULL", "0", true));
+        return list;
+    }
+    
+    @Override
+    public String getStat(Player p, String stat)
+    {
+        if(stat.equalsIgnoreCase("Points"))
+        {
+            if(!(logic instanceof DuelGameLogic)) return "0";
+            if(((DuelGameLogic) logic).getP1() == p) return p1 + "";
+            return p2 + "";
+        }
+        return "";
     }
 }

@@ -8,6 +8,7 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.SQL.PlayerStats;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.TriggerEvent;
 import net.md_5.bungee.api.ChatColor;
@@ -200,13 +201,9 @@ public class JumpComponent extends GameComponent implements IStatComponent
         {
             return String.valueOf(lastDistance);
         }
-        else if(stat.equalsIgnoreCase("BestDistance")){
-            String best = PracticePlayer.getPlayer(p).getStats(logic.getName()).getStat("BestDistance");
-            if(best == null || best.isEmpty()) return lastDistance + "";
-            double bestd = Double.parseDouble(best);
-            if(lastDistance > bestd) return lastDistance + "";
-            else return best;
-            
+        else if(stat.equalsIgnoreCase("BestDistance"))
+        {
+            return getBestOrCurrent(p, logic.getName(),"BestDistance", lastDistance);
         }
         return null;
     }

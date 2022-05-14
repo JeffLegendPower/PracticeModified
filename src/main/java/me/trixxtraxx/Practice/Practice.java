@@ -7,7 +7,9 @@ import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.WinStatComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.BedComponent;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.ComboComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.PointComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
@@ -341,7 +343,7 @@ public final class Practice extends JavaPlugin
             else if(args[0].equalsIgnoreCase("Jump"))
             {
                 Player p = (Player) s;
-                Map m = new Map(-1,"JumpWorld", "JumpWorld", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100.1, 0, 0, 0)));
+                Map m = new Map(-1,"JumpWorld", "JumpWorld", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100.1, 0, -90, 0)));
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m);
@@ -416,7 +418,6 @@ public final class Practice extends JavaPlugin
                 new KillArrowComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
                 new LeaveRemoveComponent(g.getLogic());
-                new StatComponent(g.getLogic());
                 new SpectatorRespawnComponent(g.getLogic(), 100,
                                               ChatColor.RED + "Respawning!",
                                               ChatColor.WHITE + "You will respawn in {Timer}s!",
@@ -450,6 +451,9 @@ public final class Practice extends JavaPlugin
                                                 "" + "\n" +
                                                 ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
+    
+                new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
     
                 new NoHungerComponent(g.getLogic());
                 new NoItemDropComponent(g.getLogic());
@@ -513,6 +517,7 @@ public final class Practice extends JavaPlugin
                 new BedComponent(g.getLogic());
                 
                 new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
     
                 new NoMapBreakComponent(m);
                 new BreakRegion(m, new Region(new ConfigLocation(1.5,100, -21.5), new ConfigLocation(5.5, 102, -26.5)), true);
@@ -557,15 +562,20 @@ public final class Practice extends JavaPlugin
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
                 new PointComponent(g.getLogic(), 3, "⬤", true, false);
+                new MapResetComponent(g.getLogic());
+    
+                new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
     
                 new NoMapBreakComponent(m);
                 new KillHeightComponent(m, 75);
+                new HeightLimitComponent(m, 100);
             }
             else if(args[0].equalsIgnoreCase("uhc"))
             {
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[2]);
-                DuelSpawnComponent spawn = new DuelSpawnComponent(30, 100, 0, 0, 0, -30, 100, 0, 180, 0);
+                DuelSpawnComponent spawn = new DuelSpawnComponent(30, 100, 0, 90, 0, -30, 100, 0, -90, 0);
                 Map m = new Map(-1,"Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
@@ -593,6 +603,9 @@ public final class Practice extends JavaPlugin
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
                 new NoRegenComponent(g.getLogic());
+    
+                new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
 
                 new NoMapBreakComponent(m);
             }
@@ -605,7 +618,7 @@ public final class Practice extends JavaPlugin
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m);
-                g.getLogic().setName("Classic");
+                g.getLogic().setName("Boxxing");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDamageComponent(g.getLogic());
 
@@ -615,20 +628,19 @@ public final class Practice extends JavaPlugin
                 new NoHungerComponent(g.getLogic());
 
                 new StartInventoryComponent(g.getLogic());
-                /*new SpawnProtComponent(g.getLogic(), 100,
-                        ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
-                        ChatColor.BLUE + "The Game started, go fight!"
-                );*/
 
                 new ScoreboardComponent(g.getLogic(),
                         ChatColor.AQUA + "Boxxing",
                         "" + "\n" +
                                 ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
                                 "" + "\n" +
+                                ChatColor.BLUE + "Points:\n" +
+                                ChatColor.BLUE + "  You: " + ChatColor.AQUA + "{Points1}\n" +
+                                ChatColor.BLUE + "  Them: " + ChatColor.AQUA + "{Points2}\n" +
+                                ChatColor.BLUE + "  Combo: " + ChatColor.AQUA + "{Combo}\n\n" +
+                                
                                 ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                "{Points1}" + "\n" +
                                 ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "{Points2}" + "\n" +
                                 "" + "\n" +
                                 ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
@@ -636,10 +648,14 @@ public final class Practice extends JavaPlugin
                         ChatColor.BLUE + "{Winner} won the game!\n"
                 );
 
+                new ComboComponent(g.getLogic());
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
                 new PointComponent(g.getLogic(), 100, "", false, true);
+    
+                new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
 
                 new NoMapBreakComponent(m);
             }
@@ -654,7 +670,6 @@ public final class Practice extends JavaPlugin
                 //SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
                 g.getLogic().setName("Sumo");
-                new YKillComponent(g.getLogic(), 97);
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
@@ -679,8 +694,13 @@ public final class Practice extends JavaPlugin
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
                 new PointComponent(g.getLogic(), 2, "⬤", true, false);
+                new NoFallDamageComponent(g.getLogic());
+                
+                new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
 
                 new NoMapBreakComponent(m);
+                new KillHeightComponent(m, 97);
             }
             else if(args[0].equalsIgnoreCase("Chamber"))
             {
@@ -729,7 +749,6 @@ public final class Practice extends JavaPlugin
                 new KillArrowComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
                 new LeaveRemoveComponent(g.getLogic());
-                new StatComponent(g.getLogic());
                 new SpectatorRespawnComponent(g.getLogic(), 100,
                                               ChatColor.RED + "Respawning!",
                                               ChatColor.WHITE + "You will respawn in {Timer}s!",
@@ -765,6 +784,9 @@ public final class Practice extends JavaPlugin
                                                 "" + "\n" +
                                                 ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
+    
+                new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
                 
                 new NoHungerComponent(g.getLogic());
                 new NoFallDamageComponent(g.getLogic());

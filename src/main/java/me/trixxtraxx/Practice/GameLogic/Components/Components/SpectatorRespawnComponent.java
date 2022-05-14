@@ -62,13 +62,16 @@ public class SpectatorRespawnComponent extends GameComponent
         e.setCanceled(true);
         prot.put(e.getPlayer(), e.getLoc());
         e.getPlayer().setGameMode(org.bukkit.GameMode.SPECTATOR);
+        Practice.log(4, "SpectatorRespawn: " + e.getPlayer().getName() + "; " + this.remainingTitle + ", " + this.remainingSubtitle + ", " + this.startingTitle + ", " + this.startingSubtitle);
         new BukkitRunnable()
         {
             int left = spawnProt;
+    
             @Override
             public void run()
             {
-                if(logic.getGame().hasEnded()) {
+                if(logic.getGame().hasEnded())
+                {
                     cancel();
                     return;
                 }
@@ -76,8 +79,13 @@ public class SpectatorRespawnComponent extends GameComponent
                 {
                     e.getPlayer().setGameMode(org.bukkit.GameMode.SURVIVAL);
                     e.getPlayer().sendTitle(
-                            logic.applyPlaceholders(e.getPlayer(), startingTitle.replace("{Timer}", (left / 20) + "")),
-                            logic.applyPlaceholders(e.getPlayer(), startingSubtitle.replace("{Timer}", (left / 20) + ""))
+                            logic.applyPlaceholders(e.getPlayer(),
+                                                    startingTitle.replace("{Timer}", (left / 20) + "")
+                            ),
+                            startingSubtitle == null ? "" :
+                                    logic.applyPlaceholders(e.getPlayer(),
+                                                    startingSubtitle.replace("{Timer}", (left / 20) + "")
+                            )
                     );
                     logic.toSpawn(e.getPlayer());
                     prot.remove(e.getPlayer());
@@ -87,13 +95,18 @@ public class SpectatorRespawnComponent extends GameComponent
                 if(left % 20 == 0)
                 {
                     e.getPlayer().sendTitle(
-                            logic.applyPlaceholders(e.getPlayer(), remainingTitle.replace("{Timer}", (left / 20) + "")),
-                            logic.applyPlaceholders(e.getPlayer(), remainingSubtitle.replace("{Timer}", (left / 20) + ""))
-                            );
+                            logic.applyPlaceholders(e.getPlayer(),
+                                                    remainingTitle.replace("{Timer}", (left / 20) + "")
+                            ),
+                            remainingSubtitle == null ? "" :
+                                    logic.applyPlaceholders(e.getPlayer(),
+                                                    remainingSubtitle.replace("{Timer}", (left / 20) + "")
+                            )
+                    );
                 }
                 left--;
             }
-        }.runTaskTimer(Practice.Instance, 0,1);
+        }.runTaskTimer(Practice.Instance, 0, 1);
     }
     
     @TriggerEvent
