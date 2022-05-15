@@ -29,16 +29,6 @@ public class KitEditorListener implements Listener
     {
         if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(event.getPlayer())) KitEditor.getInstance().remove(event.getPlayer());
     }
-    //Listen to the following events, if they are triggered while a player is in the KitEditor, cancel them
-    //BlockBreakEvent
-    //BlockPlaceEvent
-    //EntityDamageEvent
-    //BucketEmptyEvent
-    //BucketFillEvent
-    //PlayerBedEnterEvent
-    //PlayerDropItemEvent
-    //PlayerPickupItemEvent
-    //register events with @EventHandler annotation
     
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e)

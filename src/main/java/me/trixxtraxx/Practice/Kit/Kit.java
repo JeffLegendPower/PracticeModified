@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.Kit;
 
 import com.google.gson.Gson;
+import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Practice;
@@ -54,14 +55,10 @@ public class Kit extends ComponentClass<KitComponent>
     public String getName(){return name;}
     public String getItems()
     {
-        List<ConfigItem> Items = new List<>();
-        for (ItemStack i:items)
-        {
-            ConfigItem i2 = new ConfigItem();
-            i2.stack = new Gson().toJson(i.serialize());
-            Items.add(i2);
-        }
-        return new Gson().toJson(Items);
+        ItemStack[] stacks = new ItemStack[items.size()];
+        items.toArray(stacks);
+        String serialized = BetterItem.serialize(stacks);
+        return "{Item:\"" + serialized + "\"}";
     }
     public List<ItemStack> getItemStacks() {return items;}
     public String getDefaultOrder(){return new Gson().toJson(defaultOrder);}

@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice;
 
 import com.grinderwolf.swm.api.SlimePlugin;
+import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.TrixxTraxx.Linq.List;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
@@ -28,8 +29,12 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoScaleSpawnComponen
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoscaleLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloGameLogic;
 import me.trixxtraxx.Practice.Gamemode.Game;
+import me.trixxtraxx.Practice.Kit.Editor.Enchants.EnchantmentCategory;
+import me.trixxtraxx.Practice.Kit.Editor.Enchants.EnchantmentEditor;
+import me.trixxtraxx.Practice.Kit.Editor.Item.ItemEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
+import me.trixxtraxx.Practice.Kit.Editor.Potion.PotionEditor;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Lobby.LobbyListener;
@@ -54,7 +59,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -238,6 +246,8 @@ public final class Practice extends JavaPlugin
         BungeeUtil.getInstance().init(conf.getString("Bungee.Identifier"), conf.getInt("Bungee.maxRatedPlayers"));
     
         RegisterMessages.registerReciever(new PlayerReceiver());
+    
+        EnchantmentCategory.init();
     }
 
     @Override
@@ -375,6 +385,7 @@ public final class Practice extends JavaPlugin
                 new StatComponent(g.getLogic());
                 new SuccessStat(g.getLogic());
                 new NoFallDamageComponent(g.getLogic());
+                new TNTFbComponent(g.getLogic());
     
                 new NoMapBreakComponent(m);
                 new AutoScaleComponent(m, 0, 0, 20, new List(new Region(new ConfigLocation(-5.5,90, -5.5,0,0), new ConfigLocation(5.5, 110, 5.5)),
@@ -410,13 +421,10 @@ public final class Practice extends JavaPlugin
                 g.getLogic().setName("InvisPractice");
                 
                 new NoDieComponent(g.getLogic());
-                new DieToSpawnComponent(g.getLogic());
-                new RespawnInventoryComponent(g.getLogic());
                 
+                new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
                 
-                new KillArrowComponent(g.getLogic());
-                new DieToSpawnComponent(g.getLogic());
                 new LeaveRemoveComponent(g.getLogic());
                 new SpectatorRespawnComponent(g.getLogic(), 100,
                                               ChatColor.RED + "Respawning!",
@@ -446,7 +454,7 @@ public final class Practice extends JavaPlugin
                                                 //"§93. {Points3Player}§b {Points3}\n" +
                                                 //"§94. {Points4Player}§b {Points4}\n" +
                                                 "\n" +
-                                                "You:\n" +
+                                                "§9You:\n" +
                                                 "§9{Place}. {Name}§b {Points}" +
                                                 "" + "\n" +
                                                 ChatColor.AQUA + "Ranked.fun" + "\n"
@@ -457,9 +465,13 @@ public final class Practice extends JavaPlugin
     
                 new NoHungerComponent(g.getLogic());
                 new NoItemDropComponent(g.getLogic());
+                
                 new InvisPracticeComponent(g.getLogic(), 3, 60, "InvisPractice_Attacker");
                 new InvisPracticeSpawnProvider(m, new ConfigLocation(0,100,0, 180, 0));
                 new MapResetComponent(g.getLogic());
+    
+                new TNTFbComponent(g.getLogic());
+                new InvisComponent(g.getLogic());
                 
                 new NoMapBreakComponent(m);
                 new BreakRegion(m, new Region(new ConfigLocation(0.5,84, -77.5), new ConfigLocation(-5.5, 88, -70.5)), true);
@@ -712,7 +724,7 @@ public final class Practice extends JavaPlugin
                     Player pl = Bukkit.getPlayer(args[i]);
                     if(pl != null) players.add(pl);
                 }
-                /*FFASpawnComponent spawn = new FFASpawnComponent(
+                FFASpawnComponent spawn = new FFASpawnComponent(
                         new List(
                                 new ConfigLocation(-14.5, 95, 2.5, 20, 0),
                                 new ConfigLocation(-9.5, 87, -0.5, 16, 0),
@@ -723,15 +735,15 @@ public final class Practice extends JavaPlugin
                                 new ConfigLocation(-25.5, 93, 28.5, -90, 0),
                                 new ConfigLocation(-6.5,87,25.5,140,0)
                         )
-                );*/
-                FFASpawnComponent spawn = new FFASpawnComponent(
+                );
+                /*FFASpawnComponent spawn = new FFASpawnComponent(
                         new List(
                                 new ConfigLocation(-11.5,81,-43.5,22,-40),
                                 new ConfigLocation(-26.5,89,-49.5,-60,10),
                                 new ConfigLocation(-9.5, 87, -56.5, 16, 0),
                                 new ConfigLocation(-22.5,87,-33.5,-150,0)
                         )
-                );
+                );*/
                 Map m = new Map(-1, "CityChamber", "CityChamber", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("OneInAChamber", -1, new List<>(), -1, new HashMap<>());
@@ -773,11 +785,11 @@ public final class Practice extends JavaPlugin
                                                 "§91. {Points1Player}§b {Points1}\n" +
                                                 "§92. {Points2Player}§b {Points2}\n" +
                                                 "§93. {Points3Player}§b {Points3}\n" +
-                                                //"§94. {Points4Player}§b {Points4}\n" +
-                                                //"§95. {Points5Player}§b {Points5}\n" +
-                                                //"§96. {Points6Player}§b {Points6}\n" +
-                                                //"§97. {Points7Player}§b {Points7}\n" +
-                                                //"§98. {Points8Player}§b {Points8}\n" +
+                                                "§94. {Points4Player}§b {Points4}\n" +
+                                                "§95. {Points5Player}§b {Points5}\n" +
+                                                "§96. {Points6Player}§b {Points6}\n" +
+                                                "§97. {Points7Player}§b {Points7}\n" +
+                                                "§98. {Points8Player}§b {Points8}\n" +
                                                 "\n" +
                                                 "You:\n" +
                                                 "§9{Place}. {Name}§b {Points}" +
@@ -876,6 +888,16 @@ public final class Practice extends JavaPlugin
                     e.printStackTrace();
                 }
             }
+            else if(args[0].equalsIgnoreCase("giveInvis"))
+            {
+                if(!(s instanceof Player)) return false;
+                Player p = (Player) s;
+                BetterItem i = new BetterItem(Material.POTION, 1, (short) 8238);
+                PotionMeta meta = (PotionMeta) i.getItemMeta();
+                meta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 600, 1), true);
+                i.setItemMeta(meta);
+                p.getInventory().addItem(i);
+            }
         }
         else if(label.equalsIgnoreCase("leave"))
         {
@@ -883,6 +905,39 @@ public final class Practice extends JavaPlugin
             Game g = Game.getGame((Player) s);
             if(g == null) return false;
             g.getLogic().removePlayer((Player) s);
+        }
+        else if(label.equalsIgnoreCase("kit")){
+            if(!(s instanceof Player)) return false;
+            Player p = (Player) s;
+            KitEditor kitEditor = KitEditor.getInstance();
+            if(!kitEditor.hasPlayer(p)) {
+                p.sendMessage(ChatColor.RED + "Please enter a kit editing area!");
+                return true;
+            }
+            
+            if(args.length == 0) {
+                p.sendMessage("usage: /kit <potion|item|enchants>");
+            }
+            else if(args[0].equalsIgnoreCase("potion"))
+            {
+                new PotionEditor(p);
+            }
+            else if(args[0].equalsIgnoreCase("item"))
+            {
+                new ItemEditor(p);
+            }
+            else if(args[0].equalsIgnoreCase("enchants"))
+            {
+                new EnchantmentEditor(p);
+            }
+            else if(args[0].equalsIgnoreCase("test"))
+            {
+                ItemStack stack = p.getItemInHand();
+                String serialize = BetterItem.serialize(new ItemStack[]{stack});
+                p.sendMessage(serialize);
+                p.setItemInHand(BetterItem.deserialize(serialize)[0]);
+            }
+            return true;
         }
         return false;
     }

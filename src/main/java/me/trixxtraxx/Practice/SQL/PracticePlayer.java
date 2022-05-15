@@ -59,6 +59,8 @@ public class PracticePlayer
         Kit kit = new Kit(playerName, -1, items, -1, defaultOrder);
         kit.setNewItems(items);
         kit.setNewDefaultOrder(defaultOrder);
+        cachedKit = kit;
+        queriedKit = true;
         PracticePlayer finalPlayer = this;
         new BukkitRunnable(){
             @Override
@@ -82,13 +84,16 @@ public class PracticePlayer
             defaultOrder.put(items.size(), i);
             items.add(item);
         }
+        boolean update = true;
         if(getKit() == null)
         {
+            update = false;
             createKit(items, defaultOrder);
         }
         cachedKit.setNewItems(items);
         cachedKit.setNewDefaultOrder(defaultOrder);
     
+        if(!update) return;
         PracticePlayer finalPlayer = this;
         new BukkitRunnable(){
             @Override

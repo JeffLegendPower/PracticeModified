@@ -11,3 +11,4 @@ depend:
 commands:
   TestGame:
   leave:
+  kit:

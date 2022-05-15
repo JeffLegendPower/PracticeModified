@@ -66,6 +66,8 @@ public class GameLogicListener implements Listener
     }
 
     @EventHandler
+    public void onEventList(PlayerItemConsumeEvent  e) {onEvent( e, e.getPlayer().getWorld(), e.getPlayer());}
+    @EventHandler
     public void onEventList(BlockBreakEvent e) {onEvent( e, e.getBlock().getWorld(), e.getPlayer());}
     @EventHandler
     public void onEventList(BlockBurnEvent e) {onEvent( e, e.getBlock().getWorld(), null);}

@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
+import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.trixxtraxx.Practice.Bungee.GameAddAction;
 import me.trixxtraxx.Practice.Bungee.GlobalStatUpdateAction;
 import me.trixxtraxx.Practice.Bungee.StatUpdatePacket;
@@ -428,14 +429,17 @@ public class SQLUtil
             ResultSet res = ps.getResultSet();
     
             //new Instance to get List class
-            ConfigItem[] items = null;
+            List<ItemStack> items = null;
             int deforder = 0;
             String name = "";
             int kitId = 0;
             if(res.next())
             {
                 java.util.Map<String, Object> map = new HashMap<>();
-                items = new Gson().fromJson(res.getString("Items"), ConfigItem[].class);
+                String ItemString = res.getString("Items");
+                ItemString = ItemString.substring(7, ItemString.length() - 3);
+                Practice.log(4, "deserializing: " + ItemString);
+                items = new List( BetterItem.deserialize(ItemString));
                 deforder = res.getInt("defaultOrder");
                 name = res.getString("Name");
                 kitId = res.getInt("Kit_ID");
@@ -485,13 +489,7 @@ public class SQLUtil
     
             ps.close();
             res.close();
-            List<ItemStack> stacks = new List<>();
-            for(ConfigItem i: items)
-            {
-                java.util.Map<String, Object> map = new HashMap<>();
-                stacks.add(ItemStack.deserialize(new Gson().fromJson(i.stack, map.getClass())));
-            }
-            return new Kit(name, kitId, stacks, deforder, defaultOrder);
+            return new Kit(name, kitId, items, deforder, defaultOrder);
         }
         catch(Exception e)
         {

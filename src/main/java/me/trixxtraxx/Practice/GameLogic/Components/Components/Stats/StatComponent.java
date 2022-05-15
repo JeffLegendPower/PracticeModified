@@ -33,7 +33,7 @@ public class StatComponent extends GameComponent
     @TriggerEvent(priority = 999, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(ResetEvent event)
     {
-        store();
+        if(logic instanceof SoloGameLogic) store();
     }
     
     @TriggerEvent(priority = 999, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)

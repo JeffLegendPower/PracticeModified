@@ -77,6 +77,7 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
     
     protected void startRound()
     {
+        logic.triggerEvent(new ResetEvent(logic, false));
         if(currentPlayer == null) currentPlayer = logic.getPlayers().get(0);
         else{
             int index = logic.getPlayers().indexOf(currentPlayer);
@@ -100,16 +101,21 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
             }
         };
         Timer.runTaskTimer(Practice.Instance, 20, 20);
-    
+        
         cancelSpecRespawn = true;
-        for(Player player : logic.getPlayers()){
+        
+        for(Player player : logic.getPlayers())
+        {
+            player.setHealth(player.getMaxHealth());
             if(player == currentPlayer) continue;
+            Practice.log(4, "Sending " + player.getName() + " to spawn");
             logic.toSpawn(player);
         }
         
         InvisPracticeSpawnProvider spawnProvider = (InvisPracticeSpawnProvider) logic.getMap().getComponents(InvisPracticeSpawnProvider.class).get(0);
         Location loc = spawnProvider.getLocation();
-        if(loc == null){
+        if(loc == null)
+        {
             Practice.log(1, "No spawn location found for InvisPracticeComponent");
             currentPlayer.teleport(new Location(logic.getWorld(), 0, 100, 0, 180, 0));
         }
@@ -117,7 +123,7 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
         {
             currentPlayer.teleport(loc);
         }
-    
+        
         cancelSpecRespawn = false;
         
         kit.setInventory(currentPlayer);
@@ -125,7 +131,6 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
     
     private void reset(){
         logic.broadcast(ChatColor.BLUE + currentPlayer.getName() + " has failed!");
-        logic.triggerEvent(new ResetEvent(logic, false));
         startRound();
     }
     
@@ -135,21 +140,26 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
         if(cancelSpecRespawn) event.setCanceled(true);
     }
     
-    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onPlayerDeath(PlayerDeathEvent event){
+    @TriggerEvent
+    public void onPlayerDeath(PlayerDeathEvent event)
+    {
         if(event.getEntity() == currentPlayer)
         {
-            reset();
             cancelSpecRespawn = true;
-            //delay 1 tick
             new BukkitRunnable(){
                 @Override
                 public void run()
                 {
-                    cancelSpecRespawn = false;
+                    reset();
                 }
-            }.runTaskLater(Practice.Instance, 1);
+            }.runTaskLater(Practice.Instance, 0);
         }
+    }
+    
+    @TriggerEvent(priority = 2, state = TriggerEvent.CancelState.NONE)
+    public void onDie(PlayerDeathEvent event)
+    {
+        if(!cancelSpecRespawn) logic.toSpawn(event.getEntity());
     }
     
     @TriggerEvent
@@ -174,9 +184,8 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
                 if(points == maxPoints)
                 {
                     logic.stop(false);
+                    return;
                 }
-    
-                logic.triggerEvent(new ResetEvent(logic, true));
                 
                 startRound();
             }

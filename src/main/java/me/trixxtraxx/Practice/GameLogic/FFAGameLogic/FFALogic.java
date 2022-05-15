@@ -115,9 +115,14 @@ public class FFALogic extends GameLogic
     @Override
     public void toSpawn(Player p)
     {
+        Practice.log(4, "Sending player to spawn: " + p.getName());
         if(game.hasEnded()) return;
         Location loc = map.getSpawn().getSpawn(this, p);
-        if(triggerEvent(new ToSpawnEvent(p, loc)).isCanceled()) return;
+        if(triggerEvent(new ToSpawnEvent(p, loc)).isCanceled()) {
+            Practice.log(4, "Canceled to spawn event");
+            return;
+        }
+        Practice.log(4, "Now teleporting player to: " + loc.toString());
         p.teleport(loc);
     }
 }
