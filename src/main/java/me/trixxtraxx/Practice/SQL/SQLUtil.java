@@ -555,14 +555,14 @@ public class SQLUtil
         }
     }
     
-    public GameLogic getLogic(int logicId)
+    public GameLogic getLogic(int logicId, boolean ranked)
     {
-        return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = " + logicId);
+        return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Gamemode_ID = " + logicId, ranked);
     }
     
-    public GameLogic getLogic(String name){return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Name = '" + name + "'");}
+    public GameLogic getLogic(String name, boolean ranked){return getLogicFromQuery("SELECT * FROM Gamemode WHERE Gamemode.Name = '" + name + "'", ranked);}
     
-    private GameLogic getLogicFromQuery(String query)
+    private GameLogic getLogicFromQuery(String query, boolean ranked)
     {
         try
         {
@@ -580,6 +580,14 @@ public class SQLUtil
                 logic.setName(res.getString("Name"));
                 logic.setId(res.getInt("Gamemode_ID"));
                 logic.applyData(res.getString("Data"));
+                
+                if(ranked)
+                {
+                    Class<?> rankedClass = Class.forName(res.getString("RankedClass"));
+                    Constructor<?> constructor = rankedClass.getConstructor(GameLogic.class);
+                    Component comp = (Component) constructor.newInstance(logic);
+                    comp.applyData(res.getString("Data"));
+                }
             }
     
             ps.close();

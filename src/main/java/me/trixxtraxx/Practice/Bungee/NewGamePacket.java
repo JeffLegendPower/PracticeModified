@@ -31,6 +31,7 @@ public class NewGamePacket
     public String kit;
     public String map;
     public List<String> players;
+    public boolean ranked;
     
     private boolean done;
     private Map m;
@@ -91,7 +92,7 @@ public class NewGamePacket
             @Override
             public void run()
             {
-                GameLogic sqlgame = SQLUtil.Instance.getLogic(gamemode);
+                GameLogic sqlgame = SQLUtil.Instance.getLogic(gamemode, ranked);
                 SQLUtil.Instance.applyComponents(sqlgame);
                 g = sqlgame;
                 update();

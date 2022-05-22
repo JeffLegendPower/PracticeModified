@@ -858,7 +858,7 @@ public final class Practice extends JavaPlugin
                     ppl.add(Bukkit.getPlayer(args[i]));
                 }
 
-                Game g = new Game(SQLUtil.Instance.getLogic(args[1]), ppl,k,m);
+                Game g = new Game(SQLUtil.Instance.getLogic(args[1], false), ppl,k,m);
                 SQLUtil.Instance.applyComponents(g.getLogic());
             }
             else if(args[0].equalsIgnoreCase("editMap"))
