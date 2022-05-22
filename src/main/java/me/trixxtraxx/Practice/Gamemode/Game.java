@@ -2,6 +2,7 @@ package me.trixxtraxx.Practice.Gamemode;
 
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.KitOrderUpdateComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Map;
 import org.bukkit.ChatColor;
@@ -39,6 +40,7 @@ public class Game
             }
             games.add(this);
             logic.start(this, players, m);
+            new KitOrderUpdateComponent(logic);
             started = true;
         }
         catch(Exception ex)

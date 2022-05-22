@@ -5,6 +5,7 @@ import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.TrixxTraxx.Linq.List;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
+import me.trixxtraxx.Practice.Bungee.Queue.QueueListener;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
@@ -246,6 +247,7 @@ public final class Practice extends JavaPlugin
         BungeeUtil.getInstance().init(conf.getString("Bungee.Identifier"), conf.getInt("Bungee.maxRatedPlayers"));
     
         RegisterMessages.registerReciever(new PlayerReceiver());
+        RegisterMessages.registerReciever(new QueueListener());
     
         EnchantmentCategory.init();
     }
@@ -678,7 +680,7 @@ public final class Practice extends JavaPlugin
                 DuelSpawnComponent spawn = new DuelSpawnComponent(5.5, 100, 0.5, 90, 0, -4.5, 100, 0.5, -90, 0);
                 Map m = new Map(-1, "Sumo1", "Sumo1", spawn);
                 //Kit k = SQLUtil.Instance.getKit(args[2]);
-                Kit k = new Kit("Sumo1", -1, new List<>(), -1, new HashMap<>());
+                Kit k = new Kit("Sumo1", -1, new List<>(), new HashMap<>());
                 //SQLUtil.Instance.applyComponents(k);
                 Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
                 g.getLogic().setName("Sumo");
@@ -820,7 +822,7 @@ public final class Practice extends JavaPlugin
                     defaultOrder.put(items.size(), i);
                     items.add(item);
                 }
-                Kit k = new Kit(args[1], -1, items, -1, defaultOrder);
+                Kit k = new Kit(args[1], -1, items, defaultOrder);
                 SQLUtil.Instance.addKit(k);
             }
             else if(args[0].equalsIgnoreCase("saveMap"))

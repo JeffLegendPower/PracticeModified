@@ -1,13 +1,19 @@
 package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
+import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.MessageProvider;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
+import me.trixxtraxx.Practice.Bungee.KitOrderUpdatePacket;
+import me.trixxtraxx.Practice.Bungee.Queue.QueueUpdatePacket;
 import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -27,6 +33,7 @@ public class PracticePlayer
     private int kitId;
     private boolean queriedKit = false;
     private Kit cachedKit = null;
+    private boolean inQueue = false;
     
     public PracticePlayer(int playerId, int kitId, String playerName, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, List<PlayerStats> stats)
     {
@@ -56,7 +63,7 @@ public class PracticePlayer
     }
     public void createKit(List<ItemStack> items, HashMap<Integer, Integer> defaultOrder)
     {
-        Kit kit = new Kit(playerName, -1, items, -1, defaultOrder);
+        Kit kit = new Kit(playerName, -1, items, defaultOrder);
         kit.setNewItems(items);
         kit.setNewDefaultOrder(defaultOrder);
         cachedKit = kit;
@@ -73,6 +80,24 @@ public class PracticePlayer
     }
     public int getPlayerId(){return playerId;}
     public HashMap<Integer, Integer> getCustomOrder(int kitId){return customKitOrders.get(kitId);}
+    public void setCustomOrder(int kitId, HashMap<Integer, Integer> customOrder)
+    {
+        if(customKitOrders.containsKey(kitId))
+        {
+            Practice.log(4, "Updating custom order for kit " + kitId + " for player " + playerName);
+            customKitOrders.remove(kitId);
+            customKitOrders.put(kitId, customOrder);
+            SQLUtil.Instance.updatePlayerKitOrder(this, kitId, customOrder);
+        }
+        else
+        {
+            Practice.log(4, "Adding custom order for kit " + kitId + " for player " + playerName);
+            customKitOrders.put(kitId, customOrder);
+            SQLUtil.Instance.addPlayerKitOrder(this, kitId, customOrder);
+        }
+        Practice.log(4, "now storing into bungee");
+        MessageProvider.SendMessage("Practice_PlayerOrderUpdate", new Gson().toJson(new KitOrderUpdatePacket(getName(), kitId, customOrder)));
+    }
     public void saveKit(){
         PlayerInventory inv = getPlayer().getInventory();
         HashMap<Integer, Integer> defaultOrder = new HashMap<>();
@@ -102,6 +127,22 @@ public class PracticePlayer
                 SQLUtil.Instance.updatePlayerKit(finalPlayer, cachedKit);
             }
         }.runTaskAsynchronously(Practice.Instance);
+    }
+    public void setInQueue(boolean inQueue)
+    {
+        if(this.inQueue != inQueue)
+        {
+            this.inQueue = inQueue;
+            Practice.log(4, "Player " + playerName + " is now " + (inQueue ? "in" : "out") + " queue");
+            Lobby l = Lobby.get(getPlayer().getWorld());
+            l.setInv(this);
+        }
+    }
+    public boolean isInQueue() {return inQueue;}
+    public void leaveQueue()
+    {
+        setInQueue(false);
+        MessageProvider.SendMessage("Practice_Queue_Update_Bungee", new Gson().toJson(new QueueUpdatePacket(getName(), false)));
     }
     public void openBungeeInventory(String inv){
         MessageProvider.SendMessage("PracticeGui", new Gson().toJson(new OpenGuiRequest(playerName, inv)));

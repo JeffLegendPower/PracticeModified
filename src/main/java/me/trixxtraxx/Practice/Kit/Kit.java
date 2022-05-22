@@ -4,12 +4,16 @@ import com.google.gson.Gson;
 import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.trixxtraxx.Practice.ComponentClass;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
+import me.trixxtraxx.Practice.Gamemode.Game;
+import me.trixxtraxx.Practice.Kit.Events.KitSetEvent;
+import me.trixxtraxx.Practice.Kit.Events.KitSetItemEvent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.ConfigItem;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -17,11 +21,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import me.TrixxTraxx.Linq.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Kit extends ComponentClass<KitComponent>
 {
     private int sqlId;
-    private int defaultOrderId;
     private String name;
     private List<ItemStack> items;
     //This is rly a hashmap of String, Double lmao
@@ -41,17 +45,15 @@ public class Kit extends ComponentClass<KitComponent>
     //- no Item Drops
     //- No Damage
 
-    public Kit(String name, int sqlId, List<ItemStack> stacks, int defaultOrderId, HashMap<Integer,Integer> defaultOrder)
+    public Kit(String name, int sqlId, List<ItemStack> stacks, HashMap<Integer,Integer> defaultOrder)
     {
         items = stacks;
         this.defaultOrder = defaultOrder;
         this.sqlId = sqlId;
-        this.defaultOrderId = defaultOrderId;
         this.name = name;
     }
 
     public int getSqlId(){return sqlId;}
-    public int getDefaultOrderId(){return defaultOrderId;}
     public String getName(){return name;}
     public String getItems()
     {
@@ -63,7 +65,6 @@ public class Kit extends ComponentClass<KitComponent>
     public List<ItemStack> getItemStacks() {return items;}
     public String getDefaultOrder(){return new Gson().toJson(defaultOrder);}
     public void setSqlId(int id){sqlId = id;}
-    public void setDefaultOrderId(int id){defaultOrderId = id;}
 
     public void setInventory(Player p)
     {
@@ -76,8 +77,10 @@ public class Kit extends ComponentClass<KitComponent>
 
     private void setItems(Player p)
     {
+        Game g = Game.getGame(p);
         PlayerInventory inv = p.getInventory();
         PracticePlayer prac = PracticePlayer.getPlayer(p);
+        if(g != null) if(g.getLogic().triggerEvent(new KitSetEvent(g.getLogic(), this, prac)).isCanceled()) return;
         HashMap<Integer, Integer> order = getOrder(prac);
 
         List<Integer> indexes = new List<>();
@@ -96,7 +99,17 @@ public class Kit extends ComponentClass<KitComponent>
                 //SOME SHITTY BUG WITH HASHMAP JSON SERIALIZATION "CANT CAST DOUBLE TO INT"
                 int slot = (int) Double.parseDouble(String.valueOf(entry.getValue()));
                 //Practice.log(4, "Now Setting: " + slot + "," + stack );
-                inv.setItem(slot, stack.clone());
+                BetterItem newItem = new BetterItem(stack);
+                if(g != null)
+                {
+                    KitSetItemEvent event = new KitSetItemEvent(g.getLogic(), prac, newItem, slot, key);
+                    if(g.getLogic().triggerEvent(event).isCanceled()) continue;
+                    inv.setItem(event.getSlot(), event.getItem());
+                }
+                else{
+                    inv.setItem(slot, newItem);
+                }
+                
                 indexes.remove((Integer) key);
             }
             catch (Exception ex)

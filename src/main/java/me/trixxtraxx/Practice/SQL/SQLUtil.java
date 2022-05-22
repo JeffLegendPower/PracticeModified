@@ -65,7 +65,6 @@ public class SQLUtil
         return con != null;
     }
     
-    
     public void connect() throws SQLException
     {
         if(!isConnected())
@@ -361,29 +360,43 @@ public class SQLUtil
         return -1;
     }
     
-    public void addPlayerKitOrder(PracticePlayer prac, HashMap<Integer, Integer> order, int kitId, boolean nullkitid)
+    public void addPlayerKitOrder(PracticePlayer prac, int kitId, HashMap<Integer, Integer> order)
     {
         try
         {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES (?,?)",
-                                                        Statement.RETURN_GENERATED_KEYS
+            PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO PlayerKitOrder " +
+                            "(Player_ID, Kit_ID, `Order`) " +
+                            "VALUES (?,?,?) "
+            );
+            ps.setInt(1, prac.getPlayerId());
+            ps.setInt(2, kitId);
+            ps.setString(3, new Gson().toJson(order));
+    
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void updatePlayerKitOrder(PracticePlayer prac, int kitId, HashMap<Integer, Integer> order)
+    {
+        try
+        {
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE PlayerKitOrder " +
+                            "SET `Order` = ? " +
+                            "WHERE Player_ID = ? AND Kit_ID = ?"
             );
             ps.setString(1, new Gson().toJson(order));
-            if(nullkitid) ps.setNull(2, Types.NULL);
-            else ps.setInt(2, kitId);
+            ps.setInt(2, prac.getPlayerId());
+            ps.setInt(3, kitId);
             
             ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            rs.next();
-            int id = rs.getInt(1);
             ps.close();
-            
-            ps = con.prepareStatement("INSERT INTO PlayerKitOrder (Player_ID, KitOrder_ID) VALUES (?,?)");
-            ps.setInt(1, prac.getPlayerId());
-            ps.setInt(2, id);
-            
-            ps.close();
-            rs.close();
         }
         catch(Exception e)
         {
@@ -429,8 +442,8 @@ public class SQLUtil
             ResultSet res = ps.getResultSet();
     
             //new Instance to get List class
+            HashMap<Integer, Integer> defaultOrder = new HashMap<>();
             List<ItemStack> items = null;
-            int deforder = 0;
             String name = "";
             int kitId = 0;
             if(res.next())
@@ -440,9 +453,10 @@ public class SQLUtil
                 ItemString = ItemString.substring(7, ItemString.length() - 3);
                 Practice.log(4, "deserializing: " + ItemString);
                 items = new List( BetterItem.deserialize(ItemString));
-                deforder = res.getInt("defaultOrder");
                 name = res.getString("Name");
                 kitId = res.getInt("Kit_ID");
+    
+                defaultOrder = new Gson().fromJson(res.getString("defaultOrder"), defaultOrder.getClass());
             }
             else
             {
@@ -453,43 +467,7 @@ public class SQLUtil
     
             ps.close();
             res.close();
-            ps = con.prepareStatement(
-                    "SELECT * FROM KitOrder INNER JOIN Kit ON Kit.defaultOrder = KitOrder.KitOrder_ID WHERE Kit.defaultOrder = ?");
-            ps.setInt(1, deforder);
-    
-            ps.executeQuery();
-    
-            res = ps.getResultSet();
-    
-            HashMap<Integer, Integer> defaultOrder = new HashMap<>();
-            if(res.next())
-            {
-                defaultOrder = new Gson().fromJson(res.getString("Order"), defaultOrder.getClass());
-            }
-            else
-            {
-                ps.close();
-                res.close();
-                //add a new KitOrder with Order = '{}'
-                ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES ('{}',?)",
-                                          Statement.RETURN_GENERATED_KEYS
-                );
-                ps.setInt(1, kitId);
-                ps.executeUpdate();
-                ResultSet rs = ps.getGeneratedKeys();
-                rs.next();
-                int id = rs.getInt(1);
-                ps.close();
-                ps = con.prepareStatement("UPDATE Kit SET defaultOrder = ? WHERE Kit_ID = ?");
-                ps.setInt(1, id);
-                ps.setInt(2, kitId);
-                ps.executeUpdate();
-                ps.close();
-            }
-    
-            ps.close();
-            res.close();
-            return new Kit(name, kitId, items, deforder, defaultOrder);
+            return new Kit(name, kitId, items, defaultOrder);
         }
         catch(Exception e)
         {
@@ -521,25 +499,7 @@ public class SQLUtil
         if(k.getSqlId() != -1) return;
         try
         {
-            int orderId = k.getDefaultOrderId();
             int KitId = 0;
-            if(k.getDefaultOrderId() == -1)
-            {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO KitOrder (`Order`, Kit_ID) VALUES (?,?)",
-                                                            Statement.RETURN_GENERATED_KEYS
-                );
-                ps.setString(1, k.getDefaultOrder());
-                ps.setInt(2, -1);
-    
-                ps.executeUpdate();
-    
-                ResultSet rs = ps.getGeneratedKeys();
-                rs.next();
-                orderId = rs.getInt(1);
-                rs.close();
-    
-                ps.close();
-            }
             if(true)
             {
                 PreparedStatement ps = con.prepareStatement("INSERT INTO Kit (Name, Items, defaultOrder) VALUES (?,?," +
@@ -548,7 +508,7 @@ public class SQLUtil
                 );
                 ps.setString(1, k.getName());
                 ps.setString(2, k.getItems());
-                ps.setInt(3, orderId);
+                ps.setString(3, k.getDefaultOrder());
     
                 ps.executeUpdate();
                 ResultSet rs = ps.getGeneratedKeys();
@@ -568,17 +528,7 @@ public class SQLUtil
                 s.executeBatch();
                 s.close();
             }
-            if(true)
-            {
-                //Update Kit_ID of default Order
-                PreparedStatement ps = con.prepareStatement("UPDATE KitOrder SET Kit_ID = ? WHERE KitOrder_ID = ?");
-                ps.setInt(1, KitId);
-                ps.setInt(2, orderId);
-                ps.executeUpdate();
-                ps.close();
-            }
             k.setSqlId(KitId);
-            k.setDefaultOrderId(orderId);
         }
         catch(Exception e)
         {
@@ -590,14 +540,12 @@ public class SQLUtil
     {
         try
         {
-            String sql = "UPDATE KitOrder SET `Order` = '" + kit.getDefaultOrder() + "' WHERE KitOrder_ID = " + kit.getDefaultOrderId();
+            String sql = "Update Kit SET Name = ?, Items = ?, defaultOrder = ? WHERE Kit_ID = ?";
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.executeUpdate();
-            ps.close();
-            //now update the kit parameter Items
-            ps = con.prepareStatement("UPDATE Kit SET Items = ? WHERE Kit_ID = ?");
-            ps.setString(1, kit.getItems());
-            ps.setInt(2, kit.getSqlId());
+            ps.setString(1, kit.getName());
+            ps.setString(2, kit.getItems());
+            ps.setString(3, kit.getDefaultOrder());
+            ps.setInt(4, kit.getSqlId());
             ps.executeUpdate();
             ps.close();
         }
@@ -606,7 +554,6 @@ public class SQLUtil
             e.printStackTrace();
         }
     }
-    
     
     public GameLogic getLogic(int logicId)
     {

@@ -1,14 +1,14 @@
 package me.trixxtraxx.Practice.Lobby;
 
+import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.Lobby.ItemTypes.*;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
+import me.trixxtraxx.Practice.libs.Fastboard.FastBoard;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -31,6 +31,7 @@ public class Lobby
     private List<PracticePlayer> players = new List<>();
     private List<LobbyItem> items = new List<>();
     private ConfigLocation spawn;
+    private List<FastBoard> scoreboards = new List<>();
     
     public Lobby(ConfigurationSection section){
         this.world = section.getString("world");
@@ -96,22 +97,50 @@ public class Lobby
         p.setGameMode(GameMode.SURVIVAL);
         p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
         setInv(player);
+        
+        FastBoard board = new FastBoard(player.getPlayer());
+        board.updateTitle("§bPractice");
+        board.updateLines(
+                "",
+                "§9Player: §b" + player.getName(),
+                "§9Global Elo:  §b",
+                "",
+                "§bRanked.fun"
+        );
+        
         BungeeUtil.getInstance().update();
     }
     public void removePlayer(PracticePlayer player, boolean update)
     {
+        scoreboards.removeAll(x -> {
+           if(x.getPlayer() == player){
+               x.delete();
+               return true;
+           }
+           return false;
+        });
         if(players.remove(player))
             if(update)
                 BungeeUtil.getInstance().update();
     }
-    public void setInv(PracticePlayer player){
+    public void setInv(PracticePlayer player)
+    {
         Player p = player.getPlayer();
         PlayerInventory inv = p.getInventory();
         inv.clear();
-        inv.setArmorContents(null);
-        for(LobbyItem item : items)
+        if(!player.isInQueue())
         {
-            inv.setItem(item.getSlot(), item.getItem());
+            inv.setArmorContents(null);
+            for(LobbyItem item: items)
+            {
+                inv.setItem(item.getSlot(), item.getItem());
+            }
+        }
+        else{
+            p.getInventory().setItem(
+                    8,
+                    new BetterItem(Material.BARRIER).setDisplayName(ChatColor.RED + "Leave Queue")
+            );
         }
     }
     

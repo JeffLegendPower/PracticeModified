@@ -75,10 +75,22 @@ public class LobbyListener implements Listener
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
         if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(event.getPlayer())) return;
-        LobbyItem item = lobby.getItem((event.getPlayer().getInventory().getHeldItemSlot()));
-        if(item != null)
+        PracticePlayer pp = PracticePlayer.getPlayer(event.getPlayer());
+        Practice.log(4, "Player " + event.getPlayer().getName() + " interacted while " + pp.isInQueue());
+        if(!pp.isInQueue())
         {
-            item.onClick(event);
+            LobbyItem item = lobby.getItem((event.getPlayer().getInventory().getHeldItemSlot()));
+            if(item != null)
+            {
+                item.onClick(event);
+            }
+        }
+        else
+        {
+            if(event.getPlayer().getInventory().getHeldItemSlot() == 8)
+            {
+                pp.leaveQueue();
+            }
         }
     }
     
@@ -105,6 +117,7 @@ public class LobbyListener implements Listener
         if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer((Player) event.getWhoClicked())) return;
         if(lobby.isInvMoveBlocked())
         {
+            Practice.log(4, "Cancel Lobby Inv Click");
             event.setCancelled(true);
         }
     }

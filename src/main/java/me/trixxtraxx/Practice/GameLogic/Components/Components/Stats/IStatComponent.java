@@ -55,7 +55,16 @@ public interface IStatComponent
             stats.setStat(stat, currentValue + "");
             return currentValue + "";
         }
-        double bestd = Double.parseDouble(best);
+        double bestd = 0;
+        try
+        {
+            bestd = Double.parseDouble(best);
+        }
+        catch(Exception e)
+        {
+            Practice.log(3, "Error parsing double: " + best);
+            return currentValue + "";
+        }
         Practice.log(4, "Best: " + bestd + " Current: " + currentValue);
         if(currentValue > bestd) {
             stats.setStat(stat, currentValue + "");

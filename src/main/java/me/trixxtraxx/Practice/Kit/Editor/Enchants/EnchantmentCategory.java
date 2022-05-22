@@ -75,7 +75,10 @@ public class EnchantmentCategory
                 put(Enchantment.SILK_TOUCH, new BetterItem(Material.COAL_ORE).setDisplayName("§9Silk Touch"));
             }},
             new List<isItem>(x ->
-                 x.getType() == Material.DIAMOND_PICKAXE || x.getType() == Material.IRON_PICKAXE || x.getType() == Material.GOLD_PICKAXE || x.getType() == Material.STONE_PICKAXE || x.getType() == Material.WOOD_PICKAXE
+                 x.getType() == Material.DIAMOND_PICKAXE || x.getType() == Material.IRON_PICKAXE || x.getType() == Material.GOLD_PICKAXE || x.getType() == Material.STONE_PICKAXE || x.getType() == Material.WOOD_PICKAXE ||
+                 x.getType() == Material.DIAMOND_AXE || x.getType() == Material.IRON_AXE || x.getType() == Material.GOLD_AXE || x.getType() == Material.STONE_AXE || x.getType() == Material.WOOD_AXE ||
+                 x.getType() == Material.DIAMOND_SPADE || x.getType() == Material.IRON_SPADE || x.getType() == Material.GOLD_SPADE || x.getType() == Material.STONE_SPADE || x.getType() == Material.WOOD_SPADE ||
+                 x.getType() == Material.DIAMOND_HOE || x.getType() == Material.IRON_HOE || x.getType() == Material.GOLD_HOE || x.getType() == Material.STONE_HOE || x.getType() == Material.WOOD_HOE
             )
         );
         new EnchantmentCategory(

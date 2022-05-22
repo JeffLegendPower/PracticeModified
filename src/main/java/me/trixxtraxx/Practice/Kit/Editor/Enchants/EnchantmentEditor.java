@@ -36,7 +36,7 @@ public class EnchantmentEditor extends EditorInventory
     @Override
     public void fill()
     {
-        BetterItem i = new BetterItem(Material.STAINED_GLASS_PANE, 1, (short) 15);
+        BetterItem i = new BetterItem(Material.STAINED_GLASS_PANE, 1, (short) 7);
         
         for (int j : placeholders)
         {
