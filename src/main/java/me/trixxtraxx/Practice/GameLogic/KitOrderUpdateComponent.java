@@ -57,7 +57,8 @@ public class KitOrderUpdateComponent extends GameComponent
     }
     
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onUpdate(InventoryCloseEvent event){
+    public void onUpdate(InventoryCloseEvent event)
+    {
         if(event.getInventory().getType() != InventoryType.CRAFTING) {
             Practice.log(4, "Closed Inv wasnt from a player; type = " + event.getInventory().getType());
             return;
@@ -103,7 +104,27 @@ public class KitOrderUpdateComponent extends GameComponent
             }
         }
         
-        pp.getPlayer().sendMessage(ChatColor.BLUE + "Your new Inventory Layout has been set!");
-        pp.setCustomOrder(kitId, newOrder);
+        boolean update = false;
+        //compare order and newOrder, if they are different, update the order
+        if(order.size() != newOrder.size()) update = true;
+        else
+        {
+            for(int i = 0; i < newOrder.size() && i < order.size(); i++)
+            {
+                if(
+                        Integer.parseInt(String.valueOf(newOrder.get(i))) != Integer.parseInt(String.valueOf(order.get(i))) ||
+                        (int)Double.parseDouble(String.valueOf(newOrder.keySet().toArray()[i])) != (int) Double.parseDouble(String.valueOf(order.keySet().toArray()[i]))
+                )
+                {
+                    update = true;
+                    break;
+                }
+            }
+        }
+        if(update)
+        {
+            pp.getPlayer().sendMessage(ChatColor.BLUE + "Your new Inventory Layout has been set!");
+            pp.setCustomOrder(kitId, newOrder);
+        }
     }
 }
