@@ -103,7 +103,7 @@ public class Lobby
         board.updateLines(
                 "",
                 "§9Player: §b" + player.getName(),
-                "§9Global Elo:  §b",
+                "§9Global Elo:  §b" + player.getGlobalElo(),
                 "",
                 "§bRanked.fun"
         );

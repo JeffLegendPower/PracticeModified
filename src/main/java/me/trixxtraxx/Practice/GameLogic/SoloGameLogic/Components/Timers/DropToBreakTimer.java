@@ -74,7 +74,7 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
         if(stat.equalsIgnoreCase("BestBreak" + mat + "Time")){
             double thisTime = ((double)getTicks()) / 20;
     
-            return getBestOrCurrent(p, logic.getName(),"BestBreak" + mat + "Time", thisTime);
+            return getWorstOrCurrent(p, logic.getName(),"BestBreak" + mat + "Time", thisTime);
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");
     }

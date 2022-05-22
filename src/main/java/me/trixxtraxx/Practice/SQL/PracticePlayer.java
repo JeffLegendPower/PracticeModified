@@ -144,6 +144,20 @@ public class PracticePlayer
         setInQueue(false);
         MessageProvider.SendMessage("Practice_Queue_Update_Bungee", new Gson().toJson(new QueueUpdatePacket(getName(), false)));
     }
+    public double getGlobalElo()
+    {
+        List<Double> elos = new List<>();
+        for(PlayerStats stats:this.stats)
+        {
+            String elo = stats.getStat("Elo");
+            if(elo != null && !elo.isEmpty()){
+                elos.add(Double.parseDouble(elo));
+            }
+        }
+        if(elos.size() == 0) return 0;
+        return elos.avg(x -> x);
+    }
+    
     public void openBungeeInventory(String inv){
         MessageProvider.SendMessage("PracticeGui", new Gson().toJson(new OpenGuiRequest(playerName, inv)));
     }

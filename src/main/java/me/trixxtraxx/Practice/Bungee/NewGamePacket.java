@@ -41,7 +41,7 @@ public class NewGamePacket
     
     public void init()
     {
-        Practice.log(3, "[NewGamePacket] Packet added: " + map + ", " + gamemode + ", " + kit);
+        Practice.log(3, "[NewGamePacket] Packet added: " + map + ", " + gamemode + ", " + kit + "," + ranked);
         done = false;
         task = Bukkit.getScheduler().runTaskLater(Practice.Instance, () ->
         {

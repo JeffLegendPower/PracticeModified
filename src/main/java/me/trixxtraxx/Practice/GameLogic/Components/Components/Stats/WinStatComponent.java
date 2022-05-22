@@ -33,6 +33,11 @@ public class WinStatComponent extends GameComponent implements IStatComponent
         {
             return getBestAndAdd(p, logic.getName(), "Wins", winners.contains(p) ? 1 : 0);
         }
+        else if (stat.equalsIgnoreCase("WinStreak"))
+        {
+            if(!winners.contains(p)) return "0";
+            return getBestAndAdd(p, logic.getName(), "WinStreak", 1);
+        }
         throw new IllegalArgumentException("Stat " + stat + " not found");
     }
     
@@ -42,6 +47,7 @@ public class WinStatComponent extends GameComponent implements IStatComponent
         List<SQLProperty> properties = new List<>();
         properties.add(new SQLProperty("Winning", "int(11)", "0", true));
         properties.add(new SQLProperty("Wins", "int(11)", "0", false));
+        properties.add(new SQLProperty("WinStreak", "int(11)", "0", false));
         return properties;
     }
 }

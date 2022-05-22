@@ -5,6 +5,7 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.KitOrderUpdateComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Map;
+import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -30,6 +31,8 @@ public class Game
             logic = log;
             for(Player p: players)
             {
+                PracticePlayer pp = PracticePlayer.getPlayer(p);
+                pp.setInQueue(false);
                 p.setNoDamageTicks(20);
                 p.setHealth(p.getMaxHealth());
                 p.setFoodLevel(20);

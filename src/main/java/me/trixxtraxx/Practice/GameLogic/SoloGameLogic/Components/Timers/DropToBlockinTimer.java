@@ -98,7 +98,7 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
         if(stat.equalsIgnoreCase("BestBlockinTime")){
             double thisTime = ((double)getTicks()) / 20;
             
-            return getBestOrCurrent(p, logic.getName(),"BestBlockinTime", thisTime);
+            return getWorstOrCurrent(p, logic.getName(),"BestBlockinTime", thisTime);
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");
     }

@@ -73,6 +73,34 @@ public interface IStatComponent
         else return best;
     }
     
+    public default String getWorstOrCurrent(Player p, String gm, String stat, double currentValue)
+    {
+        Practice.log(4, "Getting Stats:" + gm + " " + stat);
+        PlayerStats stats = PracticePlayer.getPlayer(p).getStats(gm);
+        if(stats == null) return currentValue + "";
+        String best = stats.getStat(stat);
+        if(best == null || best.isEmpty()) {
+            stats.setStat(stat, currentValue + "");
+            return currentValue + "";
+        }
+        double bestd = 0;
+        try
+        {
+            bestd = Double.parseDouble(best);
+        }
+        catch(Exception e)
+        {
+            Practice.log(3, "Error parsing double: " + best);
+            return currentValue + "";
+        }
+        Practice.log(4, "Best: " + bestd + " Current: " + currentValue);
+        if(currentValue < bestd) {
+            stats.setStat(stat, currentValue + "");
+            return currentValue + "";
+        }
+        else return best;
+    }
+    
     public default String getBestAndAdd(Player p, String gm, String stat, double add)
     {
         Practice.log(4, "Getting Stats:" + gm + " " + stat);
@@ -83,7 +111,16 @@ public interface IStatComponent
             stats.setStat(stat, add + "");
             return add + "";
         }
-        double bestd = Double.parseDouble(best);
+        double bestd = 0;
+        try
+        {
+            bestd = Double.parseDouble(best);
+        }
+        catch(Exception e)
+        {
+            Practice.log(3, "Error parsing double: " + best);
+            return add + "";
+        }
         Practice.log(4, "Best: " + bestd + " Add: " + add);
         stats.setStat(stat, String.valueOf(bestd + add));
         return String.valueOf(bestd + add);

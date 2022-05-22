@@ -219,6 +219,7 @@ public final class Practice extends JavaPlugin
         getServer().getPluginManager().registerEvents(new GameLogicListener(), this);
         getServer().getPluginManager().registerEvents(new CacheListener(), this);
         getServer().getPluginManager().registerEvents(new LobbyListener(), this);
+        getServer().getPluginManager().registerEvents(new PracticeListener(), this);
         
         new Lobby(conf.getConfigurationSection("Lobby"));
         

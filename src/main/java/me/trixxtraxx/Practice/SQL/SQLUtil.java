@@ -581,13 +581,18 @@ public class SQLUtil
                 logic.setId(res.getInt("Gamemode_ID"));
                 logic.applyData(res.getString("Data"));
                 
+                Practice.log(4, "Loaded gamemode " + logic.getName() + " ranked: " + ranked);
                 if(ranked)
                 {
-                    Class<?> rankedClass = Class.forName(res.getString("RankedClass"));
-                    Constructor<?> constructor = rankedClass.getConstructor(GameLogic.class);
-                    Component comp = (Component) constructor.newInstance(logic);
-                    comp.applyData(res.getString("Data"));
                     logic.setName(logic.getName() + "_Ranked");
+                    String rankedClassName = res.getString("RankedClass");
+                    if(rankedClassName != null && !rankedClassName.isEmpty())
+                    {
+                        Class<?> rankedClass = Class.forName(rankedClassName);
+                        Constructor<?> constructor = rankedClass.getConstructor(GameLogic.class);
+                        Component comp = (Component) constructor.newInstance(logic);
+                        comp.applyData(res.getString("Data"));
+                    }
                 }
             }
     
