@@ -587,6 +587,7 @@ public class SQLUtil
                     Constructor<?> constructor = rankedClass.getConstructor(GameLogic.class);
                     Component comp = (Component) constructor.newInstance(logic);
                     comp.applyData(res.getString("Data"));
+                    logic.setName(logic.getName() + "_Ranked");
                 }
             }
     
