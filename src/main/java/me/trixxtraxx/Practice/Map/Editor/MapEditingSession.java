@@ -47,8 +47,8 @@ public class MapEditingSession
 
     public Player getPlayer() {return player;}
     public Map getMap() {return map;}
-
-    public World getWorld() {return world;}
+    
+    public World getWorld() {return map == null ? null : map.getWorld();}
     public void exit(boolean save){
         map.unload(true);
         if (save)

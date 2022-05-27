@@ -79,6 +79,10 @@ public class Game
     {
         for (Game g : games)
         {
+            if(g.getLogic().getMap() == null) {
+                g.stop(true);
+                continue;
+            }
             if (g.getLogic().getPlayers().contains(p)) return g;
         }
         return null;
@@ -89,6 +93,10 @@ public class Game
         List<Game> gs = new List<>();
         for (Game g : games)
         {
+            if(g.getLogic().getMap() == null) {
+                g.stop(true);
+                continue;
+            }
             if (g.getLogic().getWorld() == w) gs.add(g);
         }
         return gs;

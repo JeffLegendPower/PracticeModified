@@ -45,7 +45,6 @@ public class KitOrderUpdateComponent extends GameComponent
     {
         UUID uuid = UUID.randomUUID();
         event.getItem().addCustomData("kit_order_id", uuid.toString());
-        Practice.log(4, "Adding Item data: " + uuid.toString() + " for " + event.getItem().getType());
         ItemData.add(new ItemStorage(uuid, event.getItemIndex(), event.getPracticePlayer().getPlayer().getName()));
     }
     
@@ -53,7 +52,6 @@ public class KitOrderUpdateComponent extends GameComponent
     public void onInvReset(KitSetEvent event)
     {
         ItemData.removeAll(x -> x.player.equalsIgnoreCase(event.getPlayer().getName()));
-        Practice.log(4, "Removing Item data for " + event.getPlayer().getName());
     }
     
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
@@ -111,8 +109,10 @@ public class KitOrderUpdateComponent extends GameComponent
         {
             for(int i = 0; i < newOrder.size() && i < order.size(); i++)
             {
+                String val1 = String.valueOf(newOrder.get(i));
+                String val2 = String.valueOf(order.get(i));
                 if(
-                        Integer.parseInt(String.valueOf(newOrder.get(i))) != Integer.parseInt(String.valueOf(order.get(i))) ||
+                        val1.equalsIgnoreCase(val2) ||
                         (int)Double.parseDouble(String.valueOf(newOrder.keySet().toArray()[i])) != (int) Double.parseDouble(String.valueOf(order.keySet().toArray()[i]))
                 )
                 {

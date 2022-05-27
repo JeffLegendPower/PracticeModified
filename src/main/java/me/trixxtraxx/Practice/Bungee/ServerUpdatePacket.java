@@ -34,6 +34,14 @@ public class ServerUpdatePacket
         this.maxRatedPlayers = maxRatedPlayers;
         for(me.trixxtraxx.Practice.Gamemode.Game game : games)
         {
+            if(game.getLogic() == null || game.getKit() == null || game.getLogic().getMap() == null){
+                Practice.log(1, "[ServerUpdatePacket] Stoping Game");
+                Practice.log(1, "[ServerUpdatePacket] Logic: " + game.getLogic());
+                Practice.log(1, "[ServerUpdatePacket] Kit: " + game.getKit());
+                if(game.getLogic() != null) Practice.log(1, "[ServerUpdatePacket] Map: " + game.getLogic().getMap());
+                game.stop(true);
+                return;
+            }
             Game g = new Game();
             if(game == null) continue;
             for(Player p: game.getLogic().getPlayers())

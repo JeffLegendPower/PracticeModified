@@ -451,7 +451,6 @@ public class SQLUtil
                 java.util.Map<String, Object> map = new HashMap<>();
                 String ItemString = res.getString("Items");
                 ItemString = ItemString.substring(7, ItemString.length() - 3);
-                Practice.log(4, "deserializing: " + ItemString);
                 items = new List( BetterItem.deserialize(ItemString));
                 name = res.getString("Name");
                 kitId = res.getInt("Kit_ID");

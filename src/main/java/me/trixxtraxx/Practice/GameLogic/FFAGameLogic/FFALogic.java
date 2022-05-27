@@ -69,7 +69,7 @@ public class FFALogic extends GameLogic
     }
     
     @Override
-    public World getWorld() {return map.getWorld();}
+    public World getWorld() {return map == null ? null : map.getWorld();}
     
     @Override
     public List<Player> getPlayers()

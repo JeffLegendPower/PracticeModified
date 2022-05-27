@@ -28,6 +28,10 @@ public class SoloGameLogic extends GameLogic
     public void start(Game gm, List<Player> players, Map m)
     {
         if(players.size() != 1){
+            Practice.log(1, "SoloGameLogic had too many players to start, total players: " + players.size());
+            for(Player p : players){
+                Practice.log(1, "Player: " + p.getName());
+            }
             game.stop(false);
             return;
         }
@@ -57,7 +61,7 @@ public class SoloGameLogic extends GameLogic
     }
 
     @Override
-    public World getWorld() {return map.getWorld();}
+    public World getWorld() {return map == null ? null : map.getWorld();}
 
     @Override
     public List<Player> getPlayers()

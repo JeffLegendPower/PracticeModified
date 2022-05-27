@@ -39,9 +39,19 @@ public abstract class GameLogic extends ComponentClass<GameComponent>
     public <T> T triggerEvent(T e)
     {
         Practice.log(5, "Event: " + e.getClass().getSimpleName());
-        getMap().triggerEvent(e);
-        super.triggerEvent(e);
-        getGame().getKit().triggerEvent(e);
+        try
+        {
+            getMap().triggerEvent(e);
+            super.triggerEvent(e);
+            getGame().getKit().triggerEvent(e);
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+            Practice.log(1, "Error while triggering event: " + e.getClass().getSimpleName());
+            Practice.log(1, "now STOPPING the Game");
+            getGame().stop(true);
+        }
         return e;
     }
 

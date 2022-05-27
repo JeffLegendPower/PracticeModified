@@ -29,13 +29,15 @@ public class CustomGamemodeItem extends LobbyItem
         BetterItem item;
         String gamemode;
         String defaultKit;
+        boolean solo;
         List<String> maps;
 
-        public CustomGamemode(BetterItem item, String gamemode, String defaultKit, List<String> maps)
+        public CustomGamemode(BetterItem item, String gamemode, String defaultKit, boolean solo, List<String> maps)
         {
             this.item = item;
             this.gamemode = gamemode;
             this.defaultKit = defaultKit;
+            this.solo = solo;
             this.maps = maps;
         }
 
@@ -100,6 +102,7 @@ public class CustomGamemodeItem extends LobbyItem
                     i,
                     key,
                     g.getString("DefaultKit"),
+                    g.getBoolean("Solo"),
                     new List(g.getStringList("Maps"))
             ));
         }
@@ -245,6 +248,20 @@ public class CustomGamemodeItem extends LobbyItem
             inv.clear();
             setCustomGMInv(inv);
         });
+    
+        inv.clearOnClose();
+        if(g.solo)
+        {
+            inv.onClose(x -> {
+                PracticePlayer pp = PracticePlayer.getPlayer(inv.getPlayer());
+                //get kit
+                boolean useCustomKit = Boolean.parseBoolean(StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomKit", "true"));
+                //get map
+                String map = StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomMap", "Random");
+                //start game, if not custom kit then use default kit
+                NewGamePacket.start(new List(inv.getPlayer()), g.gamemode, useCustomKit ? pp.getKit().getName() : g.defaultKit, map.equalsIgnoreCase("Random") ? g.maps.random() : map);
+            });
+        }
     }
     
     private CustomGamemode getGM(Player p)

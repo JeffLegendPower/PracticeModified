@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Map.ISpawnComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -60,13 +61,25 @@ public class FFASpawnComponent implements ISpawnComponent
     @Override
     public String getData()
     {
-        return new Gson().toJson(spawns);
+        //serialize spawns
+        String s = "";
+        for(ConfigLocation loc : spawns)
+        {
+            s += loc.serialize() + "|";
+        }
+        Practice.log(4, "FFA Spawn Serialized: " + s);
+        return s;
     }
     
     @Override
     public void applyData(String s)
     {
-        List<ConfigLocation> c = new List<>();
-        spawns = new Gson().fromJson(s, c.getClass());
+        //deserialize spawns
+        String[] split = s.split("\\|");
+        for(String loc : split)
+        {
+            if(loc == null || loc.isEmpty()) continue;
+            spawns.add(ConfigLocation.deserialize(loc));
+        }
     }
 }
