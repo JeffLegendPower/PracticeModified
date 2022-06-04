@@ -702,7 +702,7 @@ public final class Practice extends JavaPlugin
                                 ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" +
-                        "\n       §b{Winner}§9 won the Game!!" +
+                        "\n       §b{Winner}§9 won the Game!" +
                         "\n\n       §a{Winner} - {Points1} Points" +
                         "\n       §c{Loser} - {Points2} Points" +
                         "\n §9-------------------------------------<>\n");
