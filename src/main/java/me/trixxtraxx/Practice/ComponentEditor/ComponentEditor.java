@@ -24,7 +24,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

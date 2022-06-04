@@ -675,6 +675,45 @@ public final class Practice extends JavaPlugin
 
                 new NoMapBreakComponent(m);
             }
+            else if(args[0].equalsIgnoreCase("NoDebuff"))
+            {
+                Player p = (Player) s;
+                Player p2 = Bukkit.getPlayer(args[3]);
+                Map m = SQLUtil.Instance.getMap(args[2]);
+                SQLUtil.Instance.applyComponents(m);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                SQLUtil.Instance.applyComponents(k);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
+                g.getLogic().setName("NoDebuff");
+
+                new DisconnectStopComponent(g.getLogic());
+                new DieStopComponent(g.getLogic());
+
+                new StartInventoryComponent(g.getLogic());
+
+                new ScoreboardComponent(g.getLogic(),
+                        ChatColor.AQUA + "NoDebuff",
+                        "" + "\n" +
+                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+
+                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
+                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
+                                "" + "\n" +
+                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                );
+                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" +
+                        "\n       §b{Winner}§9 won the Game!" +
+                        "\n\n       §a{Winner} - {Points1} Points" +
+                        "\n       §c{Loser} - {Points2} Points" +
+                        "\n §9-------------------------------------<>\n");
+
+                new PlayerPlaceholderComponent(g.getLogic());
+                new MapNamePlaceholderComponent(g.getLogic());
+                new OpponentPlaceholderComponent(g.getLogic());
+
+                new StatComponent(g.getLogic());
+                new WinStatComponent(g.getLogic());
+            }
             else if(args[0].equalsIgnoreCase("sumo"))
             {
                 Player p = (Player) s;
