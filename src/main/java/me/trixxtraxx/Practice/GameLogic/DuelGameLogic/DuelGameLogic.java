@@ -48,9 +48,9 @@ public class DuelGameLogic extends GameLogic
     }
 
     @Override
-    public void stop(boolean dc)
+    public void stop(boolean force)
     {
-        if(triggerEvent(new StopEvent(this, dc)).isCanceled()) return;
+        if(triggerEvent(new StopEvent(this, force)).isCanceled() && !force) return;
         Practice.log(3, "Stopping duel game");
         game.stop(false);
         for (Player p:getPlayers())

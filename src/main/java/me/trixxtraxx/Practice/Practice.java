@@ -5,6 +5,7 @@ import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.TrixxTraxx.Linq.List;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
+import me.trixxtraxx.Practice.Bungee.InventoryViewListener;
 import me.trixxtraxx.Practice.Bungee.Queue.QueueListener;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
@@ -46,6 +47,7 @@ import me.trixxtraxx.Practice.Map.Editor.MapEditorListener;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.SQL.CacheListener;
 import me.trixxtraxx.Practice.SQL.PlayerReceiver;
+import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import me.trixxtraxx.Practice.Utils.Region;
@@ -250,6 +252,7 @@ public final class Practice extends JavaPlugin
     
         RegisterMessages.registerReciever(new PlayerReceiver());
         RegisterMessages.registerReciever(new QueueListener());
+        RegisterMessages.registerReciever(new InventoryViewListener());
     
         EnchantmentCategory.init();
     }
@@ -827,18 +830,20 @@ public final class Practice extends JavaPlugin
                                         "" + "\n" +
                                                 "§91. {Points1Player}§b {Points1}\n" +
                                                 "§92. {Points2Player}§b {Points2}\n" +
-                                                "§93. {Points3Player}§b {Points3}\n" +
-                                                "§94. {Points4Player}§b {Points4}\n" +
-                                                "§95. {Points5Player}§b {Points5}\n" +
-                                                "§96. {Points6Player}§b {Points6}\n" +
-                                                "§97. {Points7Player}§b {Points7}\n" +
-                                                "§98. {Points8Player}§b {Points8}\n" +
+                                                //"§93. {Points3Player}§b {Points3}\n" +
+                                                //"§94. {Points4Player}§b {Points4}\n" +
+                                                //"§95. {Points5Player}§b {Points5}\n" +
+                                                //"§96. {Points6Player}§b {Points6}\n" +
+                                                //"§97. {Points7Player}§b {Points7}\n" +
+                                                //"§98. {Points8Player}§b {Points8}\n" +
                                                 "\n" +
                                                 "You:\n" +
                                                 "§9{Place}. {Name}§b {Points}" +
                                                 "" + "\n" +
                                                 ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
+                
+                new DeathMessageComponent(g.getLogic(), "§b{player}§9 was killed by §b{killer} §c[{Points}]");
     
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
@@ -986,6 +991,17 @@ public final class Practice extends JavaPlugin
                 p.setItemInHand(BetterItem.deserialize(serialize)[0]);
             }
             return true;
+        }
+        else if(label.equalsIgnoreCase("InventoryView")){
+            if(s instanceof Player){
+                PracticePlayer pp = PracticePlayer.getPlayer((Player) s);
+                if(pp == null) ((Player)s).kickPlayer("§cNot found in cache");
+                else{
+                    String command = "/InventoryView";
+                    for(String arg : args) command += " " + arg;
+                    pp.executeBungeeCommand(command);
+                }
+            }
         }
         return false;
     }

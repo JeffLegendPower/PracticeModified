@@ -47,7 +47,7 @@ public class BungeeUtil
     public void toLobby(Player p)
     {
         PracticePlayer pp = PracticePlayer.getPlayer(p);
-        if(Lobby.getLobbies().size() == 0)
+        if(Game.getGame(pp.getPlayer()) == null || Lobby.getLobbies().size() == 0)
         {
             pp.toLobby();
         }
