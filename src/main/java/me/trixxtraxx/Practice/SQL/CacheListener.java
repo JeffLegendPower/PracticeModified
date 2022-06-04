@@ -27,6 +27,7 @@ public class CacheListener implements Listener
         if(pp == null)
         {
             Practice.log(1, "Player " + e.getPlayer().getName() + " not found in cache");
+            e.getPlayer().kickPlayer("§cSomething went wrong (no data forwarded by bungeecord)");
         }
         else
         {

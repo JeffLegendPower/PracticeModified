@@ -40,7 +40,7 @@ public class PointComponent extends GameComponent implements IStatComponent
     }
     public PointComponent(GameLogic logic){super(logic);}
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent
     public void onEvent(WinEvent e)
     {
         if(!onWin) return;
@@ -129,7 +129,7 @@ public class PointComponent extends GameComponent implements IStatComponent
                 return s.replace("{Points1}", p2 + "").replace("{Points2}", p1 + "");
             }
         }
-        String points1 = ChatColor.BLUE + "";
+        String points1 = ChatColor.BLUE +  "";
         String points2 = ChatColor.BLUE + "";
         for (int i = 0; i < p1; i++)
         {

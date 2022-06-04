@@ -45,9 +45,10 @@ public class NoMapBreakComponent extends MapComponent
         {
             if(!blocks.contains(block)) toRemove.add(block);
         }
-        Practice.log(4, "Now Removing " + toRemove.size() + " blocks");
-        for(Block block : toRemove)
+        List<MapComponent> breakRegions = map.getComponents(BreakRegion.class);
+        for(Block block: toRemove)
         {
+            if(breakRegions.any(x -> ((BreakRegion) x).region.contains(block.getLocation()))) continue;
             e.blockList().remove(block);
         }
     }
@@ -61,9 +62,10 @@ public class NoMapBreakComponent extends MapComponent
         {
             if(!blocks.contains(block)) toRemove.add(block);
         }
-        Practice.log(4, "Now Removing " + toRemove.size() + " blocks");
+        List<MapComponent> breakRegions = map.getComponents(BreakRegion.class);
         for(Block block: toRemove)
         {
+            if(breakRegions.any(x -> ((BreakRegion) x).region.contains(block.getLocation()))) continue;
             e.blockList().remove(block);
         }
     }

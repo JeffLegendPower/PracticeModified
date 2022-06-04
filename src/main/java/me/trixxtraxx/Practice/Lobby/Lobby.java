@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Lobby
 {
@@ -32,6 +33,7 @@ public class Lobby
     private List<LobbyItem> items = new List<>();
     private ConfigLocation spawn;
     private List<FastBoard> scoreboards = new List<>();
+    private List<Launchpad> launchpads = new List<>();
     
     public Lobby(ConfigurationSection section){
         this.world = section.getString("world");
@@ -69,6 +71,12 @@ public class Lobby
                 items.add(new EventItem(itemSec));
             }
         }
+        ConfigurationSection launchpadSec = section.getConfigurationSection("launchpads");
+        for(String key : launchpadSec.getKeys(false))
+        {
+            ConfigurationSection launchpad = launchpadSec.getConfigurationSection(key);
+            launchpads.add(new Launchpad(launchpad, Bukkit.getWorld(world)));
+        }
         lobbies.add(this);
     }
     
@@ -84,29 +92,38 @@ public class Lobby
     public boolean isHungerBlocked(){return blockHunger;}
     public boolean isWeatherBlocked(){return blockWeather;}
     public List<String> getBlockedInventories(){return blockedInventories;}
+    public List<Launchpad> getLaunchpads(){return launchpads;}
     public LobbyItem getItem(int slot){return items.find(x -> x.getSlot() == slot);}
     public List<PracticePlayer> getPlayers(){return players;}
     public void addPlayer(PracticePlayer player){
+        if(player.getPlayer() == null) return;
         Practice.log(4, "Adding player " + player.getName() + " to lobby " + name);
         players.add(player);
-        Player p = player.getPlayer();
-        p.setMaxHealth(20);
-        p.setHealth(20);
-        p.setAllowFlight(false);
-        p.setNoDamageTicks(20);
-        p.setGameMode(GameMode.SURVIVAL);
-        p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
-        setInv(player);
-        
-        FastBoard board = new FastBoard(player.getPlayer());
-        board.updateTitle("§bPractice");
-        board.updateLines(
-                "",
-                "§9Player: §b" + player.getName(),
-                "§9Global Elo:  §b" + player.getGlobalElo(),
-                "",
-                "§bRanked.fun"
-        );
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                Player p = player.getPlayer();
+                p.setMaxHealth(20);
+                p.setHealth(20);
+                p.setFoodLevel(20);
+                p.setAllowFlight(false);
+                p.setNoDamageTicks(20);
+                p.setGameMode(GameMode.SURVIVAL);
+                p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
+                p.getActivePotionEffects().forEach(x -> p.removePotionEffect(x.getType()));
+                setInv(player);
+    
+                FastBoard board = new FastBoard(player.getPlayer());
+                board.updateTitle("§bPractice");
+                board.updateLines(
+                        "",
+                        "§9Player: §b" + player.getName(),
+                        "§9Global Elo: §b" + player.getGlobalElo(),
+                        "",
+                        "§bRanked.fun"
+                );
+            }
+        }.runTaskLater(Practice.Instance, 1);
         
         BungeeUtil.getInstance().update();
     }

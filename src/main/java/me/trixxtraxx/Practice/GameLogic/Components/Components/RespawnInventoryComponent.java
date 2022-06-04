@@ -18,6 +18,6 @@ public class RespawnInventoryComponent extends GameComponent
     public void onRespawn(ToSpawnEvent event)
     {
         Practice.log(4, "Setting inventory for " + event.getPlayer().getName());
-        logic.getGame().getKit().setInventory(event.getPlayer());
+        logic.getGame().getKit().setInventory(event.getPlayer(), true);
     }
 }

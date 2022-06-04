@@ -107,6 +107,8 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
         for(Player player : logic.getPlayers())
         {
             player.setHealth(player.getMaxHealth());
+            //clear potion effects
+            player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
             if(player == currentPlayer) continue;
             Practice.log(4, "Sending " + player.getName() + " to spawn");
             logic.toSpawn(player);
@@ -126,7 +128,7 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
         
         cancelSpecRespawn = false;
         
-        kit.setInventory(currentPlayer);
+        kit.setInventory(currentPlayer, true);
     }
     
     private void reset(){
@@ -156,7 +158,7 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
         }
     }
     
-    @TriggerEvent(priority = 2, state = TriggerEvent.CancelState.NONE)
+    @TriggerEvent(priority = 2)
     public void onDie(PlayerDeathEvent event)
     {
         if(!cancelSpecRespawn) logic.toSpawn(event.getEntity());

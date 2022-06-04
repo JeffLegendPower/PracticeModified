@@ -32,6 +32,7 @@ public class NewGamePacket
     public String map;
     public List<String> players;
     public boolean ranked;
+    public boolean challenge = false;
     
     private boolean done;
     private Map m;
@@ -131,7 +132,7 @@ public class NewGamePacket
             @Override
             public void run()
             {
-                new Game(g, players, k, m);
+                new Game(g, players, k, m, ranked, challenge);
             }
         }.runTask(Practice.Instance);
         return true;
@@ -145,13 +146,15 @@ public class NewGamePacket
         }
         return null;
     }
-    public static void start(List<Player> players, String gamemode, String kit, String map){
+    public static void start(List<Player> players, String gamemode, String kit, String map, boolean challenge)
+    {
         NewGamePacket n = new NewGamePacket();
         n.type = Type.SOLO;
         n.gamemode = gamemode;
         n.kit = kit;
         n.map = map;
-        n.players = new List<String>();
+        n.challenge = challenge;
+        n.players = new List<>();
         for(Player p : players){
             n.players.add(p.getName());
         }

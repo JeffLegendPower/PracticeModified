@@ -17,6 +17,6 @@ public class InventoryOnResetComponent extends GameComponent
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onReset(ResetEvent e)
     {
-        for (Player p:logic.getPlayers()) e.getlogic().getGame().getKit().setInventory(p);
+        for (Player p:logic.getPlayers()) e.getlogic().getGame().getKit().setInventory(p, true);
     }
 }

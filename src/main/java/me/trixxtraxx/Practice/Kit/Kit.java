@@ -66,16 +66,16 @@ public class Kit extends ComponentClass<KitComponent>
     public String getDefaultOrder(){return new Gson().toJson(defaultOrder);}
     public void setSqlId(int id){sqlId = id;}
 
-    public void setInventory(Player p)
+    public void setInventory(Player p, boolean useCustomOrder)
     {
         clearInventory(p);
-        setItems(p);
+        setItems(p, useCustomOrder);
     }
     
     public void setNewItems(List<ItemStack> stacks){items = stacks;}
     public void setNewDefaultOrder(HashMap<Integer,Integer> defaultOrder){this.defaultOrder = defaultOrder;}
 
-    private void setItems(Player p)
+    private void setItems(Player p, boolean useCustomOrder)
     {
         Game g = Game.getGame(p);
         PlayerInventory inv = p.getInventory();
@@ -86,15 +86,21 @@ public class Kit extends ComponentClass<KitComponent>
         List<Integer> indexes = new List<>();
         for (int i = 0; i < items.size(); i++) indexes.add(i);
 
-        //Practice.log(4, "Default Order: " + order.size() + "," + order.entrySet() + "," + (order.size() == defaultOrder.size()) );
+        Practice.log(4, "Order: " + order.size() + "," + order.entrySet() + ",default size: " + defaultOrder.size());
 
         for (Map.Entry<Integer, Integer> entry: order.entrySet())
         {
             try
             {
-                int key = Integer.parseInt((String) String.valueOf(entry.getKey()));
+                int key = Integer.parseInt(String.valueOf(entry.getKey()));
                 //Practice.log(4, "Key: " + key);
                 //SOME SHITTY BUG WITH HASHMAP JSON SERIALIZATION "CANT CAST STRING TO INT"
+                if(items.size() <= key)
+                {
+                    Practice.log(2, "Order Contains a Key out of bounds: " + key + "," + items.size());
+                    continue;
+                }
+                
                 ItemStack stack = items.get(key);
                 //SOME SHITTY BUG WITH HASHMAP JSON SERIALIZATION "CANT CAST DOUBLE TO INT"
                 int slot = (int) Double.parseDouble(String.valueOf(entry.getValue()));
@@ -104,10 +110,21 @@ public class Kit extends ComponentClass<KitComponent>
                 {
                     KitSetItemEvent event = new KitSetItemEvent(g.getLogic(), prac, newItem, slot, key);
                     if(g.getLogic().triggerEvent(event).isCanceled()) continue;
-                    inv.setItem(event.getSlot(), event.getItem());
+                    if(inv.getItem(event.getSlot()) != null){
+                        inv.addItem(event.getItem());
+                    }
+                    else{
+                        inv.setItem(event.getSlot(), event.getItem());
+                    }
                 }
-                else{
-                    inv.setItem(slot, newItem);
+                else
+                {
+                    if(inv.getItem(slot) != null){
+                        inv.addItem(newItem);
+                    }
+                    else{
+                        inv.setItem(slot, newItem);
+                    }
                 }
                 
                 indexes.remove((Integer) key);
@@ -120,8 +137,13 @@ public class Kit extends ComponentClass<KitComponent>
 
         for (int index:indexes)
         {
-            ItemStack stack = items.get(index);
-            Practice.log(4, "Seting remaining stack: " + index + "," + stack);
+            BetterItem stack = new BetterItem(items.get(index));
+            if(g != null)
+            {
+                KitSetItemEvent event = new KitSetItemEvent(g.getLogic(), prac, stack, -1, index);
+                if(g.getLogic().triggerEvent(event).isCanceled()) continue;
+            }
+            Practice.log(4, "Setting remaining stack: " + index + "," + stack);
             inv.addItem(stack.clone());
         }
     }

@@ -22,13 +22,17 @@ public class Game
     
     private boolean started = false;
     private boolean ended = false;
+    private boolean ranked = false;
+    private boolean challenge = false;
 
-    public Game(GameLogic log, List<Player> players, Kit k, Map m)
+    public Game(GameLogic log, List<Player> players, Kit k, Map m, boolean ranked, boolean challenge)
     {
         try
         {
             kit = k;
             logic = log;
+            this.ranked = ranked;
+            this.challenge = challenge;
             for(Player p: players)
             {
                 PracticePlayer pp = PracticePlayer.getPlayer(p);
@@ -67,6 +71,10 @@ public class Game
     public boolean isStarted() {return started;}
     
     public boolean hasEnded() {return ended;}
+    
+    public boolean isRanked() {return ranked;}
+    
+    public boolean isChallenge() {return challenge;}
 
     public void stop(boolean stopLogic)
     {

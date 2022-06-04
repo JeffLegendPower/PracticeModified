@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.GameLogic.Components.Components;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
@@ -23,13 +24,24 @@ public class WinMessageComponent extends GameComponent
         super(logic);
     }
     
-    @TriggerEvent
+    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onWin(WinEvent event)
     {
         String msg = logic.applyPlaceholders(event.getPlayer(), winMessage.replace("{Winner}", event.getPlayer().getName()));
+        if(logic instanceof DuelGameLogic){
+            DuelGameLogic duel = (DuelGameLogic)logic;
+            Player winner = event.getPlayer();
+            Player loser = duel.getP1() == winner ? duel.getP2() : duel.getP1();
+            msg = msg.replace("{Loser}", loser.getName());
+            msg = msg.replace("{LoserHealth}", String.valueOf((int) loser.getHealth()));
+            msg = msg.replace("{WinnerHealth}", String.valueOf((int) winner.getHealth()));
+        }
         for(Player player : logic.getPlayers())
         {
-            player.sendMessage(msg);
+            for(String line : msg.split("\n"))
+            {
+                player.sendMessage(line);
+            }
         }
     }
 }

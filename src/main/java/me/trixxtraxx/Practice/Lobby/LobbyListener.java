@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.Lobby;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,7 +24,9 @@ public class LobbyListener implements Listener
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
         Lobby lobby = Lobby.get(event.getBlock().getWorld());
-        if(lobby != null &&  lobby.isPlaceBlocked()){
+        if(lobby != null &&  lobby.isPlaceBlocked())
+        {
+            if(event.getPlayer().hasPermission("practice.lobby.bypass") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
             event.setCancelled(true);
         }
     }
@@ -32,6 +35,27 @@ public class LobbyListener implements Listener
     public void onBlockBreak(BlockBreakEvent event){
         Lobby lobby = Lobby.get(event.getBlock().getWorld());
         if(lobby != null &&  lobby.isBreakBlocked()){
+            if(event.getPlayer().hasPermission("practice.lobby.bypass") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onBlockPlace(PlayerBucketEmptyEvent event)
+    {
+        Lobby lobby = Lobby.get(event.getPlayer().getWorld());
+        if(lobby != null &&  lobby.isPlaceBlocked()){
+            if(event.getPlayer().hasPermission("practice.lobby.bypass") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onBlockPlace(PlayerBucketFillEvent event)
+    {
+        Lobby lobby = Lobby.get(event.getPlayer().getWorld());
+        if(lobby != null &&  lobby.isBreakBlocked()){
+            if(event.getPlayer().hasPermission("practice.lobby.bypass") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
             event.setCancelled(true);
         }
     }
@@ -97,7 +121,6 @@ public class LobbyListener implements Listener
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityInteract(EntityDamageByEntityEvent event)
     {
-        Practice.log(4, "EntityDamageByEntityEvent called");
         if(!(event.getEntity() instanceof Player)) return;
         Lobby lobby = Lobby.get(event.getEntity().getWorld());
         if(lobby == null) return;
@@ -117,7 +140,7 @@ public class LobbyListener implements Listener
         if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer((Player) event.getWhoClicked())) return;
         if(lobby.isInvMoveBlocked())
         {
-            Practice.log(4, "Cancel Lobby Inv Click");
+            if(event.getWhoClicked().hasPermission("practice.lobby.bypass") && event.getWhoClicked().getGameMode() == GameMode.CREATIVE) return;
             event.setCancelled(true);
         }
     }
@@ -183,6 +206,17 @@ public class LobbyListener implements Listener
         if(lobby.isWeatherBlocked())
         {
             event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event)
+    {
+        Lobby lobby = Lobby.get(event.getPlayer().getWorld());
+        if(lobby == null) return;
+        for(Launchpad l : lobby.getLaunchpads())
+        {
+            l.tryLaunch(event.getPlayer());
         }
     }
 }

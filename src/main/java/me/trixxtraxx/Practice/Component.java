@@ -154,7 +154,14 @@ public abstract class Component
                     }
                     else if(f.getType() == String.class)
                     {
-                        f.set(this, parts[1].replace("\\n", "\n"));
+                        f.set(this, parts[1]
+                                .replace("\\nnn", "\n\n\n")
+                                .replace("\\nn", "\n\n")
+                                .replace("\\n", "\n"));
+                    }
+                    else if(f.isEnumConstant())
+                    {
+                        f.set(this, Enum.valueOf((Class<Enum>) f.getType(), parts[1]));
                     }
                     else
                     {

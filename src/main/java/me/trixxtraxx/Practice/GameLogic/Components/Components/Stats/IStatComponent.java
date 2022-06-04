@@ -122,7 +122,7 @@ public interface IStatComponent
             return add + "";
         }
         Practice.log(4, "Best: " + bestd + " Add: " + add);
-        stats.setStat(stat, String.valueOf(bestd + add));
-        return String.valueOf(bestd + add);
+        stats.setStat(stat, ((int)(bestd + add)) + "");
+        return ((int)(bestd + add)) + "";
     }
 }

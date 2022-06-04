@@ -57,7 +57,7 @@ public class TNTFbComponent extends GameComponent
     private int ticks = 20;
     private List<Player> cooldown = new List<>();
     
-    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(state = TriggerEvent.CancelState.NONE)
     public void OnPlayerInteract(PlayerInteractEvent e)
     {
         if (e.getItem() != null && e.getItem().getType() == Material.FIREBALL)

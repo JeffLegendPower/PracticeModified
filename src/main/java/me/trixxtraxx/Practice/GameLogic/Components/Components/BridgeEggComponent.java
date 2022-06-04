@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.GameLogic.Components.Components;
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.MapResetComponent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.ResetHealComponent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
@@ -78,8 +79,22 @@ public class BridgeEggComponent extends GameComponent
                         {
                             for (Location loc:locs.get(iteration - 3))
                             {
-                                Block b = loc.getBlock();
-                                b.setType(Material.WOOL);
+                                Block block = loc.getBlock();
+                                block.setType(Material.WOOL);
+                                List<GameComponent> components = logic.getComponents(MapResetComponent.class);
+                                for(GameComponent component:components)
+                                {
+                                    if(component instanceof MapResetComponent)
+                                    {
+                                        MapResetComponent mapResetComponent = (MapResetComponent) component;
+                                        mapResetComponent.blocks.add(new MapResetComponent.BlockStorage()
+                                        {{
+                                            loc = block.getLocation();
+                                            mat = block.getType();
+                                            b = block.getData();
+                                        }});
+                                    }
+                                }
                             }
                         }
                         lastLoc = e.getEntity().getLocation();

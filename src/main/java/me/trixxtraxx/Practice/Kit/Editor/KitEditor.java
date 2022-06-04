@@ -85,7 +85,7 @@ public class KitEditor
         p.getInventory().setArmorContents(null);
         PracticePlayer pp = PracticePlayer.getPlayer(p);
         Kit k = pp.getKit();
-        if(k != null) k.setInventory(p);
+        if(k != null) k.setInventory(p, false);
     }
     
     public boolean hasPlayer(Player p)

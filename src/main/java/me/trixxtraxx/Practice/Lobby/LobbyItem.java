@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class LobbyItem
@@ -26,6 +27,9 @@ public abstract class LobbyItem
         BetterItem item = new BetterItem(Material.valueOf(section.getString("Item.Material")));
         if(section.contains("Item.Name")) item.setDisplayName(section.getString("Item.Name"));
         if(section.contains("Item.Lore")) item.setLore(section.getStringList("Item.Lore"));
+        item.setUnbreakable(true);
+        item.addItemFlag(ItemFlag.HIDE_ATTRIBUTES);
+        item.addItemFlag(ItemFlag.HIDE_UNBREAKABLE);
         this.item = item;
         this.slot = section.getInt("Item.Slot");
     }

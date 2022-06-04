@@ -10,6 +10,7 @@ import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.WinStatComponent;
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Bots.BotGameLogic;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.BedComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.ComboComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceholderComponent;
@@ -271,7 +272,7 @@ public final class Practice extends JavaPlugin
                 Map m = SQLUtil.Instance.getMap("Blockin1");
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloGameLogic(), new List<Player>(Collections.singletonList(p)), k, m);
+                Game g = new Game(new SoloGameLogic(), new List<Player>(Collections.singletonList(p)), k, m, false, false);
                 g.getLogic().setName("BlockinPractice");
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
@@ -316,7 +317,7 @@ public final class Practice extends JavaPlugin
                 Map m = new Map(-1,"BridgeTest", "BridgeTest", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100, 0, -90, 0)));
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m);
+                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m, false, false);
                 g.getLogic().setName("BridgePractice");
                 
                 new MapResetComponent(g.getLogic());
@@ -359,7 +360,7 @@ public final class Practice extends JavaPlugin
                 Map m = new Map(-1,"JumpWorld", "JumpWorld", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100.1, 0, -90, 0)));
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m);
+                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m, false, false);
                 g.getLogic().setName(args[1]);
                 
                 new MapResetComponent(g.getLogic());
@@ -420,7 +421,7 @@ public final class Practice extends JavaPlugin
                 SQLUtil.Instance.applyComponents(k);
                 log(3, "Starting debug Game with " + players.size() + " players");
                 
-                Game g = new Game(new FFALogic(), players, k, m);
+                Game g = new Game(new FFALogic(), players, k, m, false, false);
                 g.getLogic().setName("InvisPractice");
                 
                 new NoDieComponent(g.getLogic());
@@ -490,7 +491,7 @@ public final class Practice extends JavaPlugin
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
+                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m, false, false);
                 g.getLogic().setName("BedFight");
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -549,7 +550,7 @@ public final class Practice extends JavaPlugin
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("Sumo1", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
+                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m, false, false);
                 g.getLogic().setName("TopBridgeFight");
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -594,7 +595,7 @@ public final class Practice extends JavaPlugin
                 Map m = new Map(-1,"Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
                 g.getLogic().setName("UHC");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDieComponent(g.getLogic());
@@ -632,7 +633,7 @@ public final class Practice extends JavaPlugin
                 Map m = new Map(-1,"Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
                 g.getLogic().setName("Boxxing");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDamageComponent(g.getLogic());
@@ -683,7 +684,7 @@ public final class Practice extends JavaPlugin
                 //Kit k = SQLUtil.Instance.getKit(args[2]);
                 Kit k = new Kit("Sumo1", -1, new List<>(), new HashMap<>());
                 //SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m);
+                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m, false, false);
                 g.getLogic().setName("Sumo");
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -754,7 +755,7 @@ public final class Practice extends JavaPlugin
                 log(3, "Starting debug Game with " + players.size() + " players\n" +
                         "Kit: " + k.getName() + "\n" +
                         "Map: " + m.getName());
-                Game g = new Game(new FFALogic(), players, k, m);
+                Game g = new Game(new FFALogic(), players, k, m, false, false);
                 g.getLogic().setName("OneInAChamber");
                 new NoDieComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
@@ -810,6 +811,36 @@ public final class Practice extends JavaPlugin
                 new NoMapBreakComponent(m);
                 new ElevatorComponent(m, Material.WOOL);
             }
+            else if(args[0].equalsIgnoreCase("Bot"))
+            {
+                Player p = (Player) s;
+                Map m = SQLUtil.Instance.getMap(args[2]);
+                Kit k = SQLUtil.Instance.getKit(args[1]);
+                SQLUtil.Instance.applyComponents(k);
+                SQLUtil.Instance.applyComponents(m);
+                Game g = new Game(new BotGameLogic(), new List<>(p), k, m, false, false);
+                g.getLogic().setName("Bot");
+                new YKillComponent(g.getLogic(), 90);
+                new NoDieComponent(g.getLogic());
+                new DisconnectStopComponent(g.getLogic());
+                new DieStopComponent(g.getLogic());
+                new StartInventoryComponent(g.getLogic());
+                new ScoreboardComponent(g.getLogic(),
+                                        ChatColor.AQUA + "Bot PVP",
+                                        "" + "\n" +
+                                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+                                                "\n" +
+                                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
+                                                ChatColor.BLUE + "Bot" + ChatColor.AQUA + " 0 ms" + "\n" +
+                                                "\n" +
+                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                );
+                new PlayerPlaceholderComponent(g.getLogic());
+                new MapNamePlaceholderComponent(g.getLogic());
+    
+                //new StatComponent(g.getLogic());
+                //new WinStatComponent(g.getLogic());
+            }
             else if(args[0].equalsIgnoreCase("saveKit"))
             {
                 Player p = (Player) s;
@@ -859,7 +890,7 @@ public final class Practice extends JavaPlugin
                     ppl.add(Bukkit.getPlayer(args[i]));
                 }
 
-                Game g = new Game(SQLUtil.Instance.getLogic(args[1], false), ppl,k,m);
+                Game g = new Game(SQLUtil.Instance.getLogic(args[1], false), ppl,k,m, false, false);
                 SQLUtil.Instance.applyComponents(g.getLogic());
             }
             else if(args[0].equalsIgnoreCase("editMap"))
@@ -876,38 +907,13 @@ public final class Practice extends JavaPlugin
                 if(session == null) return false;
                 session.openComponentGui();
             }
-            else if(args[0].equalsIgnoreCase("setConfigItem"))
-            {
-                if(!(s instanceof Player)) return false;
-                log(4, "Setting config item: " + args[1] + " to " + ((Player)s).getInventory().getItemInHand());
-                getConfig().set(args[1], ((Player)s).getInventory().getItemInHand());
-                ComponentEditor.init(getConfig());
-                try
-                {
-                    getConfig().save("./plugins/"+ getPlugin(Practice.class).getName() +"/config.yml");
-                }
-                catch(IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            else if(args[0].equalsIgnoreCase("giveInvis"))
-            {
-                if(!(s instanceof Player)) return false;
-                Player p = (Player) s;
-                BetterItem i = new BetterItem(Material.POTION, 1, (short) 8238);
-                PotionMeta meta = (PotionMeta) i.getItemMeta();
-                meta.addCustomEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 600, 1), true);
-                i.setItemMeta(meta);
-                p.getInventory().addItem(i);
-            }
         }
         else if(label.equalsIgnoreCase("leave"))
         {
             if(!(s instanceof Player)) return false;
             Game g = Game.getGame((Player) s);
-            if(g == null) return false;
-            g.getLogic().removePlayer((Player) s);
+            if(g == null) BungeeUtil.getInstance().toLobby((Player) s);
+            else g.getLogic().removePlayer((Player) s);
         }
         else if(label.equalsIgnoreCase("kit")){
             if(!(s instanceof Player)) return false;

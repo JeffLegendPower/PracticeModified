@@ -547,6 +547,11 @@ public class SQLUtil
             ps.setInt(4, kit.getSqlId());
             ps.executeUpdate();
             ps.close();
+            
+            ps = con.prepareStatement("DELETE FROM PlayerKitOrder WHERE Kit_ID = ?");
+            ps.setInt(1, kit.getSqlId());
+            ps.executeUpdate();
+            ps.close();
         }
         catch(Exception e)
         {

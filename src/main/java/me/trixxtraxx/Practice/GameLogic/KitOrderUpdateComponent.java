@@ -10,10 +10,14 @@ import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +25,7 @@ import java.util.UUID;
 
 public class KitOrderUpdateComponent extends GameComponent
 {
-    private List<ItemStorage> ItemData = new List<>();
-    
-    private class ItemStorage{
-        public UUID uuid;
-        public int itemIndex;
-        public String player;
-        
-        public ItemStorage(UUID uuid, int ItemIndex, String p){
-            this.uuid = uuid;
-            this.itemIndex = ItemIndex;
-            this.player = p;
-        }
-    }
+    private HashMap<String, Kit> lastApplied = new HashMap<>();
     
     public KitOrderUpdateComponent(GameLogic logic)
     {
@@ -44,62 +36,87 @@ public class KitOrderUpdateComponent extends GameComponent
     public void onItemSet(KitSetItemEvent event)
     {
         UUID uuid = UUID.randomUUID();
-        event.getItem().addCustomData("kit_order_id", uuid.toString());
-        ItemData.add(new ItemStorage(uuid, event.getItemIndex(), event.getPracticePlayer().getPlayer().getName()));
+        BetterItem item = event.getItem();
+        item.addCustomData("kit_order_index", event.getItemIndex() + "");
     }
     
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onInvReset(KitSetEvent event)
+    public void onKitSet(KitSetEvent event)
     {
-        ItemData.removeAll(x -> x.player.equalsIgnoreCase(event.getPlayer().getName()));
+        lastApplied.put(event.getPlayer().getName(), event.getKit());
     }
+    
+    @TriggerEvent
+    public void onDeath(PlayerDeathEvent event){
+        cancel = true;
+        new BukkitRunnable(){
+    
+            @Override
+            public void run()
+            {
+                cancel = false;
+            }
+        }.runTaskLater(Practice.Instance, 1);
+    }
+    
+    public boolean cancel = false;
     
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onUpdate(InventoryCloseEvent event)
     {
+        if(cancel) return;
         if(event.getInventory().getType() != InventoryType.CRAFTING) {
             Practice.log(4, "Closed Inv wasnt from a player; type = " + event.getInventory().getType());
             return;
         }
         
-        int kitId = logic.getGame().getKit().getSqlId();
+        Kit k = lastApplied.get(event.getPlayer().getName());
+        if(k == null){
+            Practice.log(4, "Closed Inv wasnt from a player; no kit");
+            return;
+        }
+        int kitId = k.getSqlId();
         if(kitId == -1) {
             Practice.log(4, "Game Kit was not in sql");
             return;
         }
         
         PracticePlayer pp = PracticePlayer.getPlayer((Player) event.getPlayer());
-        Kit k = logic.getGame().getKit();
-        Inventory inv = event.getPlayer().getInventory();
-    
+        
+        PlayerInventory inv = event.getPlayer().getInventory();
+        
         List<ItemStack> items = k.getItemStacks();
+        
         HashMap<Integer, Integer> order = k.getOrder(pp);
-    
         HashMap<Integer, Integer> newOrder = new HashMap<>();
-        int index = 0;
-        List<ItemStorage> storages = ItemData.findAll(x -> x.player.equalsIgnoreCase(event.getPlayer().getName()));
-        for(Map.Entry<Integer, Integer> orderEntry : order.entrySet())
+        
+        List<ItemStack> invItems = new List<>(inv.getContents());
+        invItems.addAll(inv.getArmorContents());
+        for(ItemStack stack : invItems)
         {
-            int itemIndex = Integer.parseInt(String.valueOf(orderEntry.getKey()));
-            int value =(int) Double.parseDouble(String.valueOf(orderEntry.getValue()));
-            ItemStorage storage = storages.find(x -> x.itemIndex == itemIndex);
-            if(storage == null) newOrder.put(itemIndex, value);
-            else{
-                ItemStack currentStack = new List<>(inv.getContents()).find(x -> {
-                    if(x == null) return false;
-                    BetterItem item = new BetterItem(x);
-                    String uuid = item.getCustomData("kit_order_id");
-                    Practice.log(4, "uuid = " + uuid + "; storage.uuid = " + storage.uuid);
-                    return uuid.equalsIgnoreCase(storage.uuid.toString());
-                });
-                if(currentStack == null) newOrder.put(itemIndex, value);
-                else
-                {
-                    int slot = inv.first(currentStack);
-                    Practice.log(4, "found slot " + slot + " for " + currentStack.getType().name());
-                    newOrder.put(itemIndex, slot);
-                }
+            if(stack == null) continue;
+            BetterItem item = new BetterItem(stack);
+            if(item.getType() == Material.AIR) continue;
+            int kitIndex = -1;
+            try{
+                kitIndex = Integer.parseInt(item.getCustomData("kit_order_index"));
             }
+            catch(Exception e){
+                Practice.log(2, "Failed to get kit order for " + stack);
+                continue;
+            }
+            int slot = inv.first(stack);
+            if(slot == -1) {
+                if(inv.getHelmet().isSimilar(stack)) slot = 39;
+                else if(inv.getChestplate().isSimilar(stack)) slot = 38;
+                else if(inv.getLeggings().isSimilar(stack)) slot = 37;
+                else if(inv.getBoots().isSimilar(stack)) slot = 36;
+            }
+            if(slot == -1) {
+                Practice.log(2, "Failed to find slot for " + stack);
+                continue;
+            }
+            newOrder.put(kitIndex, slot);
         }
         
         boolean update = false;
@@ -111,8 +128,9 @@ public class KitOrderUpdateComponent extends GameComponent
             {
                 String val1 = String.valueOf(newOrder.get(i));
                 String val2 = String.valueOf(order.get(i));
+                Practice.log(4, "val1 = " + val1 + " val2 = " + val2);
                 if(
-                        val1.equalsIgnoreCase(val2) ||
+                        !val1.equalsIgnoreCase(val2) ||
                         (int)Double.parseDouble(String.valueOf(newOrder.keySet().toArray()[i])) != (int) Double.parseDouble(String.valueOf(order.keySet().toArray()[i]))
                 )
                 {
@@ -123,6 +141,7 @@ public class KitOrderUpdateComponent extends GameComponent
         }
         if(update)
         {
+            Practice.log(4, "Updating KitOrder for " + kitId + " with " + newOrder.size() + " elements" );
             pp.getPlayer().sendMessage(ChatColor.BLUE + "Your new Inventory Layout has been set!");
             pp.setCustomOrder(kitId, newOrder);
         }

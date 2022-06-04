@@ -78,7 +78,7 @@ public class CustomGamemodeItem extends LobbyItem
         }
         
         public void start(){
-            NewGamePacket.start(new List(challenged, challenger), gamemode, map, kit);
+            NewGamePacket.start(new List(challenged, challenger), gamemode, map, kit, true);
         }
     }
     
@@ -86,6 +86,7 @@ public class CustomGamemodeItem extends LobbyItem
     List<CustomGamemode> gamemodes = new List();
     String defaultMode;
     String defaultKit;
+    
     public CustomGamemodeItem(ConfigurationSection section)
     {
         super(section);
@@ -154,6 +155,7 @@ public class CustomGamemodeItem extends LobbyItem
                 Challenge g = new Challenge(challenger, challenged, gm.gamemode, m, k);
                 List<Challenge> chals = challenges.get(challenged);
                 if(chals == null) chals = new List<>();
+                chals.removeAll(x -> x.challenger.getName().equalsIgnoreCase(challenger.getName()));
                 chals.add(g);
                 challenges.put(challenged, chals);
                 new BukkitRunnable(){
@@ -166,11 +168,13 @@ public class CustomGamemodeItem extends LobbyItem
                         challenges.put(challenged, chals);
                     }
                 }.runTaskLater(Practice.Instance, 20 * 60);
-                challenger.sendMessage("§9Challenged " + challenged.getName() + " to a Game of " + gm.gamemode);
-                challenged.sendMessage("§9You have been challenged by " + challenger.getName() + " to a Game of " + gm.gamemode);
+                challenger.sendMessage("§9Challenged " + challenged.getName() + " to a Game of " + gm.item.getDisplayName());
+                challenged.sendMessage("§9You have been challenged by " + challenger.getName() + " to a Game of " + gm.item.getDisplayName());
             }
             else{
-                NewGamePacket.start(new List(challenged, challenger), chal.gamemode, chal.kit, chal.map);
+                NewGamePacket.start(new List(challenged, challenger), chal.gamemode, chal.kit, chal.map, true);
+                challenges.remove(challenger);
+                challenges.remove(challenged);
             }
         }
     }
@@ -205,6 +209,7 @@ public class CustomGamemodeItem extends LobbyItem
             inv.setItem(slot, new BetterItem(Material.MAP).setDisplayName("§b" + maps.get(i)).setLore("§9Click to select this map!"));
             int finalI = i;
             inv.onClickSlot(slot, (event) -> {
+                event.setCancelled(true);
                 inv.clear();
                 StringStorer.getPlayer(inv.getPlayer()).storeValue("Practice_Challenge_CustomMap", maps.get(finalI));
                 setInv(inv);
@@ -220,6 +225,7 @@ public class CustomGamemodeItem extends LobbyItem
             Practice.log(4, "Adding Custom Gamemode: " + g.getGamemode());
             inv.setItem(slot, g.getItem());
             inv.onClickSlot(slot, (event) -> {
+                event.setCancelled(true);
                 inv.clear();
                 StringStorer.getPlayer(inv.getPlayer()).storeValue("Practice_Challenge_CustomGamemode", g.getGamemode());
                 StringStorer.getPlayer(inv.getPlayer()).storeValue("Practice_Challenge_CustomMap", "Random");
@@ -245,6 +251,7 @@ public class CustomGamemodeItem extends LobbyItem
         inv.setItem(19, g.getItem());
         inv.onClickSlot(19, x ->
         {
+            x.setCancelled(true);
             inv.clear();
             setCustomGMInv(inv);
         });
@@ -259,7 +266,7 @@ public class CustomGamemodeItem extends LobbyItem
                 //get map
                 String map = StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomMap", "Random");
                 //start game, if not custom kit then use default kit
-                NewGamePacket.start(new List(inv.getPlayer()), g.gamemode, useCustomKit ? pp.getKit().getName() : g.defaultKit, map.equalsIgnoreCase("Random") ? g.maps.random() : map);
+                NewGamePacket.start(new List(inv.getPlayer()), g.gamemode, useCustomKit ? pp.getKit().getName() : g.defaultKit, map.equalsIgnoreCase("Random") ? g.maps.random() : map, true);
             });
         }
     }
@@ -282,6 +289,7 @@ public class CustomGamemodeItem extends LobbyItem
         String map = customMap;
         inv.setItem(22, new BetterItem(Material.MAP).setDisplayName("§9Map: §b" + map));
         inv.onClickSlot(22, x ->{
+            x.setCancelled(true);
             inv.clear();
             setMapInv(inv);
         });
@@ -297,6 +305,7 @@ public class CustomGamemodeItem extends LobbyItem
 
         inv.onClickSlot(25, x ->
         {
+            x.setCancelled(true);
             inv.clear();
             StringStorer.getPlayer(inv.getPlayer()).storeValue("Practice_Challenge_CustomKit", !customKit + "");
             setInv(inv);

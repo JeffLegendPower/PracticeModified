@@ -19,6 +19,6 @@ public class StartInventoryComponent extends GameComponent
     public void onEvent(StartEvent e)
     {
         Practice.log(4, "Setting Inventory on Start!");
-        for (Player p:logic.getPlayers()) e.getlogic().getGame().getKit().setInventory(p);
+        for (Player p:logic.getPlayers()) e.getlogic().getGame().getKit().setInventory(p, true);
     }
 }

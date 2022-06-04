@@ -8,18 +8,24 @@ import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.ArrayList;
 import me.TrixxTraxx.Linq.List;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 
 public class MapResetComponent extends GameComponent
 {
-    private List<BlockStorage> blocks = new List<>();
-
-    private class BlockStorage
+    public List<BlockStorage> blocks = new List<>();
+    public List<Location> liquidBlocks = new List<>();
+    
+    public static class BlockStorage
     {
         public Location loc;
         public Material mat;
@@ -61,6 +67,39 @@ public class MapResetComponent extends GameComponent
         blocks.add(store);
     }
     
+    @TriggerEvent(priority = 10, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onExplode(EntityExplodeEvent e)
+    {
+        for (Block block : e.blockList())
+        {
+            blocks.add(new BlockStorage()
+            {{
+                loc = block.getLocation();
+                b = block.getData();
+                mat = block.getType();
+            }});
+        }
+    }
+    
+    @TriggerEvent(priority = 10, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onExplode(BlockExplodeEvent e)
+    {
+        for (Block block : e.blockList())
+        {
+            blocks.add(new BlockStorage()
+            {{
+                loc = block.getLocation();
+                b = block.getData();
+                mat = block.getType();
+            }});
+        }
+    }
+    
+    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onBucketEmpty(PlayerBucketEmptyEvent event){
+        liquidBlocks.add(event.getBlockClicked().getLocation());
+    }
+    
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
     public void onResetAfter(ResetEvent e)
@@ -70,6 +109,28 @@ public class MapResetComponent extends GameComponent
             store.loc.getBlock().setType(store.mat);
             store.loc.getBlock().setData(store.b);
         }
+        List<BlockFace> faces = new List<>(BlockFace.values());
+        for(Location loc:liquidBlocks){
+            loc.getBlock().setType(Material.AIR);
+            List<Location> checked = new List<>();
+            List<Location> current = new List<>(loc);
+            
+            while(true){
+                if(current.isEmpty()) break;
+                List<Location> next = new List<>();
+                for(Location l: current){
+                    for(BlockFace face: faces){
+                        Location n = l.getBlock().getRelative(face).getLocation();
+                        if(checked.contains(n)) continue;
+                        if(n.getBlock().isLiquid()) next.add(n);
+                    }
+                }
+                next.forEach(x -> x.getBlock().setType(Material.AIR));
+                checked.addAll(current);
+                current = next;
+            }
+        }
         blocks.clear();
+        liquidBlocks.clear();
     }
 }

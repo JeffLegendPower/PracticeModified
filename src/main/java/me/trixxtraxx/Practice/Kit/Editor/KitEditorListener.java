@@ -31,33 +31,9 @@ public class KitEditorListener implements Listener
     }
     
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent e)
-    {
-        if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(e.getPlayer())) e.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent e)
-    {
-        if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(e.getPlayer())) e.setCancelled(true);
-    }
-    
-    @EventHandler
     public void onEntityDamage(EntityDamageEvent e)
     {
         if(e.getEntity() instanceof Player && KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer((Player) e.getEntity())) e.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void onBlockPlace(PlayerBucketEmptyEvent e)
-    {
-        if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(e.getPlayer())) e.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void onBlockPlace(PlayerBucketFillEvent e)
-    {
-        if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(e.getPlayer())) e.setCancelled(true);
     }
     
     @EventHandler

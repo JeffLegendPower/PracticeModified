@@ -14,6 +14,7 @@ import me.trixxtraxx.Practice.TriggerEvent;
 
 import java.util.ArrayList;
 import me.TrixxTraxx.Linq.List;
+import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class StatComponent extends GameComponent
@@ -45,6 +46,8 @@ public class StatComponent extends GameComponent
 
     public void createTable()
     {
+        if(logic.getGame().isChallenge()) return;
+        
         //run async
         new BukkitRunnable(){
             @Override
@@ -57,6 +60,7 @@ public class StatComponent extends GameComponent
 
     public void store()
     {
+        if(logic.getGame().isChallenge()) return;
         new BukkitRunnable(){
             @Override
             public void run()

@@ -44,10 +44,10 @@ public class DuelEloComponent extends GameComponent implements IStatComponent
             double eloChange = k * ((isWinner ? 1 : 0) - expected);
             double newElo = elo + eloChange;
             //round newElo and eloChange to 2 decimal places
-            newElo = Math.round(newElo * 100.0) / 100.0;
-            eloChange = Math.round(eloChange * 100.0) / 100.0;
-            if(eloChange > 0) p.sendMessage("§9Your new Elo is: §b" + newElo + " (+" + eloChange + ")");
-            else p.sendMessage("§9Your new Elo is: §b" + newElo + " (" + eloChange + ")");
+            newElo = (int) newElo;
+            eloChange = (int) eloChange;
+            if(eloChange > 0) p.sendMessage("§9Your new Elo is: §b" + ((int) newElo) + " (+" + ((int) eloChange) + ")");
+            else p.sendMessage("§9Your new Elo is: §b" + ((int) newElo) + " (" + ((int) eloChange) + ")");
             return newElo + "";
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");

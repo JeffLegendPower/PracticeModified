@@ -117,6 +117,8 @@ public class PracticePlayer
         }
         cachedKit.setNewItems(items);
         cachedKit.setNewDefaultOrder(defaultOrder);
+        
+        clearKitId(cachedKit.getSqlId());
     
         if(!update) return;
         PracticePlayer finalPlayer = this;
@@ -150,8 +152,13 @@ public class PracticePlayer
         for(PlayerStats stats:this.stats)
         {
             String elo = stats.getStat("Elo");
-            if(elo != null && !elo.isEmpty()){
-                elos.add(Double.parseDouble(elo));
+            if(elo != null && !elo.isEmpty() && elo.equalsIgnoreCase("null"))
+            {
+                try
+                {
+                    elos.add(Double.parseDouble(elo));
+                }
+                catch(NumberFormatException e){}
             }
         }
         if(elos.size() == 0) return 0;
@@ -211,5 +218,13 @@ public class PracticePlayer
             if(prac.playerName.equalsIgnoreCase(p.getName())) return prac;
         }
         return null;
+    }
+    public static void clearKitId(int kitId)
+    {
+        for(PracticePlayer p:players)
+        {
+            p.customKitOrders.remove(kitId);
+        }
+        MessageProvider.SendMessage("Practice_KitOrderDelete", kitId + "");
     }
 }

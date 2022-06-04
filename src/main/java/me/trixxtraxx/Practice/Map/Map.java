@@ -39,7 +39,7 @@ public class Map extends ComponentClass<MapComponent>
         Practice.log(3, "Unloading map " + Name);
         String worldName = world.getName();
         world = null;
-        Bukkit.unloadWorld(worldName, save);
+        Practice.worldLoader.unloadWorld(Bukkit.getWorld(worldName));
     }
 
     public String getName()

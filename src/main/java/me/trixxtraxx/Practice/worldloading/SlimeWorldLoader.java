@@ -5,8 +5,12 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import me.trixxtraxx.Practice.Bungee.BungeeUtil;
+import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
@@ -54,6 +58,39 @@ public class SlimeWorldLoader implements WorldLoader
     @Override
     public void unloadWorld(World world)
     {
-        Bukkit.unloadWorld(world, false);
+        new BukkitRunnable(){
+        
+            @Override
+            public void run()
+            {
+                Bukkit.unloadWorld(world, false);
+                for(Player p : world.getPlayers()){
+                    BungeeUtil.getInstance().toLobby(p);
+                }
+            }
+        }.runTaskLater(Practice.Instance, 10);
+        new BukkitRunnable(){
+    
+            @Override
+            public void run()
+            {
+                for(Player p : world.getPlayers()){
+                    p.kickPlayer("§cSomething went wrong!");
+                }
+                Bukkit.unloadWorld(world, false);
+            }
+        }.runTaskLater(Practice.Instance, 200);
+    
+        new BukkitRunnable(){
+        
+            @Override
+            public void run()
+            {
+                for(Player p : world.getPlayers()){
+                    p.kickPlayer("§cSomething went wrong!");
+                }
+                Bukkit.unloadWorld(world, false);
+            }
+        }.runTaskLater(Practice.Instance, 2000);
     }
 }

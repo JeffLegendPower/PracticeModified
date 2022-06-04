@@ -5,6 +5,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 public class NoRegenComponent extends GameComponent
 {
@@ -14,9 +15,13 @@ public class NoRegenComponent extends GameComponent
         super(logic);
     }
     
+    
     @TriggerEvent
-    public void onRegen(StartEvent event)
+    public void onRegen(EntityRegainHealthEvent event)
     {
-        logic.getWorld().setGameRuleValue("naturalRegeneration", "false");
+        if(event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED && event.getEntity() instanceof Player)
+        {
+            event.setCancelled(true);
+        }
     }
 }

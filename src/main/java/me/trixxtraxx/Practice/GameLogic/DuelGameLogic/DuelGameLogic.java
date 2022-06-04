@@ -18,10 +18,10 @@ import me.TrixxTraxx.Linq.List;
 
 public class DuelGameLogic extends GameLogic
 {
-    private Player p1;
-    private Player p2;
-    private Game game;
-    private Map map;
+    protected Player p1;
+    protected Player p2;
+    protected Game game;
+    protected Map map;
 
     @Override
     public void start(Game gm, List<Player> players, Map m)
