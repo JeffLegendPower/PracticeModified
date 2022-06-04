@@ -46,7 +46,7 @@ public class StatComponent extends GameComponent
 
     public void createTable()
     {
-        if(logic.getGame().isChallenge()) return;
+        if(Practice.loglevel < 4) return;
         
         //run async
         new BukkitRunnable(){
