@@ -200,6 +200,7 @@ public class PracticePlayer
     
     public static PracticePlayer add(PracticePlayer p)
     {
+        if(p.playerName == null || p.playerName.isEmpty()) return null;
         Practice.log(4, "Adding player: " + p.getName());
         players.add(p);
         return p;
@@ -210,18 +211,11 @@ public class PracticePlayer
         return p;
     }
     public static PracticePlayer getPlayer(Player p){
-        for (PracticePlayer prac:players)
-        {
-            if(prac.playerName.equalsIgnoreCase(p.getName())) return prac;
-        }
-        return null;
+        return players.find(x -> x.playerName.equalsIgnoreCase(p.getName()));
     }
     public static void clearKitId(int kitId)
     {
-        for(PracticePlayer p:players)
-        {
-            p.customKitOrders.remove(kitId);
-        }
+        players.forEach(p -> p.customKitOrders.remove(kitId));
         MessageProvider.SendMessage("Practice_KitOrderDelete", kitId + "");
     }
 }

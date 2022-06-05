@@ -112,10 +112,10 @@ public class Kit extends ComponentClass<KitComponent>
                     if(g.getLogic().triggerEvent(event).isCanceled()) continue;
                     if(inv.getItem(event.getSlot()) != null){
                         if(inv.firstEmpty() == -1){
-                            if(inv.getHelmet() == null) inv.setHelmet(event.getItem());
-                            else if(inv.getChestplate() == null) inv.setChestplate(event.getItem());
+                            if(inv.getBoots() == null) inv.setBoots(event.getItem());
                             else if(inv.getLeggings() == null) inv.setLeggings(event.getItem());
-                            else if(inv.getBoots() == null) inv.setBoots(event.getItem());
+                            else if(inv.getChestplate() == null) inv.setChestplate(event.getItem());
+                            else if(inv.getHelmet() == null) inv.setHelmet(event.getItem());
                             else{
                                 Practice.log(1, "Inventory is full");
                             }
@@ -156,10 +156,10 @@ public class Kit extends ComponentClass<KitComponent>
             }
             Practice.log(4, "Setting remaining stack: " + index + "," + stack);
             if(inv.firstEmpty() == -1){
-                if(inv.getHelmet() == null) inv.setHelmet(stack.clone());
-                else if(inv.getChestplate() == null) inv.setChestplate(stack.clone());
+                if(inv.getBoots() == null) inv.setBoots(stack.clone());
                 else if(inv.getLeggings() == null) inv.setLeggings(stack.clone());
-                else if(inv.getBoots() == null) inv.setBoots(stack.clone());
+                else if(inv.getChestplate() == null) inv.setChestplate(stack.clone());
+                else if(inv.getHelmet() == null) inv.setHelmet(stack.clone());
                 else{
                     Practice.log(1, "Inventory is full");
                 }
