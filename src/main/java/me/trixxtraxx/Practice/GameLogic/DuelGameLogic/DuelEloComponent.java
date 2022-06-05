@@ -45,9 +45,16 @@ public class DuelEloComponent extends GameComponent implements IStatComponent
             double newElo = elo + eloChange;
             //round newElo and eloChange to 2 decimal places
             newElo = (int) newElo;
+            if(newElo < 0) newElo = 0;
             eloChange = (int) eloChange;
             if(eloChange > 0) p.sendMessage("§9Your new Elo is: §b" + ((int) newElo) + " (+" + ((int) eloChange) + ")");
-            else p.sendMessage("§9Your new Elo is: §b" + ((int) newElo) + " (" + ((int) eloChange) + ")");
+            else
+            {
+                for(Player pl : logic.getPlayers())
+                {
+                    pl.sendMessage("§9" + p.getName() + ": §b" + ((int) newElo) + " (" + ((int) eloChange) + ")");
+                }
+            }
             return newElo + "";
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");

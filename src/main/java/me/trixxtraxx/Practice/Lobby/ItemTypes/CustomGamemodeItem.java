@@ -137,6 +137,9 @@ public class CustomGamemodeItem extends LobbyItem
             {
                 SQLPlayer sql = StringStorer.getPlayer(challenger);
                 CustomGamemode gm = getGM(challenger);
+                if(gm.solo) {
+                    interact.getDamager().sendMessage("§cPlease select a non solo Gamemode!");
+                }
                 String k = "";
                 boolean useCustomKit = Boolean.parseBoolean(sql.getOrStoreDefault("Practice_Challenge_CustomKit",
                                                                                   "true"

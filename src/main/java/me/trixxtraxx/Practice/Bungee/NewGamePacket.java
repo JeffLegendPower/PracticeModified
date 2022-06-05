@@ -54,7 +54,7 @@ public class NewGamePacket
                     if(p != null){
                         PracticePlayer pp = PracticePlayer.getPlayer(p);
                         if(pp != null){
-                            pp.toLobby();
+                            BungeeUtil.getInstance().toLobby(p);
                         }
                     }
                 }

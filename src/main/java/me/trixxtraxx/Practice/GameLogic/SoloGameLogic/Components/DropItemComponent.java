@@ -1,8 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
 
-import com.google.gson.Gson;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
-import me.trixxtraxx.Practice.GameLogic.Components.CustomValue;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.DropEvent;
@@ -15,7 +13,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import me.TrixxTraxx.Linq.List;
 
-public class DropItemComponent extends GameComponent implements CustomValue
+public class DropItemComponent extends GameComponent
 {
     @Config
     private Material drop;
@@ -59,7 +57,7 @@ public class DropItemComponent extends GameComponent implements CustomValue
     }
     
     @Override
-    public String getValue()
+    public String getData()
     {
         //serialize it with key=value<>key=value
         StringBuilder sb = new StringBuilder();
@@ -76,7 +74,7 @@ public class DropItemComponent extends GameComponent implements CustomValue
     }
     
     @Override
-    public void applyValue(String value)
+    public void applyData(String value)
     {
         //deserialize it with key=value<>key=value
         String[] split = value.split("<>");

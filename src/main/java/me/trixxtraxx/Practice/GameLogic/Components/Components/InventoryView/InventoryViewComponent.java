@@ -10,6 +10,7 @@ import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.WinMessageComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -79,6 +80,8 @@ public class InventoryViewComponent extends GameComponent
             view.uuid = UUID.randomUUID().toString();
     
             MessageProvider.SendMessage("Practice_InventoryView_Add", new Gson().toJson(view));
+    
+            Practice.log(4, "Inventory of " + player.getName() + ": " + view.uuid);
             
             for(Player send : logic.getPlayers())
             {

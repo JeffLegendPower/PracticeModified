@@ -100,7 +100,6 @@ public class LobbyListener implements Listener
         if(lobby == null) return;
         if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(event.getPlayer())) return;
         PracticePlayer pp = PracticePlayer.getPlayer(event.getPlayer());
-        Practice.log(4, "Player " + event.getPlayer().getName() + " interacted while " + pp.isInQueue());
         if(!pp.isInQueue())
         {
             LobbyItem item = lobby.getItem((event.getPlayer().getInventory().getHeldItemSlot()));
@@ -126,9 +125,13 @@ public class LobbyListener implements Listener
         if(lobby == null) return;
         Player p = (Player) event.getDamager();
         LobbyItem item = lobby.getItem(p.getInventory().getHeldItemSlot());
-        if(item != null)
+        PracticePlayer pp = PracticePlayer.getPlayer(p);
+        if(!pp.isInQueue())
         {
-            item.onClick(event);
+            if(item != null)
+            {
+                item.onClick(event);
+            }
         }
     }
     
@@ -166,7 +169,8 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
-        lobby.addPlayer(PracticePlayer.getPlayer(event.getPlayer()));
+        PracticePlayer pp = PracticePlayer.getPlayer(event.getPlayer());
+        lobby.addPlayer(pp);
     }
     
     @EventHandler(priority = EventPriority.HIGH)
@@ -174,7 +178,8 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
-        lobby.addPlayer(PracticePlayer.getPlayer(event.getPlayer()));
+        PracticePlayer pp = PracticePlayer.getPlayer(event.getPlayer());
+        lobby.addPlayer(pp);
     }
     
     @EventHandler

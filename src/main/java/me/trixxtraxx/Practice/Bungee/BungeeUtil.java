@@ -15,6 +15,7 @@ public class BungeeUtil
     private boolean isConnected = false;
     private String name;
     private int maxRatedPlayers;
+    private String lobbyServer;
     
     private BungeeUtil() {}
     
@@ -26,11 +27,12 @@ public class BungeeUtil
         return instance;
     }
     
-    public void init(String bungee, int maxRatedPlayerCount)
+    public void init(String bungee, int maxRatedPlayerCount, String lobbyServer)
     {
         this.isConnected = true;
         this.name = bungee;
         this.maxRatedPlayers = maxRatedPlayerCount;
+        this.lobbyServer = lobbyServer;
         RegisterMessages.registerReciever(new BungeeListener());
         update();
     }
@@ -47,9 +49,10 @@ public class BungeeUtil
     public void toLobby(Player p)
     {
         PracticePlayer pp = PracticePlayer.getPlayer(p);
-        if(Game.getGame(pp.getPlayer()) == null || Lobby.getLobbies().size() == 0)
+        if(Lobby.get(p.getWorld()) != null || Lobby.getLobbies().size() == 0)
         {
-            pp.toLobby();
+            //send to lobby server
+            MessageProvider.SendMessage("PracticeToLobby", p.getName() + ";" + lobbyServer);
         }
         else
         {

@@ -96,7 +96,7 @@ public class Lobby
     public LobbyItem getItem(int slot){return items.find(x -> x.getSlot() == slot);}
     public List<PracticePlayer> getPlayers(){return players;}
     public void addPlayer(PracticePlayer player){
-        if(player.getPlayer() == null) return;
+        if(player == null || player.getPlayer() == null || players.contains(player)) return;
         Practice.log(4, "Adding player " + player.getName() + " to lobby " + name);
         players.add(player);
         new BukkitRunnable(){

@@ -52,11 +52,11 @@ public class DuelGameLogic extends GameLogic
     {
         if(triggerEvent(new StopEvent(this, force)).isCanceled() && !force) return;
         Practice.log(3, "Stopping duel game");
-        game.stop(false);
         for (Player p:getPlayers())
         {
             BungeeUtil.getInstance().toLobby(p);
         }
+        game.stop(false);
         map.unload(false);
     }
 

@@ -4,6 +4,7 @@ import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
 
@@ -20,6 +21,7 @@ public class WinStatComponent extends GameComponent implements IStatComponent
     public void onWin(WinEvent event)
     {
         winners.add(event.getPlayer());
+        Practice.log(3, "Winner added: " + event.getPlayer().getName());
     }
     
     @Override

@@ -2,7 +2,6 @@ package me.trixxtraxx.Practice.Map.Components;
 
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
-import me.trixxtraxx.Practice.GameLogic.Components.CustomValue;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.Practice;
@@ -13,9 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.HashMap;
-import java.util.Locale;
 
-public class AutoScaleComponent extends MapComponent implements CustomValue
+public class AutoScaleComponent extends MapComponent
 {
     @Config
     private double xOffset;
@@ -134,7 +132,7 @@ public class AutoScaleComponent extends MapComponent implements CustomValue
     }
     
     @Override
-    public String getValue()
+    public String getData()
     {
         //serialize everything with @Config annotation and serialize each region seperately
         StringBuilder sb = new StringBuilder();
@@ -147,7 +145,7 @@ public class AutoScaleComponent extends MapComponent implements CustomValue
     }
     
     @Override
-    public void applyValue(String value)
+    public void applyData(String value)
     {
         String[] split = value.split("\\|");
         xOffset = Double.parseDouble(split[0]);

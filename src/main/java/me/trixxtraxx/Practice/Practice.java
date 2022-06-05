@@ -248,7 +248,11 @@ public final class Practice extends JavaPlugin
             ComponentEditor.init(conf);
         }
     
-        BungeeUtil.getInstance().init(conf.getString("Bungee.Identifier"), conf.getInt("Bungee.maxRatedPlayers"));
+        BungeeUtil.getInstance().init(
+                conf.getString("Bungee.Identifier"),
+                conf.getInt("Bungee.maxRatedPlayers"),
+                conf.getString("Bungee.lobbyServer")
+                );
     
         RegisterMessages.registerReciever(new PlayerReceiver());
         RegisterMessages.registerReciever(new QueueListener());

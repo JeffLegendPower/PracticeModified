@@ -171,9 +171,6 @@ public class PracticePlayer
     public void executeBungeeCommand(String command){
         MessageProvider.SendMessage("ExecuteCommand", new Gson().toJson(new ExecuteCommand(playerName, command)));
     }
-    public void toLobby(){
-        BungeeUtil.getInstance().toLobby(getPlayer());
-    }
     public String getName(){
         return playerName;
     }

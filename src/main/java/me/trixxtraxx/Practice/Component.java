@@ -1,17 +1,11 @@
 package me.trixxtraxx.Practice;
 
 import com.google.gson.Gson;
-import me.TrixxTraxx.Linq.List;
-import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
-import me.trixxtraxx.Practice.GameLogic.Components.CustomValue;
-import me.trixxtraxx.Practice.Map.Map;
-import me.trixxtraxx.Practice.SQL.ConfigItem;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import me.trixxtraxx.Practice.Utils.Region;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -24,10 +18,6 @@ public abstract class Component
         //get all properties with the @Config annotation
         //and serialize them to a string
         StringBuilder sb = new StringBuilder();
-        if(CustomValue.class.isAssignableFrom(this.getClass()))
-        {
-            return ((CustomValue)this).getValue();
-        }
         for(Field f : this.getClass().getDeclaredFields())
         {
             if(f.isAnnotationPresent(Config.class))
@@ -80,17 +70,6 @@ public abstract class Component
         //deserialize the data that got serialized by getData()
         //and apply it to the properties
         Practice.log(4,"Applying data to component " + this.getClass().getSimpleName() + ": " + data);
-        if(CustomValue.class.isAssignableFrom(this.getClass()))
-        {
-            try
-            {
-                ((CustomValue) this).applyValue(data);
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
         String[] lines = data.split("<>");
         Practice.log(4,"Lines: " + lines.length);
         for(String line : lines)

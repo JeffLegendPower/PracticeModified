@@ -2,7 +2,6 @@ package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
-import me.trixxtraxx.Practice.GameLogic.Components.CustomValue;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.TriggerEvent;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class EffectComponent extends GameComponent implements CustomValue
+public class EffectComponent extends GameComponent
 {
     @Config
     public PotionEffectType effect;
@@ -32,13 +31,13 @@ public class EffectComponent extends GameComponent implements CustomValue
     }
     
     @Override
-    public String getValue()
+    public String getData()
     {
         return "effect=" + effect.toString() + "<>amplifier=" + amplifier;
     }
     
     @Override
-    public void applyValue(String value)
+    public void applyData(String value)
     {
         String[] split = value.split("<>");
         for(String s : split)
