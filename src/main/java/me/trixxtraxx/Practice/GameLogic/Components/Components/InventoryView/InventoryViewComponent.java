@@ -29,7 +29,7 @@ public class InventoryViewComponent extends GameComponent
         super(logic);
     }
     
-    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = -1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onGameEnd(WinEvent event)
     {
         logic.broadcast("§9Inventories:");

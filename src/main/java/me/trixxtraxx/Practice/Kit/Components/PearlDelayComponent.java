@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Kit.KitComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,12 +23,15 @@ public class PearlDelayComponent extends KitComponent
     public PearlDelayComponent(Kit kit)
     {
         super(kit);
+        Practice.log(4, "Pearl Delay Component initialized");
     }
     
     private Cache<String, Long> cooldownCache = null;
     
-    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onEnderPearlThrow(PlayerInteractEvent event) {
+    @TriggerEvent(state = TriggerEvent.CancelState.NONE)
+    public void onEnderPearlThrow(PlayerInteractEvent event)
+    {
+        Practice.log(4, "Pearl Delay Component onEnderPearlThrow");
         if(cooldownCache == null) cooldownCache = CacheBuilder.newBuilder().expireAfterWrite(cooldown, TimeUnit.SECONDS).build();
         Player player = event.getPlayer();
     

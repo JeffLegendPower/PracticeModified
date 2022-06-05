@@ -24,11 +24,13 @@ public class Game
     private boolean ended = false;
     private boolean ranked = false;
     private boolean challenge = false;
+    private long startTime;
 
     public Game(GameLogic log, List<Player> players, Kit k, Map m, boolean ranked, boolean challenge)
     {
         try
         {
+            startTime = System.currentTimeMillis();
             kit = k;
             logic = log;
             this.ranked = ranked;
@@ -75,6 +77,8 @@ public class Game
     public boolean isRanked() {return ranked;}
     
     public boolean isChallenge() {return challenge;}
+    
+    public long getStartTime() {return startTime;}
 
     public void stop(boolean stopLogic)
     {

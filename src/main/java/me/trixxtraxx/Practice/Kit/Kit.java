@@ -111,7 +111,18 @@ public class Kit extends ComponentClass<KitComponent>
                     KitSetItemEvent event = new KitSetItemEvent(g.getLogic(), prac, newItem, slot, key);
                     if(g.getLogic().triggerEvent(event).isCanceled()) continue;
                     if(inv.getItem(event.getSlot()) != null){
-                        inv.addItem(event.getItem());
+                        if(inv.firstEmpty() == -1){
+                            if(inv.getHelmet() == null) inv.setHelmet(event.getItem());
+                            else if(inv.getChestplate() == null) inv.setChestplate(event.getItem());
+                            else if(inv.getLeggings() == null) inv.setLeggings(event.getItem());
+                            else if(inv.getBoots() == null) inv.setBoots(event.getItem());
+                            else{
+                                Practice.log(1, "Inventory is full");
+                            }
+                        }
+                        else{
+                            inv.addItem(event.getItem());
+                        }
                     }
                     else{
                         inv.setItem(event.getSlot(), event.getItem());
@@ -144,7 +155,19 @@ public class Kit extends ComponentClass<KitComponent>
                 if(g.getLogic().triggerEvent(event).isCanceled()) continue;
             }
             Practice.log(4, "Setting remaining stack: " + index + "," + stack);
-            inv.addItem(stack.clone());
+            if(inv.firstEmpty() == -1){
+                if(inv.getHelmet() == null) inv.setHelmet(stack.clone());
+                else if(inv.getChestplate() == null) inv.setChestplate(stack.clone());
+                else if(inv.getLeggings() == null) inv.setLeggings(stack.clone());
+                else if(inv.getBoots() == null) inv.setBoots(stack.clone());
+                else{
+                    Practice.log(1, "Inventory is full");
+                }
+            }
+            else
+            {
+                inv.addItem(stack.clone());
+            }
         }
     }
     

@@ -64,6 +64,7 @@ public class KitOrderUpdateComponent extends GameComponent
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onUpdate(InventoryCloseEvent event)
     {
+        if(logic.getGame().getStartTime() + 12000 > System.currentTimeMillis()) return;
         if(cancel) return;
         if(event.getInventory().getType() != InventoryType.CRAFTING) {
             Practice.log(4, "Closed Inv wasnt from a player; type = " + event.getInventory().getType());
@@ -94,7 +95,7 @@ public class KitOrderUpdateComponent extends GameComponent
         invItems.addAll(inv.getArmorContents());
         for(ItemStack stack : invItems)
         {
-            if(stack == null) continue;
+            if(stack == null || (stack.getType() == Material.POTION && (stack.getDurability() == 16421 || stack.getDurability() == 16453))) continue;
             BetterItem item = new BetterItem(stack);
             if(item.getType() == Material.AIR) continue;
             int kitIndex = -1;
@@ -141,7 +142,6 @@ public class KitOrderUpdateComponent extends GameComponent
         }
         if(update)
         {
-            Practice.log(4, "Updating KitOrder for " + kitId + " with " + newOrder.size() + " elements" );
             pp.getPlayer().sendMessage(ChatColor.BLUE + "Your new Inventory Layout has been set!");
             pp.setCustomOrder(kitId, newOrder);
         }
