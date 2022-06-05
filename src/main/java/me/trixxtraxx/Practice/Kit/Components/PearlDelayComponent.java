@@ -31,13 +31,12 @@ public class PearlDelayComponent extends KitComponent
     @TriggerEvent(state = TriggerEvent.CancelState.NONE)
     public void onEnderPearlThrow(PlayerInteractEvent event)
     {
-        Practice.log(4, "Pearl Delay Component onEnderPearlThrow");
         if(cooldownCache == null) cooldownCache = CacheBuilder.newBuilder().expireAfterWrite(cooldown, TimeUnit.SECONDS).build();
         Player player = event.getPlayer();
     
         if (player.getItemInHand().getType().equals(Material.ENDER_PEARL)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (!cooldownCache.asMap().containsKey(player.getUniqueId())) {
+                if (!cooldownCache.asMap().containsKey(player.getName())) {
                     cooldownCache.put(player.getName(), System.currentTimeMillis() + cooldown * 1000L);
                 }
                 else {
