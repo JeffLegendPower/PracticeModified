@@ -147,6 +147,7 @@ public class ItemEditor extends EditorInventory
         inv.onItemPlace(x ->
                         {
                             if(x.getSlot() != 31) return;
+                            x.setCancelled(true);
                             ItemStack item = inv.getItem(10);
                             if(item != null)
                             {
@@ -170,15 +171,15 @@ public class ItemEditor extends EditorInventory
                                 }
                             }
                         });
-        inv.onItemPickup(x ->
+        inv.onClickSlot(31, x ->
                          {
-                             if(x.getSlot() != 33) return;
                              x.setCancelled(true);
                          });
     
         inv.onItemPlace(x ->
                         {
                             if(x.getSlot() != 33) return;
+                            x.setCancelled(true);
                             ItemStack item = inv.getItem(10);
                             if(item != null)
                             {
@@ -203,9 +204,8 @@ public class ItemEditor extends EditorInventory
                                 }
                             }
                         });
-        inv.onItemPickup(x ->
+        inv.onClickSlot(33, x ->
                          {
-                             if(x.getSlot() != 33) return;
                              x.setCancelled(true);
                          });
     }
