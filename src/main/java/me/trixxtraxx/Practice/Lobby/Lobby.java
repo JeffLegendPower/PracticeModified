@@ -28,6 +28,7 @@ public class Lobby
     private boolean blockDrop;
     private boolean blockHunger;
     private boolean blockWeather;
+    private int voidOutHeight;
     private List<String> blockedInventories;
     private List<PracticePlayer> players = new List<>();
     private List<LobbyItem> items = new List<>();
@@ -48,6 +49,7 @@ public class Lobby
         this.blockDrop = section.getBoolean("BlockDrop");
         this.blockHunger = section.getBoolean("BlockHunger");
         this.blockWeather = section.getBoolean("BlockWeather");
+        this.voidOutHeight = section.getInt("VoidOutHeight");
         this.spawn = ConfigLocation.deserialize(section.getString("spawn"));
         ConfigurationSection ItemSec = section.getConfigurationSection("Items");
         for(String key : ItemSec.getKeys(false))
@@ -81,6 +83,9 @@ public class Lobby
     }
     
     public String getWorld(){return world;}
+    public Location getSpawn(){
+        return spawn.getLocation(Bukkit.getWorld(world));
+    }
     public String getName(){return name;}
     public int getMaxRatedPlayers(){return maxRatedPlayers;}
     public boolean isBreakBlocked(){return blockBreak;}
@@ -91,6 +96,7 @@ public class Lobby
     public boolean isDropBlocked(){return blockDrop;}
     public boolean isHungerBlocked(){return blockHunger;}
     public boolean isWeatherBlocked(){return blockWeather;}
+    public int getVoidOutHeight(){return voidOutHeight;}
     public List<String> getBlockedInventories(){return blockedInventories;}
     public List<Launchpad> getLaunchpads(){return launchpads;}
     public LobbyItem getItem(int slot){return items.find(x -> x.getSlot() == slot);}

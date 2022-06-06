@@ -219,6 +219,10 @@ public class LobbyListener implements Listener
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
+        if(event.getTo().getY() < lobby.getVoidOutHeight())
+        {
+            event.getPlayer().teleport(lobby.getSpawn());
+        }
         for(Launchpad l : lobby.getLaunchpads())
         {
             l.tryLaunch(event.getPlayer());

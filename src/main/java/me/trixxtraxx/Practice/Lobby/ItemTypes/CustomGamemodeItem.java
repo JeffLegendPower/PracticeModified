@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 public class CustomGamemodeItem extends LobbyItem
 {
-    public class CustomGamemode
+    public static class CustomGamemode
     {
         BetterItem item;
         String gamemode;
@@ -82,10 +82,10 @@ public class CustomGamemodeItem extends LobbyItem
         }
     }
     
-    HashMap<Player, List<Challenge>> challenges = new HashMap<>();
-    List<CustomGamemode> gamemodes = new List();
-    String defaultMode;
-    String defaultKit;
+    private HashMap<Player, List<Challenge>> challenges = new HashMap<>();
+    private List<CustomGamemode> gamemodes = new List();
+    private String defaultMode;
+    private String defaultKit;
     
     public CustomGamemodeItem(ConfigurationSection section)
     {
@@ -99,6 +99,7 @@ public class CustomGamemodeItem extends LobbyItem
             BetterItem i = new BetterItem(g.getString("Material"));
             if(g.contains("Name")) i.setDisplayName(g.getString("Name"));
             if(g.contains("Lore")) i.setLore(g.getStringList("Lore"));
+            if(g.contains("Data")) i.setDurability((short) g.getInt("Data"));
             gamemodes.add(new CustomGamemode(
                     i,
                     key,
@@ -141,9 +142,7 @@ public class CustomGamemodeItem extends LobbyItem
                     interact.getDamager().sendMessage("§cPlease select a non solo Gamemode!");
                 }
                 String k = "";
-                boolean useCustomKit = Boolean.parseBoolean(sql.getOrStoreDefault("Practice_Challenge_CustomKit",
-                                                                                  "true"
-                ));
+                boolean useCustomKit = Boolean.parseBoolean(sql.getOrStoreDefault("Practice_Challenge_CustomKit", "true"));
                 if(useCustomKit)
                 {
                     k = challenger.getName();
@@ -274,7 +273,7 @@ public class CustomGamemodeItem extends LobbyItem
         }
     }
     
-    private CustomGamemode getGM(Player p)
+    public CustomGamemode getGM(Player p)
     {
         String gm = StringStorer.getPlayer(p).getOrStoreDefault("Practice_Challenge_CustomGamemode", defaultMode);
         CustomGamemode g = gamemodes.find(x -> x.gamemode.equalsIgnoreCase(gm));
