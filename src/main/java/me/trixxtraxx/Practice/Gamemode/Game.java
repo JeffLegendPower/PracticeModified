@@ -44,6 +44,7 @@ public class Game
                 p.setFoodLevel(20);
                 p.setGameMode(GameMode.SURVIVAL);
                 p.getEnderChest().clear();
+                p.setMaximumNoDamageTicks(20);
                 Game currentGame = getGame(p);
                 if(currentGame != null) currentGame.getLogic().removePlayer(p);
             }

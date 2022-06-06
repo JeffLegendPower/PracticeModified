@@ -115,6 +115,7 @@ public class Lobby
                 p.setAllowFlight(false);
                 p.setNoDamageTicks(20);
                 p.setGameMode(GameMode.SURVIVAL);
+                p.setMaximumNoDamageTicks(20);
                 p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
                 p.getActivePotionEffects().forEach(x -> p.removePotionEffect(x.getType()));
                 setInv(player);
