@@ -27,6 +27,17 @@ public class CustomKbComponent extends GameComponent
     public static double sprint = 0.8;
     public static double walk = 0.8;
     
+    public CustomKbComponent(GameLogic gameLogic, double global, double horizontal, double air, double vertical, double sprint, double walk)
+    {
+        super(gameLogic);
+        this.global = global;
+        this.horizontal = horizontal;
+        this.air = air;
+        this.vertical = vertical;
+        this.sprint = sprint;
+        this.walk = walk;
+    }
+    
     public CustomKbComponent(GameLogic logic)
     {
         super(logic);
