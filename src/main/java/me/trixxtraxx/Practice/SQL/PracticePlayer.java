@@ -206,8 +206,11 @@ public class PracticePlayer
         return p;
     }
     public static PracticePlayer remove(PracticePlayer p){
-        Practice.log(4, "Removing player: " + p.getName());
-        players.remove(p);
+        if(p != null)
+        {
+            Practice.log(4, "Removing player: " + p.getName());
+            players.remove(p);
+        }
         return p;
     }
     public static PracticePlayer getPlayer(Player p){
