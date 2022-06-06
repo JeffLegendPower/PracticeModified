@@ -268,7 +268,11 @@ public final class Practice extends JavaPlugin
     @Override
     public void onDisable()
     {
-
+        KitEditor kit = KitEditor.getInstance();
+        if(kit != null)
+        {
+            kit.saveAll();
+        }
     }
 
     @Override

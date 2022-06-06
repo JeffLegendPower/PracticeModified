@@ -92,4 +92,11 @@ public class KitEditor
     {
         return players.contains(p);
     }
+    
+    public void saveAll(){
+        for(Player p : players){
+            PracticePlayer pp = PracticePlayer.getPlayer(p);
+            pp.saveKit();
+        }
+    }
 }
