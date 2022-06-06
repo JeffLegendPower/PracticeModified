@@ -113,6 +113,7 @@ public class Lobby
                 p.setHealth(20);
                 p.setFoodLevel(20);
                 p.setAllowFlight(false);
+                p.setFireTicks(0);
                 p.setNoDamageTicks(20);
                 p.setGameMode(GameMode.SURVIVAL);
                 p.setMaximumNoDamageTicks(20);
