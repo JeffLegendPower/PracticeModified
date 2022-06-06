@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
@@ -20,11 +21,17 @@ import java.util.List;
 
 public class CustomKbComponent extends GameComponent
 {
+    @Config
     public static double global = 1.0;
+    @Config
     public static double horizontal = 1.0;
+    @Config
     public static double air = 1.0;
+    @Config
     public static double vertical = 0.5;
+    @Config
     public static double sprint = 0.8;
+    @Config
     public static double walk = 0.8;
     
     public CustomKbComponent(GameLogic gameLogic, double global, double horizontal, double air, double vertical, double sprint, double walk)
