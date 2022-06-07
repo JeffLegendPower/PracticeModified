@@ -9,6 +9,7 @@ import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Gamemode.Game;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Practice;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -52,13 +53,7 @@ public class DuelGameLogic extends GameLogic
     {
         if(triggerEvent(new StopEvent(this, force)).isCanceled() && !force) return;
         Practice.log(3, "Stopping duel game");
-        for (Player p:getPlayers())
-        {
-            p.setHealth(20);
-            BungeeUtil.getInstance().toLobby(p);
-        }
         game.stop(false);
-        map.unload(false);
     }
 
     @Override
@@ -82,22 +77,50 @@ public class DuelGameLogic extends GameLogic
     public String getData() {return "{}";}
     
     @Override
-    public void removePlayer(Player p){remove(p);}
+    public void removePlayer(Player p, boolean force){remove(p, force);}
     
     public void loadWorld(){map.load();}
 
     public Player getP1() {return p1;}
     public Player getP2() {return p2;}
 
-    public void remove(Player p)
+    public void remove(Player p, boolean force)
     {
-        if(p == p1) win(p2);
-        if(p == p2) win(p1);
+        if(getGame().hasEnded()) {
+            if(force)
+            {
+                BungeeUtil.getInstance().toLobby(p);
+            }
+            else return;
+        }
+        if(force)
+        {
+            BungeeUtil.getInstance().toLobby(p);
+        }
+        
+        if(p == p1) win(p2, force);
+        if(p == p2) win(p1, force);
     }
 
-    public void win(Player p)
+    public void win(Player p, boolean force)
     {
-        if(triggerEvent(new WinEvent(this,p)).isCanceled()) return;
+        if(getGame().hasEnded()) return;
+        
+        if(triggerEvent(new WinEvent(this,p, force)).isCanceled() && !force) return;
+        if(p == p1) {
+            if(!force)
+            {
+                p2.setHealth(20);
+                p2.setGameMode(GameMode.SPECTATOR);
+            }
+        }
+        if(p == p2) {
+            if(!force)
+            {
+                p1.setHealth(20);
+                p1.setGameMode(GameMode.SPECTATOR);
+            }
+        }
         stop(false);
     }
 
@@ -109,6 +132,7 @@ public class DuelGameLogic extends GameLogic
     @Override
     public void toSpawn(Player p)
     {
+        if(game.hasEnded()) return;
         Location loc = map.getSpawn().getSpawn(this, p);
         if(triggerEvent(new ToSpawnEvent(p, loc)).isCanceled()) return;
         p.teleport(loc);

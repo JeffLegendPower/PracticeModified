@@ -56,9 +56,6 @@ public class SoloGameLogic extends GameLogic
     {
         if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
         game.stop(false);
-        player.setHealth(20);
-        BungeeUtil.getInstance().toLobby(player);
-        map.unload(false);
     }
 
     @Override
@@ -80,7 +77,7 @@ public class SoloGameLogic extends GameLogic
     public void applyData(String s){}
     
     @Override
-    public void removePlayer(Player p){stop(true);}
+    public void removePlayer(Player p, boolean force){stop(true);}
     
     public String getData() {return "{}";}
 

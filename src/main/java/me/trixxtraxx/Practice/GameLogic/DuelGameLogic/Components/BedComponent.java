@@ -74,7 +74,7 @@ public class BedComponent extends GameComponent
         Player winner = null;
         if(event.getEntity() == duelLogic.getP1()) winner = duelLogic.getP2();
         if(event.getEntity() == duelLogic.getP2()) winner = duelLogic.getP1();
-        duelLogic.win(winner);
+        duelLogic.win(winner, false);
     }
     
     @Override

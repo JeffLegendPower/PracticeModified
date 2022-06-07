@@ -48,25 +48,11 @@ public class FFALogic extends GameLogic
     }
     
     @Override
-    public void stop(boolean dc)
+    public void stop(boolean force)
     {
         if(game.hasEnded()) return;
-        if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
+        if(triggerEvent(new StopEvent(this, force)).isCanceled()) {if(!force)return;}
         game.stop(false);
-        for(Player p : players)
-        {
-            p.setHealth(20);
-            BungeeUtil.getInstance().toLobby(p);
-        }
-        //delay 1 tick to make sure all players are gone and the world can be unloaded
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                map.unload(false);
-            }
-        }.runTaskLater(Practice.Instance, 1);
     }
     
     @Override
@@ -88,12 +74,21 @@ public class FFALogic extends GameLogic
     public void applyData(String s){}
     
     @Override
-    public void removePlayer(Player p)
+    public void removePlayer(Player p, boolean force)
     {
-        if(game.hasEnded()) return;
-        players.remove(p);
-        BungeeUtil.getInstance().toLobby(p);
-        if(players.size() == 1) win(players.first(), true);
+        if(force)
+        {
+            players.remove(p);
+            BungeeUtil.getInstance().toLobby(p);
+            if(players.size() == 1) win(players.first(), true);
+        }
+        else
+        {
+            if(game.hasEnded()) return;
+            players.remove(p);
+            BungeeUtil.getInstance().toLobby(p);
+            if(players.size() == 1) win(players.first(), true);
+        }
     }
     
     public String getData() {return "{}";}
@@ -106,11 +101,11 @@ public class FFALogic extends GameLogic
         }
     }
     
-    public void win(Player p, boolean dc)
+    public void win(Player p, boolean force)
     {
         if(game.hasEnded()) return;
-        if(triggerEvent(new WinEvent(this, p)).isCanceled() && !dc) return;
-        stop(dc);
+        if(triggerEvent(new WinEvent(this, p, force)).isCanceled() && !force) return;
+        stop(force);
     }
     
     @Override

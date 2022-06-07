@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Gamemode;
 
+import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.KitOrderUpdateComponent;
@@ -7,6 +8,7 @@ import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Map.Components.SpectatorSpawnComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -16,6 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import me.TrixxTraxx.Linq.List;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Game
 {
@@ -51,7 +54,7 @@ public class Game
                 p.setMaximumNoDamageTicks(20);
                 
                 Game currentGame = getGame(p);
-                if(currentGame != null) currentGame.getLogic().removePlayer(p);
+                if(currentGame != null) currentGame.getLogic().removePlayer(p, true);
             }
             games.add(this);
             logic.start(this, players, m);
@@ -104,7 +107,37 @@ public class Game
         if(ended) return;
         games.remove(this);
         ended = true;
-        if (stopLogic) logic.stop(true);
+    
+        new BukkitRunnable()
+        {
+            @Override
+            public void run()
+            {
+                
+                for(Player p: logic.getPlayers())
+                {
+                    if(p.getWorld() == logic.getWorld())
+                    {
+                        p.setHealth(20);
+                        BungeeUtil.getInstance().toLobby(p);
+                    }
+                }
+    
+                //delay 1 tick to make sure all players are gone and the world can be unloaded
+                new BukkitRunnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        logic.getMap().unload(false);
+                    }
+                }.runTaskLater(Practice.Instance, 2);
+                
+                
+            }
+        }.runTaskLater(Practice.Instance, 60);
+    
+        if(stopLogic) logic.stop(true);
     }
 
     public static Game getGame(Player p)

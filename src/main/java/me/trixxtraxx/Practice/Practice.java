@@ -24,6 +24,7 @@ import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.InvisPracticeCom
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.PointComponentFFA;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFALogic;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFASpawnComponent;
+import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.GameLogicListener;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.*;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.Settings.SettingsComponent;
@@ -209,6 +210,7 @@ public final class Practice extends JavaPlugin
                 conf.getString("SQL.Username"),
                 conf.getString("SQL.Password")
         );
+        SQLUtil.Instance.deleteOldViews();
         
         SlimePlugin slime = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
 
@@ -1075,7 +1077,10 @@ public final class Practice extends JavaPlugin
             if(!(s instanceof Player)) return false;
             Game g = Game.getGame((Player) s);
             if(g == null) BungeeUtil.getInstance().toLobby((Player) s);
-            else g.getLogic().removePlayer((Player) s);
+            else {
+                GameLogic logic = g.getLogic();
+                logic.removePlayer((Player) s, true);
+            }
         }
         else if(label.equalsIgnoreCase("kit")){
             if(!(s instanceof Player)) return false;

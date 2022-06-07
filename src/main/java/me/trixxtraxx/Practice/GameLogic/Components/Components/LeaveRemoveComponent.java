@@ -17,12 +17,12 @@ public class LeaveRemoveComponent extends GameComponent
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onLeave(PlayerQuitEvent event)
     {
-        logic.removePlayer(event.getPlayer());
+        logic.removePlayer(event.getPlayer(), true);
     }
     
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onLeave(PlayerChangedWorldEvent event)
     {
-        logic.removePlayer(event.getPlayer());
+        logic.removePlayer(event.getPlayer(), true);
     }
 }

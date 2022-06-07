@@ -56,7 +56,7 @@ public abstract class GameLogic extends ComponentClass<GameComponent>
     }
 
     public abstract void start(Game gm, List<Player> players, Map m);
-    public abstract void stop(boolean dc);
+    public abstract void stop(boolean force);
     public abstract void toSpawn(Player p);
     public abstract World getWorld();
     public abstract List<Player> getPlayers();
@@ -64,5 +64,5 @@ public abstract class GameLogic extends ComponentClass<GameComponent>
     public abstract Map getMap();
     public abstract void applyData(String s);
     public abstract String getData();
-    public abstract void removePlayer(Player p);
+    public abstract void removePlayer(Player p, boolean force);
 }

@@ -60,14 +60,18 @@ public class PointComponent extends GameComponent implements IStatComponent
 
         if (cur < goal)
         {
-            e.setCanceled(true);
+            if(!e.isForced())
+            {
+                e.setCanceled(true);
+            }
+    
             logic.triggerEvent(new ResetEvent(logic, false));
             new BukkitRunnable()
             {
                 @Override
                 public void run()
                 {
-                    for (Player p : logic.getPlayers()) logic.toSpawn(p);
+                    for(Player p: logic.getPlayers()) logic.toSpawn(p);
                 }
             }.runTaskLater(Practice.Instance, 0);
         }
@@ -101,7 +105,7 @@ public class PointComponent extends GameComponent implements IStatComponent
             if(this.p1 >= goal)
             {
                 DuelGameLogic logic = (DuelGameLogic) this.logic;
-                logic.win(logic.getP1());
+                logic.win(logic.getP1(), false);
             }
         }
         if(log.getP2() == p2)  {
@@ -109,7 +113,7 @@ public class PointComponent extends GameComponent implements IStatComponent
             if(this.p2 >= goal)
             {
                 DuelGameLogic logic = (DuelGameLogic) this.logic;
-                logic.win(logic.getP2());
+                logic.win(logic.getP2(), false);
             }
         }
     }

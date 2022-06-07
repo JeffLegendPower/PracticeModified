@@ -7,11 +7,16 @@ import org.bukkit.entity.Player;
 public class WinEvent extends GameEvent
 {
     private Player p;
-    public WinEvent(GameLogic logic, Player p)
+    private boolean force;
+    
+    public WinEvent(GameLogic logic, Player p, boolean force)
     {
         super(logic);
         this.p = p;
+        this.force = force;
     }
 
     public Player getPlayer(){return p;}
+    
+    public boolean isForced(){return force;}
 }
