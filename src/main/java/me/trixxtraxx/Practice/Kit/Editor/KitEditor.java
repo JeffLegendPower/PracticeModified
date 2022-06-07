@@ -71,6 +71,7 @@ public class KitEditor
         p.getInventory().clear();
         p.getInventory().setArmorContents(null);
         p.setGameMode(GameMode.SURVIVAL);
+        p.getActivePotionEffects().forEach(x -> p.removePotionEffect(x.getType()));
         p.sendMessage("§9You are no longer in the kit editing area!");
         p.sendMessage("§bYour kit has been saved!");
         Lobby l = Lobby.get(Bukkit.getWorld("world"));

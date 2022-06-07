@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.Bungee;
 import com.google.gson.Gson;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.IMessageReceived;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.InventoryView.InventoryView;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.Bukkit;
 

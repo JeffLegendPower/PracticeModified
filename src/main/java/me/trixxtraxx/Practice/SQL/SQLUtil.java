@@ -1,11 +1,14 @@
 package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.trixxtraxx.Practice.Bungee.GameAddAction;
 import me.trixxtraxx.Practice.Bungee.GlobalStatUpdateAction;
 import me.trixxtraxx.Practice.Bungee.StatUpdatePacket;
 import me.trixxtraxx.Practice.Component;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.InventoryView.InventoryView;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.InventoryView.JsonItemStack;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
@@ -16,6 +19,7 @@ import me.trixxtraxx.Practice.Map.ISpawnComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.Practice;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -797,5 +801,59 @@ public class SQLUtil
         {
             e.printStackTrace();
         }
+    }
+    
+    public int cacheView(InventoryView view){
+        try{
+            PreparedStatement ps = con.prepareStatement("INSERT INTO `InventoryView` (Slots, Items) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, new Gson().toJson( view.slots));
+            ps.setString(2, view.getItems());
+            
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
+            int id = rs.getInt(1);
+            view.id = id;
+            return id;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public void deleteOldViews(){
+        try{
+            PreparedStatement ps = con.prepareStatement("DELETE FROM `InventoryView` WHERE `created_at` < ?");
+            ps.setLong(1, System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7));
+            ps.executeUpdate();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public InventoryView getView(int id){
+        try{
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM `InventoryView` WHERE `InventoryView_ID` = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                InventoryView view = new InventoryView();
+                view.id = id;
+                view.slots = new Gson().fromJson(rs.getString("Slots"), new List<Integer>().getClass());
+                List<String> items = new Gson().fromJson(rs.getString("Items"), new List<String>().getClass());
+                view.items = new List<>();
+                for(String item: items){
+                    view.items.add(JsonItemStack.fromJson(item));
+                }
+                Practice.log(4, "Items: " + view.items.size());
+                return view;
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

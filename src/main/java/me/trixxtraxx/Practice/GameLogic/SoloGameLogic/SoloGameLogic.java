@@ -56,6 +56,7 @@ public class SoloGameLogic extends GameLogic
     {
         if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
         game.stop(false);
+        player.setHealth(20);
         BungeeUtil.getInstance().toLobby(player);
         map.unload(false);
     }

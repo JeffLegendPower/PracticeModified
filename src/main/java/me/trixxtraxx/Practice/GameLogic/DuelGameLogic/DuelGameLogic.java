@@ -54,6 +54,7 @@ public class DuelGameLogic extends GameLogic
         Practice.log(3, "Stopping duel game");
         for (Player p:getPlayers())
         {
+            p.setHealth(20);
             BungeeUtil.getInstance().toLobby(p);
         }
         game.stop(false);

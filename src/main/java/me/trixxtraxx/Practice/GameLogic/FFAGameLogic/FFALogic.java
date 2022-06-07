@@ -55,6 +55,7 @@ public class FFALogic extends GameLogic
         game.stop(false);
         for(Player p : players)
         {
+            p.setHealth(20);
             BungeeUtil.getInstance().toLobby(p);
         }
         //delay 1 tick to make sure all players are gone and the world can be unloaded

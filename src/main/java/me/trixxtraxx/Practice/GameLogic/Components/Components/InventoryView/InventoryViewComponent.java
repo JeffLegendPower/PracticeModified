@@ -11,6 +11,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.Components.WinMessageComponen
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
+import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.TriggerEvent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -19,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -33,6 +35,7 @@ public class InventoryViewComponent extends GameComponent
     public void onGameEnd(WinEvent event)
     {
         logic.broadcast("§9Inventories:");
+        List<InventoryView> cache = new List<>();
         for(Player player : logic.getPlayers())
         {
             PlayerInventory inv = player.getInventory();
@@ -69,29 +72,38 @@ public class InventoryViewComponent extends GameComponent
                 Slots.add(39);
             }
             Items.add(new BetterItem(Material.REDSTONE, (int) player.getHealth()).setDisplayName("§9Health: §b" + player.getHealth()));
-            Slots.add(44);
-            int potions = new List<>(inv.getContents()).findAll(x -> x.getType() == Material.POTION).size();
+            Slots.add(43);
+            int potions = new List<>(inv.getContents()).findAll(x -> x != null && x.getType() == Material.POTION).size();
             Items.add(new BetterItem(Material.POTION, potions).setDisplayName("§9Potions: §b" + potions));
-            Slots.add(45);
+            Slots.add(44);
             
             InventoryView view = new InventoryView();
-            view.ItemStacks = BetterItem.serialize((ItemStack[]) Items.toArray());
-            view.Slots = Slots;
-            view.uuid = UUID.randomUUID().toString();
-    
-            MessageProvider.SendMessage("Practice_InventoryView_Add", new Gson().toJson(view));
-    
-            Practice.log(4, "Inventory of " + player.getName() + ": " + view.uuid);
             
-            for(Player send : logic.getPlayers())
-            {
-                TextComponent component = new TextComponent(TextComponent.fromLegacyText("§b" + player.getName() + "§f Click to View his Inventory"));
-                // Add a click event to the component.
-                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/InventoryView " + view.uuid ));
+            view.items = Items;
+            view.player = player.getName();
+            view.slots = Slots;
     
-                // Send it!
-                send.spigot().sendMessage(component);
-            }
+            cache.add(view);
+        }
+    
+        for(InventoryView view : cache)
+        {
+            new BukkitRunnable(){
+                @Override
+                public void run()
+                {
+                    SQLUtil.Instance.cacheView(view);
+                    for(Player send : logic.getPlayers())
+                    {
+                        TextComponent component = new TextComponent(TextComponent.fromLegacyText("§b" + view.player + "§f Click to View his Inventory"));
+                        // Add a click event to the component.
+                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/InventoryView " + view.id ));
+        
+                        // Send it!
+                        send.spigot().sendMessage(component);
+                    }
+                }
+            }.runTaskAsynchronously(Practice.Instance);
         }
     }
 }

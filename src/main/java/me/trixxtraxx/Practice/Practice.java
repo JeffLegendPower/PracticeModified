@@ -12,6 +12,7 @@ import me.trixxtraxx.Practice.Bungee.InventoryViewListener;
 import me.trixxtraxx.Practice.Bungee.Queue.QueueListener;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.InventoryView.InventoryView;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.StatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.WinStatComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Bots.BotGameLogic;
@@ -261,7 +262,7 @@ public final class Practice extends JavaPlugin
         RegisterMessages.registerReciever(new PlayerReceiver());
         RegisterMessages.registerReciever(new QueueListener());
         RegisterMessages.registerReciever(new InventoryViewListener());
-    
+        
         EnchantmentCategory.init();
     }
 
@@ -483,6 +484,7 @@ public final class Practice extends JavaPlugin
                 new WinStatComponent(g.getLogic());
     
                 new NoHungerComponent(g.getLogic());
+                
                 new NoItemDropComponent(g.getLogic());
                 
                 new InvisPracticeComponent(g.getLogic(), 3, 60, "InvisPractice_Attacker");
@@ -1114,14 +1116,21 @@ public final class Practice extends JavaPlugin
             }
             return true;
         }
-        else if(label.equalsIgnoreCase("InventoryView")){
-            if(s instanceof Player){
+        else if(label.equalsIgnoreCase("InventoryView"))
+        {
+            if(s instanceof Player)
+            {
+                log(4, s.getName() + " is accessing the inventory view!");
                 PracticePlayer pp = PracticePlayer.getPlayer((Player) s);
                 if(pp == null) ((Player)s).kickPlayer("§cNot found in cache");
-                else{
-                    String command = "/InventoryView";
-                    for(String arg : args) command += " " + arg;
-                    pp.executeBungeeCommand(command);
+                else
+                {
+                    InventoryView view = SQLUtil.Instance.getView(Integer.parseInt(args[0]));
+                    if(view == null) s.sendMessage("§cNo View Found (Timed out)");
+                    else
+                    {
+                        view.open((Player) s);
+                    }
                 }
             }
         }
