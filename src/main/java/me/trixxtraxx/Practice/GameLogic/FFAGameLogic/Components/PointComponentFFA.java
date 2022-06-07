@@ -16,10 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class PointComponentFFA extends GameComponent implements IStatComponent
 {
@@ -92,9 +89,17 @@ public class PointComponentFFA extends GameComponent implements IStatComponent
         if(logic.getPlayers().size() > initialPlayers) initialPlayers = logic.getPlayers().size();
         String newS = s;
         int index = 1;
+        
+        List<Map.Entry<Player, Integer>> entries = new List<>();
         for(Map.Entry<Player, Integer> entry : pointMap.entrySet())
         {
-            
+            entries.add(entry);
+        }
+        
+        entries.sort((o1, o2) -> o2.getValue() - o1.getValue());
+        
+        for(Map.Entry<Player, Integer> entry : entries)
+        {
             newS = newS
                     .replace("{Points" + index + "}", String.valueOf(entry.getValue()))
                     .replace("{Points" + index + "Player}", entry.getKey().getName());

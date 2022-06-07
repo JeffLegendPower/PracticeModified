@@ -47,7 +47,7 @@ public class ScoreboardComponent extends GameComponent
         {
             FastBoard board = new FastBoard(p);
             String startTitle = e.getlogic().applyPlaceholders(p,title);
-            List<String> startLines = e.getlogic().applyPlaceholders(p, new List<>(lines.split("\n")));
+            List<String> startLines = new List<>(e.getlogic().applyPlaceholders(p,lines).split("\n"));
             Practice.log(4, "Scoreboard: " + startTitle + "\n" + startLines);
             board.updateTitle(startTitle);
             board.updateLines(startLines);
@@ -61,7 +61,7 @@ public class ScoreboardComponent extends GameComponent
                 for (Map.Entry<Player, FastBoard> entry:boards.entrySet())
                 {
                     String updateTitle = e.getlogic().applyPlaceholders(entry.getKey(),title);
-                    List<String> updateLines = e.getlogic().applyPlaceholders(entry.getKey(),new List<>(lines.split("\n")));
+                    List<String> updateLines = new List<>(e.getlogic().applyPlaceholders(entry.getKey(),lines).split("\n"));
                     entry.getValue().updateTitle(updateTitle);
                     entry.getValue().updateLines(updateLines);
                 }

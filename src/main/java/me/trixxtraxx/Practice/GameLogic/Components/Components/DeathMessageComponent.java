@@ -25,7 +25,7 @@ public class DeathMessageComponent extends GameComponent
     @TriggerEvent
     public void onDeath(PlayerDeathEvent event)
     {
-        logic.broadcast(logic.applyPlaceholders(event.getEntity(),
+        logic.broadcast(logic.applyPlaceholders(event.getEntity().getKiller(),
                 deathMessage
                 .replace("{player}", event.getEntity().getName())
                 .replace("{killer}", event.getEntity().getKiller().getName()))

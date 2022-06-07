@@ -20,6 +20,7 @@ import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.OpponentPlaceho
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.Components.PointComponent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelSpawnComponent;
+import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.GenerateLinesPlaceholder;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.InvisPracticeComponent;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components.PointComponentFFA;
 import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFALogic;
@@ -885,32 +886,36 @@ public final class Practice extends JavaPlugin
                 List<Player> players = new List<>();
                 players.add((Player) s);
                 //add Bukkit.getPlayer() for each argument after 2
-                for(int i = 2; i < args.length; i++)
+                for(int i = 3; i < args.length; i++)
                 {
                     Player pl = Bukkit.getPlayer(args[i]);
                     if(pl != null) players.add(pl);
                 }
-                FFASpawnComponent spawn = new FFASpawnComponent(
-                        new List(
-                                new ConfigLocation(-14.5, 95, 2.5, 20, 0),
-                                new ConfigLocation(-9.5, 87, -0.5, 16, 0),
-                                new ConfigLocation(-18.5, 80, 10.5, 0, -30),
-                                new ConfigLocation(-14.5, 78, -0.5, 10, -15),
-                                new ConfigLocation(-23.5,87,10,-124,0),
-                                new ConfigLocation(-14.5, 87, 4.5, 80, 0),
-                                new ConfigLocation(-25.5, 93, 28.5, -90, 0),
-                                new ConfigLocation(-6.5,87,25.5,140,0)
-                        )
-                );
-                /*FFASpawnComponent spawn = new FFASpawnComponent(
-                        new List(
-                                new ConfigLocation(-11.5,81,-43.5,22,-40),
-                                new ConfigLocation(-26.5,89,-49.5,-60,10),
-                                new ConfigLocation(-9.5, 87, -56.5, 16, 0),
-                                new ConfigLocation(-22.5,87,-33.5,-150,0)
-                        )
-                );*/
-                Map m = new Map(-1, "CityChamber", "CityChamber", spawn);
+    
+                FFASpawnComponent spawn = null;
+                if(args[2].equalsIgnoreCase("8"))
+                {
+                    spawn = new FFASpawnComponent(new List(
+                            new ConfigLocation(-14.5, 95, 2.5, 20, 0),
+                            new ConfigLocation(-9.5, 87, -0.5, 16, 0),
+                            new ConfigLocation(-18.5, 80, 10.5, 0, -30),
+                            new ConfigLocation(-14.5, 78, -0.5, 10, -15),
+                            new ConfigLocation(-23.5, 87, 10, -124, 0),
+                            new ConfigLocation(-14.5, 87, 4.5, 80, 0),
+                            new ConfigLocation(-25.5, 93, 28.5, -90, 0),
+                            new ConfigLocation(-6.5, 87, 25.5, 140, 0)
+                    ));
+                }
+                else
+                {
+                    spawn = new FFASpawnComponent(new List(
+                            new ConfigLocation(-11.5, 81, -43.5, 22, -40),
+                            new ConfigLocation(-26.5, 89, -49.5, -60, 10),
+                            new ConfigLocation(-9.5, 87, -56.5, 16, 0),
+                            new ConfigLocation(-22.5, 87, -33.5, -150, 0)
+                    ));
+                }
+                Map m = new Map(-1, "CityChamber" + args[2], "CityChamber", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("OneInAChamber", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
@@ -923,11 +928,15 @@ public final class Practice extends JavaPlugin
                 new DieToSpawnComponent(g.getLogic());
                 new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
+                
+                new GenerateLinesPlaceholder(g.getLogic(), "{PointLines}", "§9{line}. {Points{line}Player}§b {Points{line}}");
+                
                 new PointComponentFFA(g.getLogic(), 20);
                 new KillArrowComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
                 new LeaveRemoveComponent(g.getLogic());
-                new SpectatorRespawnComponent(g.getLogic(), 100,
+                
+                new SpectatorRespawnComponent(g.getLogic(), 60,
                                               ChatColor.RED + "Respawning!",
                                               ChatColor.WHITE + "You will respawn in {Timer}s!",
                                               ChatColor.GREEN + "Respawned!",
@@ -945,17 +954,12 @@ public final class Practice extends JavaPlugin
                                                 "\n" +
                                                 "§9-------------------------------------");
                 
+                
+                
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "One in a Chamber",
                                         "" + "\n" +
-                                                "§91. {Points1Player}§b {Points1}\n" +
-                                                "§92. {Points2Player}§b {Points2}\n" +
-                                                //"§93. {Points3Player}§b {Points3}\n" +
-                                                //"§94. {Points4Player}§b {Points4}\n" +
-                                                //"§95. {Points5Player}§b {Points5}\n" +
-                                                //"§96. {Points6Player}§b {Points6}\n" +
-                                                //"§97. {Points7Player}§b {Points7}\n" +
-                                                //"§98. {Points8Player}§b {Points8}\n" +
+                                                "{PointLines}" +
                                                 "\n" +
                                                 "You:\n" +
                                                 "§9{Place}. {Name}§b {Points}" +
