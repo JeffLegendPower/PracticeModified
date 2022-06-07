@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Map.Components;
 
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.TriggerEvent;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class ElevatorComponent extends MapComponent
 {
+    @Config
     private Material mat;
     
     public ElevatorComponent(Map map, Material mat)
