@@ -16,11 +16,11 @@ import java.util.HashMap;
 public class AutoScaleComponent extends MapComponent
 {
     @Config
-    private double xOffset;
+    public double xOffset;
     @Config
-    private double yOffset;
+    public double yOffset;
     @Config
-    private double zOffset;
+    public double zOffset;
     @Config
     private List<Region> regions;
     private HashMap<Region, List<BlockStorage>> blocks;

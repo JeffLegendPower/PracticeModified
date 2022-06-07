@@ -4,7 +4,9 @@ import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.KitOrderUpdateComponent;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoscaleLogic;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Map.Components.AutoScaleComponent;
 import me.trixxtraxx.Practice.Map.Components.SpectatorSpawnComponent;
 import me.trixxtraxx.Practice.Map.Map;
 import me.trixxtraxx.Practice.Map.MapComponent;
@@ -32,6 +34,7 @@ public class Game
     private boolean ranked = false;
     private boolean challenge = false;
     private long startTime;
+    private int endDelay = 60;
 
     public Game(GameLogic log, List<Player> players, Kit k, Map m, boolean ranked, boolean challenge)
     {
@@ -101,6 +104,8 @@ public class Game
     public boolean isChallenge() {return challenge;}
     
     public long getStartTime() {return startTime;}
+    public int getEndDelay() {return endDelay;}
+    public void setEndDelay(int endDelay) {this.endDelay = endDelay;}
 
     public void stop(boolean stopLogic)
     {
@@ -129,13 +134,27 @@ public class Game
                     @Override
                     public void run()
                     {
-                        logic.getMap().unload(false);
+                        Map map = logic.getMap();
+                        if(logic instanceof SoloAutoscaleLogic)
+                        {
+                            SoloAutoscaleLogic sl = (SoloAutoscaleLogic)logic;
+                            List<Game> games = Game.getGames().findAll(x -> x.getLogic().getMap() != null && x.getLogic().getWorld() == sl.getWorld());
+                            if(games.size() == 0) map.unload(false);
+                            else
+                            {
+                                ((AutoScaleComponent)map.getComponents(AutoScaleComponent.class).get(0)).removeScale(sl.getScale());
+                            }
+                        }
+                        else
+                        {
+                            map.unload(false);
+                        }
                     }
                 }.runTaskLater(Practice.Instance, 2);
                 
                 
             }
-        }.runTaskLater(Practice.Instance, 60);
+        }.runTaskLater(Practice.Instance, endDelay);
     
         if(stopLogic) logic.stop(true);
     }

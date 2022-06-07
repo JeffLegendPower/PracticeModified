@@ -12,6 +12,7 @@ import me.trixxtraxx.Practice.Map.MapComponent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import me.trixxtraxx.Practice.Utils.Region;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -28,9 +29,13 @@ public class SoloAutoscaleLogic extends SoloGameLogic
         //find the game that is currently running on this gamemode and get its map
         game = gm;
         player = players.get(0);
-        GameLogic log = this;
-        List<Game> g = Game.getGames().findAll(x -> x.getLogic().getMap() != null && x.getLogic().getMap().getLoad().equalsIgnoreCase(m.getLoad()));
         map = m;
+        gm.setEndDelay(0);
+        GameLogic log = this;
+        
+        List<Game> g = Game.getGames().findAll(x ->x != gm && x.getLogic().getMap() != null && x.getLogic().getMap().getLoad().equalsIgnoreCase(m.getLoad()));
+        
+        //find the first empty spot
         List<Integer> currentScales = new List<>();
         g.forEach(x -> currentScales.add(((SoloAutoscaleLogic)x.getLogic()).getScale()));
         for(int i = 0; true; i++)
@@ -39,6 +44,7 @@ public class SoloAutoscaleLogic extends SoloGameLogic
             scale = i;
             break;
         }
+        
         if(g.size() != 0)
         {
             Practice.log(3, "Found " + g.size() + " games on this map, autoscaling...");
@@ -55,43 +61,47 @@ public class SoloAutoscaleLogic extends SoloGameLogic
                 public void run()
                 {
                     AutoScaleComponent comp = (AutoScaleComponent) map.getComponents(AutoScaleComponent.class).get(0);
-                    for(MapComponent mc : map.getComponents())
+                    if(comp != null)
                     {
-                        for(Field f : mc.getClass().getDeclaredFields())
+                        for(MapComponent mc: map.getComponents())
                         {
-                            if(f.getType().equals(ConfigLocation.class))
+                            for(Field f: mc.getClass().getDeclaredFields())
                             {
-                                try
+                                if(f.getType().equals(ConfigLocation.class))
                                 {
-                                    f.setAccessible(true);
-                                    ConfigLocation loc = (ConfigLocation) f.get(mc);
-                                    ConfigLocation newLoc = comp.convertLoc(loc, scale);
-                                    f.set(mc, newLoc);
+                                    try
+                                    {
+                                        f.setAccessible(true);
+                                        ConfigLocation loc = (ConfigLocation) f.get(mc);
+                                        ConfigLocation newLoc = comp.convertLoc(loc, scale);
+                                        f.set(mc, newLoc);
+                                    }
+                                    catch(IllegalAccessException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
                                 }
-                                catch(IllegalAccessException e)
+                                else if(f.getType().equals(Region.class))
                                 {
-                                    e.printStackTrace();
-                                }
-                            }
-                            else if(f.getType().equals(Region.class)){
-                                try
-                                {
-                                    f.setAccessible(true);
-                                    Region r = (Region) f.get(mc);
-                                    Region newR = comp.convertLoc(r, scale);
-                                    f.set(mc, newR);
-                                }
-                                catch(IllegalAccessException e)
-                                {
-                                    e.printStackTrace();
+                                    try
+                                    {
+                                        f.setAccessible(true);
+                                        Region r = (Region) f.get(mc);
+                                        Region newR = comp.convertLoc(r, scale);
+                                        f.set(mc, newR);
+                                    }
+                                    catch(IllegalAccessException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
-                    }
     
-                    AutoScaleComponent scale = ((AutoScaleComponent)g.get(0).getLogic().getMap().getComponents(AutoScaleComponent.class).get(0));
-                    comp.setStorage(scale);
-                    scale.cloneWorld(getScale(), map.getWorld());
+                        AutoScaleComponent scale = ((AutoScaleComponent) g.get(0).getLogic().getMap().getComponents(AutoScaleComponent.class).get(0));
+                        comp.setStorage(scale);
+                        scale.cloneWorld(getScale(), map.getWorld());
+                    }
                     
                     toSpawn(player);
                     triggerEvent(new StartEvent(log));
@@ -121,17 +131,15 @@ public class SoloAutoscaleLogic extends SoloGameLogic
         return scale;
     }
     
+    public Location getSpawn()
+    {
+        return map.getSpawn().getSpawn(this, player);
+    }
+    
     @Override
     public void stop(boolean dc)
     {
         if(triggerEvent(new StopEvent(this, dc)).isCanceled()) {if(!dc)return;}
         game.stop(false);
-        BungeeUtil.getInstance().toLobby(player);
-        List<Game> games = Game.getGames().findAll(x -> x.getLogic().getMap() != null && x.getLogic().getWorld() == getWorld());
-        if(games.size() == 0) map.unload(false);
-        else
-        {
-            ((AutoScaleComponent)map.getComponents(AutoScaleComponent.class).get(0)).removeScale(getScale());
-        }
     }
 }

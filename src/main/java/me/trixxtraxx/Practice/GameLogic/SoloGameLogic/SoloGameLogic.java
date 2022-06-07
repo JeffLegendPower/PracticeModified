@@ -38,6 +38,7 @@ public class SoloGameLogic extends GameLogic
         map = m;
         game = gm;
         player = players.get(0);
+        gm.setEndDelay(0);
 
         loadWorld();
         GameLogic log = this;

@@ -55,11 +55,6 @@ public class BotGameLogic extends DuelGameLogic
         Practice.log(3, "Stopping duel game");
         game.stop(false);
         bot.destroy();
-        for (Player p:getPlayers())
-        {
-            BungeeUtil.getInstance().toLobby(p);
-        }
-        map.unload(false);
     }
     
     @Override
