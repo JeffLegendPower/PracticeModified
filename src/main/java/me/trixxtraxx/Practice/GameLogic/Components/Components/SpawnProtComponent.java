@@ -1,6 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
 import com.google.gson.Gson;
+import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.ToSpawnEvent;
 import me.trixxtraxx.Practice.GameEvents.GameEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
@@ -28,22 +29,34 @@ public class SpawnProtComponent extends GameComponent
     protected String remaining;
     @Config
     protected String starting;
+    
+    @Config
+    protected boolean onlyOnStart = false;
 
     protected HashMap<Player, Location> prot = new HashMap<>();
     protected List<Player> tped = new List<>();
 
-    public SpawnProtComponent(GameLogic logic, int spawnProt, String remaining, String starting)
+    private boolean started = false;
+    
+    public SpawnProtComponent(GameLogic logic, int spawnProt, String remaining, String starting, boolean onlyOnStart)
     {
         super(logic);
         this.spawnProt = spawnProt;
         this.remaining = remaining;
         this.starting = starting;
+        this.onlyOnStart = onlyOnStart;
     }
     public SpawnProtComponent(GameLogic logic){super(logic);}
+    
+    @TriggerEvent
+    public void onStart(StartEvent event){
+        started = true;
+    }
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onEvent(ToSpawnEvent e)
     {
+        if(onlyOnStart && started) return;
         prot.put(e.getPlayer(), e.getLoc());
         new BukkitRunnable(){
 

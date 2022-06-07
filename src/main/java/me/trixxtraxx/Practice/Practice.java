@@ -574,7 +574,7 @@ public final class Practice extends JavaPlugin
                 new NoItemDropComponent(g.getLogic());
                 new SpawnProtComponent(g.getLogic(), 40,
                                        ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
-                                       ChatColor.BLUE + "The Game started, go fight!"
+                                       ChatColor.BLUE + "The Game started, go fight!", false
                 );
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "Top Fight",
@@ -855,7 +855,7 @@ public final class Practice extends JavaPlugin
                 new StartInventoryComponent(g.getLogic());
                 new SpawnProtComponent(g.getLogic(), 100,
                         ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
-                        ChatColor.BLUE + "The Game started, go fight!"
+                        ChatColor.BLUE + "The Game started, go fight!", false
                 );
                 new ScoreboardComponent(g.getLogic(),
                         ChatColor.AQUA + "Sumo",
@@ -929,7 +929,7 @@ public final class Practice extends JavaPlugin
                 new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
                 
-                new GenerateLinesPlaceholder(g.getLogic(), "{PointLines}", "§9{line}. {Points{line}Player}§b {Points{line}}");
+                new GenerateLinesPlaceholder(g.getLogic(), "{PointLines}", "§7#{line} §b{Points{line}Player}§f {Points{line}}");
                 
                 new PointComponentFFA(g.getLogic(), 20);
                 new KillArrowComponent(g.getLogic());
@@ -947,7 +947,7 @@ public final class Practice extends JavaPlugin
                                         "§9-------------------------------------\n" +
                                                 "\n" +
                                                 "      §b{Winner}§9 won the Game!\n\n" +
-                                                "          &bTop Killers:\n" +
+                                                "          §bTop Killers:\n" +
                                                 "§91. {Points1Player}§b {Points1}\n" +
                                                 "§92. {Points2Player}§b {Points2}\n" +
                                                 "§93. {Points3Player}§b {Points3}\n" +
@@ -958,13 +958,13 @@ public final class Practice extends JavaPlugin
                 
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "One in a Chamber",
-                                        "" + "\n" +
-                                                "{PointLines}" +
-                                                "\n" +
-                                                "You:\n" +
-                                                "§9{Place}. {Name}§b {Points}" +
-                                                "" + "\n" +
-                                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                                        "\n" +
+                                        "{PointLines}" +
+                                        "\n" +
+                                        "§9You:\n" +
+                                        "§7#{Place} §b{Name}§f {Points}\n" +
+                                        "\n" +
+                                        ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
                 
                 new DeathMessageComponent(g.getLogic(), "§b{player}§9 was killed by §b{killer} §c[{Points}]");
