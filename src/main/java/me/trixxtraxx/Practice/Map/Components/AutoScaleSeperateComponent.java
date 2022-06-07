@@ -1,19 +1,22 @@
-package me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components;
+package me.trixxtraxx.Practice.Map.Components;
 
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.SoloAutoscaleLogic;
 import me.trixxtraxx.Practice.Map.Components.AutoScaleComponent;
+import me.trixxtraxx.Practice.Map.Map;
+import me.trixxtraxx.Practice.Map.MapComponent;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import me.trixxtraxx.Practice.Utils.ConfigLocation;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
-public class AutoScaleSeperateComponent extends GameComponent
+public class AutoScaleSeperateComponent extends MapComponent
 {
-    private SoloAutoscaleLogic log;
+    private SoloAutoscaleLogic logic;
     private AutoScaleComponent scale;
     private double x;
     private double y;
@@ -27,19 +30,21 @@ public class AutoScaleSeperateComponent extends GameComponent
     private double y2;
     private double z2;
     
-    public AutoScaleSeperateComponent(GameLogic logic)
+    public AutoScaleSeperateComponent(Map map)
     {
-        super(logic);
+        super(map);
     }
     
     @TriggerEvent
     public void onStart(StartEvent e)
     {
-        log = (SoloAutoscaleLogic) logic;
+        logic = (SoloAutoscaleLogic) e.getlogic();
         
-        scale = (AutoScaleComponent) log.getMap().getComponents(AutoScaleComponent.class).get(0);
+        scale = (AutoScaleComponent) map.getComponents(AutoScaleComponent.class).get(0);
     
-        Location mySpawn = log.getSpawn();
+        Practice.log(4, "AutoScaleSeperateComponent: " + scale.xOffset + " " + scale.yOffset + " " + scale.zOffset);
+        
+        Location mySpawn = map.getSpawn().getSpawn(e.getlogic(), e.getlogic().getPlayers().first());
         
         x = mySpawn.getX();
         y = mySpawn.getY();
@@ -51,7 +56,7 @@ public class AutoScaleSeperateComponent extends GameComponent
         y1 = leftSpawn.getY();
         z1 = leftSpawn.getZ();
         
-        Location rightSpawn = new Location(mySpawn.getWorld(), mySpawn.getX() + scale.xOffset, mySpawn.getY() - scale.yOffset, mySpawn.getZ() - scale.zOffset);
+        Location rightSpawn = new Location(mySpawn.getWorld(), mySpawn.getX() + scale.xOffset, mySpawn.getY() + scale.yOffset, mySpawn.getZ() + scale.zOffset);
         
         x2 = rightSpawn.getX();
         y2 = rightSpawn.getY();
@@ -75,7 +80,7 @@ public class AutoScaleSeperateComponent extends GameComponent
         
         if(distance2 < distance || distance1 < distance)
         {
-            log.reset(false);
+            logic.reset(false);
         }
     }
 }
