@@ -119,6 +119,7 @@ public class Lobby
                 p.setMaximumNoDamageTicks(20);
                 p.teleport(spawn.getLocation(Bukkit.getWorld(world)));
                 p.getActivePotionEffects().forEach(x -> p.removePotionEffect(x.getType()));
+                
                 setInv(player);
     
                 FastBoard board = new FastBoard(player.getPlayer());

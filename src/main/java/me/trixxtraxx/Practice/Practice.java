@@ -3,13 +3,11 @@ package me.trixxtraxx.Practice;
 import com.grinderwolf.swm.api.SlimePlugin;
 import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
 import me.TrixxTraxx.Linq.List;
-import me.TrixxTraxx.RestCommunicator.PluginAPI.MessageProvider;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.RegisterMessages;
-import me.TrixxTraxx.StringStorer.SQL.SQLPlayer;
-import me.TrixxTraxx.StringStorer.StringStorer;
 import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.Bungee.InventoryViewListener;
 import me.trixxtraxx.Practice.Bungee.Queue.QueueListener;
+import me.trixxtraxx.Practice.Bungee.SpectateListener;
 import me.trixxtraxx.Practice.ComponentEditor.ComponentEditor;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.*;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.InventoryView.InventoryView;
@@ -43,7 +41,6 @@ import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Editor.Potion.PotionEditor;
 import me.trixxtraxx.Practice.Kit.Kit;
-import me.trixxtraxx.Practice.Lobby.ItemTypes.CustomGamemodeItem;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Lobby.LobbyListener;
 import me.trixxtraxx.Practice.Map.Components.*;
@@ -68,12 +65,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -262,6 +255,7 @@ public final class Practice extends JavaPlugin
         RegisterMessages.registerReciever(new PlayerReceiver());
         RegisterMessages.registerReciever(new QueueListener());
         RegisterMessages.registerReciever(new InventoryViewListener());
+        RegisterMessages.registerReciever(new SpectateListener());
         
         EnchantmentCategory.init();
     }
