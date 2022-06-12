@@ -41,7 +41,7 @@ public class SpectateListener implements IMessageReceived
         SpecRequest req = new SpecRequest(split[0], split[1]);
         
         specs.add(req);
-        refresh(split[1]);
+        refresh(split[0]);
     
         new BukkitRunnable(){
             @Override
@@ -54,13 +54,20 @@ public class SpectateListener implements IMessageReceived
     
     public void refresh(String pl)
     {
+        Practice.log(4, "Refreshing spectate list for " + pl);
         SpecRequest spec = specs.find(x -> x.player.equalsIgnoreCase(pl));
-        if(spec == null) return;
+        if(spec == null) {
+            Practice.log(4, "Refresh failed, no request ( " + specs.size() + " )");
+            return;
+        }
         
         Player p = Bukkit.getPlayer(spec.player);
         Player t = Bukkit.getPlayer(spec.target);
         
-        if(p == null || t == null || !p.isOnline()) return;
+        if(p == null || t == null || !p.isOnline()) {
+            Practice.log(4, "Refresh failed, player or target not online");
+            return;
+        }
         
         Game g = Game.getGame(t);
         

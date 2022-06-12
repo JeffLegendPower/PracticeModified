@@ -22,6 +22,8 @@ import me.TrixxTraxx.Linq.List;
 
 public class DropToBlockinTimer extends TimerComponent implements IStatComponent
 {
+    private boolean lastWasSuccess = false;
+    
     public DropToBlockinTimer(GameLogic logic)
     {
         super(logic);
@@ -64,10 +66,11 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
         start();
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = -1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onReset(ResetEvent e){
         stop();
         if(!e.wasSuccess()) reset();
+        lastWasSuccess = e.wasSuccess();
     }
 
     @Override
@@ -86,8 +89,8 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
     public List<SQLProperty> getSQL()
     {
         List<SQLProperty> prop = new List<>();
-        prop.add(new SQLProperty("BlockinTime", "INT (11) DEFAULT NULL", "null", true));
-        prop.add(new SQLProperty("BestBlockinTime", "DOUBLE DEFAULT NULL", "null", false));
+        prop.add(new SQLProperty("BlockinTime", "INT (11)", "null", true));
+        prop.add(new SQLProperty("BestBlockinTime", "DOUBLE", "null", false));
         return prop;
     }
     
@@ -98,7 +101,8 @@ public class DropToBlockinTimer extends TimerComponent implements IStatComponent
         if(stat.equalsIgnoreCase("BestBlockinTime")){
             double thisTime = ((double)getTicks()) / 20;
             
-            return getWorstOrCurrent(p, logic.getName(),"BestBlockinTime", thisTime);
+            if(lastWasSuccess) return getWorstOrCurrent(p, logic.getName(),"BestBlockinTime", thisTime);
+            else return getWorstOrNull(p, logic.getName(),"BestBlockinTime");
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");
     }

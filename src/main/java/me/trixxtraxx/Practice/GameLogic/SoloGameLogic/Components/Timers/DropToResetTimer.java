@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 
 public class DropToResetTimer extends TimerComponent implements IStatComponent
 {
+    private boolean lastWasSuccess = false;
+    
     
     public DropToResetTimer(GameLogic logic)
     {
@@ -29,11 +31,12 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
         start();
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = -1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onReset(ResetEvent e)
     {
         stop();
         if(!e.wasSuccess()) reset();
+        lastWasSuccess = e.wasSuccess();
     }
     
     @Override
@@ -53,8 +56,8 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
     public List<SQLProperty> getSQL()
     {
         List<SQLProperty> prop = new List<>();
-        prop.add(new SQLProperty("BreakTime", "INT (11) DEFAULT NULL", "null", true));
-        prop.add(new SQLProperty("BestBreakTime", "DOUBLE DEFAULT NULL", "null", false));
+        prop.add(new SQLProperty("BreakTime", "INT (11)", "null", true));
+        prop.add(new SQLProperty("BestBreakTime", "DOUBLE", "null", false));
         return prop;
     }
     
@@ -65,7 +68,8 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
         if(stat.equalsIgnoreCase("BestBreakTime")){
             double thisTime = ((double)getTicks()) / 20;
     
-            return getWorstOrCurrent(p, logic.getName(),"BestBreakTime", thisTime);
+            if(lastWasSuccess) return getWorstOrCurrent(p, logic.getName(),"BestBreakTime", thisTime);
+            else  getWorstOrNull(p, logic.getName(),"BestBreakTime");
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");
     }

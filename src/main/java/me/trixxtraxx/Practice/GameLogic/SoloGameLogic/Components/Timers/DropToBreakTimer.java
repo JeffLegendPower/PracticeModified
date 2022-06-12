@@ -20,6 +20,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class DropToBreakTimer extends TimerComponent implements IStatComponent
 {
+    private boolean lastWasSuccess = false;
+    
     @Config
     private Material mat;
     public DropToBreakTimer(GameLogic logic, Material mat)
@@ -40,10 +42,11 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
         if(e.getBlock().getType() == mat) stop();
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = -1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onReset(ResetEvent e){
         stop();
         if(!e.wasSuccess()) reset();
+        lastWasSuccess = e.wasSuccess();
     }
 
     @Override
@@ -62,8 +65,8 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
     public List<SQLProperty> getSQL()
     {
         List<SQLProperty> prop = new List<>();
-        prop.add(new SQLProperty("Break" + mat + "Time", "INT (11) DEFAULT NULL", "null", true));
-        prop.add(new SQLProperty("BestBreak" + mat + "Time", "DOUBLE DEFAULT NULL", "null", false));
+        prop.add(new SQLProperty("Break" + mat + "Time", "INT (11)", "null", true));
+        prop.add(new SQLProperty("BestBreak" + mat + "Time", "DOUBLE", "null", false));
         return prop;
     }
     
@@ -74,7 +77,8 @@ public class DropToBreakTimer extends TimerComponent implements IStatComponent
         if(stat.equalsIgnoreCase("BestBreak" + mat + "Time")){
             double thisTime = ((double)getTicks()) / 20;
     
-            return getWorstOrCurrent(p, logic.getName(),"BestBreak" + mat + "Time", thisTime);
+            if(lastWasSuccess) return getWorstOrCurrent(p, logic.getName(),"BestBreak" + mat + "Time", thisTime);
+            else return getWorstOrNull(p, logic.getName(),"BestBreak" + mat + "Time");
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");
     }

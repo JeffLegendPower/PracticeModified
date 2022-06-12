@@ -101,6 +101,49 @@ public interface IStatComponent
         else return best;
     }
     
+    public default String getBestOrNull(Player p, String gm, String stat)
+    {
+        Practice.log(4, "Getting Stats:" + gm + " " + stat);
+        PlayerStats stats = PracticePlayer.getPlayer(p).getStats(gm);
+        if(stats == null) return "null";
+        String best = stats.getStat(stat);
+        if(best == null || best.isEmpty()) return "null";
+        double bestd = 0;
+        try
+        {
+            bestd = Double.parseDouble(best);
+        }
+        catch(Exception e)
+        {
+            Practice.log(3, "Error parsing double: " + best);
+            return "null";
+        }
+        Practice.log(4, "Value: " + bestd);
+        return best;
+    }
+    
+    public default String getWorstOrNull(Player p, String gm, String stat)
+    {
+        Practice.log(4, "Getting Stats:" + gm + " " + stat);
+        PlayerStats stats = PracticePlayer.getPlayer(p).getStats(gm);
+        if(stats == null) return "null";
+        String best = stats.getStat(stat);
+        if(best == null || best.isEmpty()) return "null";
+        
+        double bestd = 0;
+        try
+        {
+            bestd = Double.parseDouble(best);
+        }
+        catch(Exception e)
+        {
+            Practice.log(3, "Error parsing double: " + best);
+            return "null";
+        }
+        Practice.log(4, "Val: " + bestd);
+        return best;
+    }
+    
     public default String getBestAndAdd(Player p, String gm, String stat, double add)
     {
         Practice.log(4, "Getting Stats:" + gm + " " + stat);

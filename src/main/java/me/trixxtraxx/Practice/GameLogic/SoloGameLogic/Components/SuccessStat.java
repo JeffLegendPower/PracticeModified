@@ -29,7 +29,7 @@ public class SuccessStat extends GameComponent implements IStatComponent
     {
         if (stat.equals("success"))
         {
-            return String.valueOf(success);
+            return success ? 1 + "" : 0 + "";
         }
         throw new IllegalArgumentException("Stat " + stat + " does not exist");
     }
@@ -40,7 +40,7 @@ public class SuccessStat extends GameComponent implements IStatComponent
         return new List<SQLProperty>()
         {
             {
-                add(new SQLProperty("success", "VARCHAR(5)", "false", true));
+                add(new SQLProperty("success", "tinyint(1)", "0", true));
             }
         };
     }

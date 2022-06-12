@@ -62,7 +62,11 @@ public class KitOrderUpdateComponent extends GameComponent
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onUpdate(InventoryCloseEvent event)
     {
-        if(logic.getGame().getStartTime() + 12000 > System.currentTimeMillis()) return;
+        if(logic.getGame().getStartTime() + 12000 < System.currentTimeMillis() && new List<>(event.getInventory().getContents()).any(x -> x != null && x.getType() == Material.POTION && x.getDurability() > 16348))
+        {
+            Practice.log(4, "Inventory was closed too late so hotbar wont be set!");
+            return;
+        }
         if(cancel) return;
         if(event.getInventory().getType() != InventoryType.CRAFTING) {
             Practice.log(4, "Closed Inv wasnt from a player; type = " + event.getInventory().getType());
@@ -124,9 +128,11 @@ public class KitOrderUpdateComponent extends GameComponent
         //HANDLE MISSING ITEMS
         for(Map.Entry<Integer, Integer> entry : order.entrySet())
         {
-            if(!checkedIndexes.contains(entry.getKey()))
+            int key = (int) Double.parseDouble(String.valueOf(entry.getKey()));
+            if(!checkedIndexes.contains(key))
             {
-                newOrder.put(entry.getKey(), entry.getValue());
+                int value = (int) Double.parseDouble(String.valueOf(entry.getValue()));
+                newOrder.put(key, value);
             }
         }
         

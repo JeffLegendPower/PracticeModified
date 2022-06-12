@@ -107,8 +107,14 @@ public class Lobby
         players.add(player);
         new BukkitRunnable(){
             @Override
-            public void run(){
+            public void run()
+            {
                 Player p = player.getPlayer();
+                if(p == null) {
+                    //had an exception so idk...
+                    players.remove(player);
+                    return;
+                }
                 p.setMaxHealth(20);
                 p.setHealth(20);
                 p.setFoodLevel(20);
