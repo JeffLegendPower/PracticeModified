@@ -24,13 +24,15 @@ public class CustomKbComponent extends GameComponent
     @Config
     public static double global = 1.0;
     @Config
-    public static double horizontal = 1.0;
+    public static double horizontal = 0.8;
     @Config
-    public static double air = 1.0;
+    public static double air = 1.1;
     @Config
-    public static double vertical = 0.5;
+    public static double vertical = 0.35;
     @Config
-    public static double sprint = 0.8;
+    public static double airVertical = 0.35;
+    @Config
+    public static double sprint = 0.6;
     @Config
     public static double walk = 0.8;
     
@@ -113,7 +115,9 @@ public class CustomKbComponent extends GameComponent
             
             
             //add vertical velocity
-            dir = dir.setY(vertical);
+            if(vik.isOnGround()) dir = dir.setY(vertical);
+            else dir = dir.setY(airVertical);
+            
             //multiply by global
             dir = dir.multiply(global);
             

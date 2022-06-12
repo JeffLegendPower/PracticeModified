@@ -63,7 +63,6 @@ public class MapEditingSession
         }
         //tp to lobby
         player.teleport(Bukkit.getWorld("world").getSpawnLocation());
-        removeSession(this);
     }
     public void openComponentGui(){
         List<Component> components = new List<>();

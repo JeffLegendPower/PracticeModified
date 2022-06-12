@@ -69,7 +69,7 @@ public class DropToResetTimer extends TimerComponent implements IStatComponent
             double thisTime = ((double)getTicks()) / 20;
     
             if(lastWasSuccess) return getWorstOrCurrent(p, logic.getName(),"BestBreakTime", thisTime);
-            else  getWorstOrNull(p, logic.getName(),"BestBreakTime");
+            else return getWorstOrNull(p, logic.getName(),"BestBreakTime");
         }
         throw new IllegalArgumentException("Stat " + stat + " not found");
     }
