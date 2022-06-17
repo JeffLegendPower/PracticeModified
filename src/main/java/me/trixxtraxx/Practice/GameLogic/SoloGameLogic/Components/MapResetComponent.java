@@ -109,24 +109,25 @@ public class MapResetComponent extends GameComponent
             store.loc.getBlock().setType(store.mat);
             store.loc.getBlock().setData(store.b);
         }
-        List<BlockFace> faces = new List<>(BlockFace.values());
+        List<BlockFace> faces = new List<>(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
         for(Location loc:liquidBlocks){
             loc.getBlock().setType(Material.AIR);
             List<Location> checked = new List<>();
             List<Location> current = new List<>(loc);
             
-            while(true){
+            while(true)
+            {
                 if(current.isEmpty()) break;
                 List<Location> next = new List<>();
                 for(Location l: current){
                     for(BlockFace face: faces){
                         Location n = l.getBlock().getRelative(face).getLocation();
                         if(checked.contains(n)) continue;
+                        checked.add(n);
                         if(n.getBlock().isLiquid()) next.add(n);
                     }
                 }
                 next.forEach(x -> x.getBlock().setType(Material.AIR));
-                checked.addAll(current);
                 current = next;
             }
         }

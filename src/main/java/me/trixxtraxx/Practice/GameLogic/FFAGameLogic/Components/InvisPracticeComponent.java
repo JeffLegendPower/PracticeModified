@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components;
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameEvents.AllModes.SpectatorRespawnEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
+import me.trixxtraxx.Practice.GameLogic.Components.Components.SpectatorRespawnComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Config;
@@ -17,6 +18,7 @@ import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.TriggerEvent;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -78,6 +80,15 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
     protected void startRound()
     {
         logic.triggerEvent(new ResetEvent(logic, false));
+        List<GameComponent> specComps = logic.getComponents(SpectatorRespawnComponent.class);
+        for(GameComponent comp : specComps)
+        {
+            SpectatorRespawnComponent specComp = (SpectatorRespawnComponent) comp;
+            for(BukkitRunnable run : specComp.respawns){
+                run.cancel();
+            }
+            specComp.respawns.clear();
+        }
         if(currentPlayer == null) currentPlayer = logic.getPlayers().get(0);
         else{
             int index = logic.getPlayers().indexOf(currentPlayer);
@@ -106,6 +117,7 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
         
         for(Player player : logic.getPlayers())
         {
+            player.setGameMode(GameMode.SURVIVAL);
             player.setHealth(player.getMaxHealth());
             //clear potion effects
             player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));

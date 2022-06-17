@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import me.TrixxTraxx.Linq.List;
 
-public class BedLayerComponent extends MapComponent implements ISettingsComponent
+public class BedLayerComponent extends MapComponent
 {
     @Config
     private Material mat;
@@ -110,17 +110,5 @@ public class BedLayerComponent extends MapComponent implements ISettingsComponen
     {
         if(face == BlockFace.SOUTH || face == BlockFace.NORTH) return BlockFace.EAST;
         else return BlockFace.SOUTH;
-    }
-
-    @Override
-    public int getSlot()
-    {
-        return 0;
-    }
-
-    @Override
-    public ItemStack getItem()
-    {
-        return null;
     }
 }

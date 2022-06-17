@@ -33,6 +33,7 @@ public class SpectatorRespawnComponent extends GameComponent
     
     protected boolean started = false;
     protected HashMap<Player, Location> prot = new HashMap<>();
+    public List<BukkitRunnable> respawns = new List<>();
     
     public SpectatorRespawnComponent(GameLogic logic, int spawnProt, String remainingTitle, String remainingSubtitle, String startingTitle, String startingSubtitle, boolean onStart)
     {
@@ -63,7 +64,7 @@ public class SpectatorRespawnComponent extends GameComponent
         prot.put(e.getPlayer(), e.getLoc());
         e.getPlayer().setGameMode(org.bukkit.GameMode.SPECTATOR);
         Practice.log(4, "SpectatorRespawn: " + e.getPlayer().getName() + "; " + this.remainingTitle + ", " + this.remainingSubtitle + ", " + this.startingTitle + ", " + this.startingSubtitle);
-        new BukkitRunnable()
+        BukkitRunnable run = new BukkitRunnable()
         {
             int left = spawnProt;
     
@@ -72,6 +73,7 @@ public class SpectatorRespawnComponent extends GameComponent
             {
                 if(logic.getGame().hasEnded())
                 {
+                    respawns.remove(this);
                     cancel();
                     return;
                 }
@@ -89,6 +91,7 @@ public class SpectatorRespawnComponent extends GameComponent
                     );
                     logic.toSpawn(e.getPlayer());
                     prot.remove(e.getPlayer());
+                    respawns.remove(this);
                     cancel();
                     return;
                 }
@@ -106,7 +109,9 @@ public class SpectatorRespawnComponent extends GameComponent
                 }
                 left--;
             }
-        }.runTaskTimer(Practice.Instance, 0, 1);
+        };
+        run.runTaskTimer(Practice.Instance, 0, 1);
+        respawns.add(run);
     }
     
     @TriggerEvent

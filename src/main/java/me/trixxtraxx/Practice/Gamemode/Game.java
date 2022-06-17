@@ -81,6 +81,7 @@ public class Game
     public GameLogic getLogic() {return logic;}
 
     public Kit getKit() {return kit;}
+    public void setKit(Kit kit) {this.kit = kit;}
     
     public void addSpectator(Player p)
     {

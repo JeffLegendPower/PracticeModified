@@ -289,7 +289,7 @@ public final class Practice extends JavaPlugin
                 g.getLogic().setName("BlockinPractice");
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
-                new SettingsComponent(g.getLogic(),Material.NETHER_STAR,ChatColor.AQUA + "Settings");
+                //new SettingsComponent(g.getLogic(),Material.NETHER_STAR,ChatColor.AQUA + "Settings");
                 new YKillComponent(g.getLogic(), 50);
                 new KillResetComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -486,7 +486,14 @@ public final class Practice extends JavaPlugin
                 
                 new InvisPracticeComponent(g.getLogic(), 3, 60, "InvisPractice_Attacker");
                 new InvisPracticeSpawnProvider(m, new ConfigLocation(0,100,0, 180, 0));
+                
                 new MapResetComponent(g.getLogic());
+                
+                new BridgeEggComponent(g.getLogic(), true);
+                new ExplosionProtectComponent(g.getLogic(), Material.STAINED_CLAY);
+                new ExplosionProtectComponent(g.getLogic(), Material.BED);
+                new EntityResetComponent(g.getLogic());
+                new NoChestOpenComponent(g.getLogic());
     
                 new TNTFbComponent(g.getLogic());
                 new InvisComponent(g.getLogic());

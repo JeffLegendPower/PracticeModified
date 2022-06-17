@@ -1,10 +1,12 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
 import me.TrixxTraxx.Linq.List;
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.MapResetComponent;
 import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Components.ResetHealComponent;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.Location;
@@ -22,12 +24,22 @@ import java.util.HashMap;
 
 public class BridgeEggComponent extends GameComponent
 {
+    @Config
+    public boolean reset = false;
+    
+    public BridgeEggComponent(GameLogic logic, boolean reset)
+    {
+        super(logic);
+        this.reset = reset;
+    }
     public BridgeEggComponent(GameLogic logic)
     {
         super(logic);
     }
     
     private HashMap<Integer, BukkitRunnable> runnables = new HashMap<>();
+    
+    private List<Location> blocks = new List<>();
     
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void OnProjectileThrow(ProjectileLaunchEvent e)
@@ -81,20 +93,7 @@ public class BridgeEggComponent extends GameComponent
                             {
                                 Block block = loc.getBlock();
                                 block.setType(Material.WOOL);
-                                List<GameComponent> components = logic.getComponents(MapResetComponent.class);
-                                for(GameComponent component:components)
-                                {
-                                    if(component instanceof MapResetComponent)
-                                    {
-                                        MapResetComponent mapResetComponent = (MapResetComponent) component;
-                                        mapResetComponent.blocks.add(new MapResetComponent.BlockStorage()
-                                        {{
-                                            loc = block.getLocation();
-                                            mat = block.getType();
-                                            b = block.getData();
-                                        }});
-                                    }
-                                }
+                                if(reset) blocks.add(block.getLocation());
                             }
                         }
                         lastLoc = e.getEntity().getLocation();
@@ -133,4 +132,12 @@ public class BridgeEggComponent extends GameComponent
         run.cancel();
     }
     
+    @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    public void onReset(ResetEvent event)
+    {
+        for(Location loc:blocks)
+        {
+            loc.getBlock().setType(Material.AIR);
+        }
+    }
 }

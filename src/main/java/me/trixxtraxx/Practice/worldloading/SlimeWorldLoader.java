@@ -44,7 +44,7 @@ public class SlimeWorldLoader implements WorldLoader
 
             SlimeWorld world = plugin.loadWorld(loader, name, true, properties);
             mapCount++;
-            world = world.clone(name + "-" + mapCount + new Random().nextInt(100));
+            world = world.clone(name + "-" + mapCount + new Random().nextInt(10000));
             plugin.generateWorld(world);
             return Bukkit.getWorld(world.getName());
         }

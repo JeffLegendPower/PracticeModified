@@ -93,12 +93,13 @@ public class LobbyListener implements Listener
         }
     }
     
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
         Lobby lobby = Lobby.get(event.getPlayer().getWorld());
         if(lobby == null) return;
         if(KitEditor.hasInstance() && KitEditor.getInstance().hasPlayer(event.getPlayer())) return;
+        Practice.log(4, "Player interacted with Item in lobby");
         PracticePlayer pp = PracticePlayer.getPlayer(event.getPlayer());
         if(!pp.isInQueue())
         {

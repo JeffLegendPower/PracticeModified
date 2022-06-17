@@ -8,12 +8,14 @@ import me.TrixxTraxx.RestCommunicator.PluginAPI.MessageProvider;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StopEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.WinMessageComponent;
+import me.trixxtraxx.Practice.GameLogic.Components.Config;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.SQL.SQLUtil;
 import me.trixxtraxx.Practice.TriggerEvent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,6 +28,13 @@ import java.util.UUID;
 
 public class InventoryViewComponent extends GameComponent
 {
+    @Config
+    public String prefixMessage;
+    @Config
+    public String suffixMessage;
+    @Config
+    public String playerMessage = "&fclick here &9to view &b{player}'s &9inventory";
+    
     public InventoryViewComponent(GameLogic logic)
     {
         super(logic);
@@ -34,7 +43,6 @@ public class InventoryViewComponent extends GameComponent
     @TriggerEvent(priority = -1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onGameEnd(WinEvent event)
     {
-        logic.broadcast("§9Inventories:");
         List<InventoryView> cache = new List<>();
         for(Player player : logic.getPlayers())
         {
@@ -73,6 +81,7 @@ public class InventoryViewComponent extends GameComponent
             }
             Items.add(new BetterItem(Material.REDSTONE, (int) player.getHealth()).setDisplayName("§9Health: §b" + player.getHealth()));
             Slots.add(43);
+            
             int potions = new List<>(inv.getContents()).findAll(x -> x != null && x.getType() == Material.POTION).size();
             Items.add(new BetterItem(Material.POTION, potions).setDisplayName("§9Potions: §b" + potions));
             Slots.add(44);
@@ -85,25 +94,32 @@ public class InventoryViewComponent extends GameComponent
     
             cache.add(view);
         }
-    
-        for(InventoryView view : cache)
-        {
-            new BukkitRunnable(){
-                @Override
-                public void run()
+        
+        new BukkitRunnable(){
+            @Override
+            public void run()
+            {
+                if(prefixMessage != null && !prefixMessage.isEmpty())logic.broadcast(prefixMessage);
+                for(InventoryView view : cache)
                 {
                     SQLUtil.Instance.cacheView(view);
-                    for(Player send : logic.getPlayers())
+                    for(Player send: logic.getPlayers())
                     {
-                        TextComponent component = new TextComponent(TextComponent.fromLegacyText("§b" + view.player + "§f Click to View his Inventory"));
+                        TextComponent component = new TextComponent(TextComponent.fromLegacyText(
+                                logic.applyPlaceholders(send, ChatColor.translateAlternateColorCodes('&', playerMessage.replace("{player}", view.player)))
+                        ));
+                        
                         // Add a click event to the component.
-                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/InventoryView " + view.id ));
+                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                                                               "/InventoryView " + view.id
+                        ));
         
                         // Send it!
                         send.spigot().sendMessage(component);
                     }
                 }
-            }.runTaskAsynchronously(Practice.Instance);
-        }
+                if(suffixMessage != null && !suffixMessage.isEmpty()) logic.broadcast(suffixMessage);
+            }
+        }.runTaskAsynchronously(Practice.Instance);
     }
 }
