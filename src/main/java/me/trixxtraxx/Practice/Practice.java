@@ -43,7 +43,9 @@ import me.trixxtraxx.Practice.Kit.Editor.KitEditor;
 import me.trixxtraxx.Practice.Kit.Editor.KitEditorListener;
 import me.trixxtraxx.Practice.Kit.Editor.Potion.PotionEditor;
 import me.trixxtraxx.Practice.Kit.Kit;
+import me.trixxtraxx.Practice.Lobby.ItemTypes.CustomGamemodeItem;
 import me.trixxtraxx.Practice.Lobby.Lobby;
+import me.trixxtraxx.Practice.Lobby.LobbyItem;
 import me.trixxtraxx.Practice.Lobby.LobbyListener;
 import me.trixxtraxx.Practice.Map.Components.*;
 import me.trixxtraxx.Practice.Map.Editor.MapEditingSession;
@@ -65,6 +67,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -276,7 +280,7 @@ public final class Practice extends JavaPlugin
     @Override
     public boolean onCommand(CommandSender s, Command c, String label, String[] args)
     {
-        if (label.equalsIgnoreCase("TestGame"))
+        if(label.equalsIgnoreCase("TestGame"))
         {
             if(args[0].equalsIgnoreCase("Blockin"))
             {
@@ -285,7 +289,13 @@ public final class Practice extends JavaPlugin
                 Map m = SQLUtil.Instance.getMap("Blockin1");
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloGameLogic(), new List<Player>(Collections.singletonList(p)), k, m, false, false);
+                Game g = new Game(new SoloGameLogic(),
+                                  new List<Player>(Collections.singletonList(p)),
+                                  k,
+                                  m,
+                                  false,
+                                  false
+                );
                 g.getLogic().setName("BlockinPractice");
                 new BreakResetComponent(g.getLogic(), Material.BED_BLOCK);
                 new MapResetComponent(g.getLogic());
@@ -293,7 +303,7 @@ public final class Practice extends JavaPlugin
                 new YKillComponent(g.getLogic(), 50);
                 new KillResetComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
-                List<Material> removeMaterials = new List(Material.ANVIL, Material.BED,Material.NETHER_STAR);
+                List<Material> removeMaterials = new List(Material.ANVIL, Material.BED, Material.NETHER_STAR);
                 log(4, "removing materials: " + removeMaterials.size());
                 new DropItemComponent(g.getLogic(), Material.ANVIL, removeMaterials, true);
                 new StartInventoryComponent(g.getLogic());
@@ -304,17 +314,10 @@ public final class Practice extends JavaPlugin
                 new DropToBreakTimer(g.getLogic(), Material.WOOD);
                 new DropToBreakTimer(g.getLogic(), Material.ENDER_STONE);
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Blockin Practice",
-                                "" + "\n" +
-                                ChatColor.BLUE + "Wool:         " + ChatColor.AQUA + "{WOOLTimer}" + "\n" +
-                                ChatColor.BLUE + "Wood:        " + ChatColor.AQUA + "{WOODTimer}" + "\n" +
-                                ChatColor.BLUE + "Endstone: " + ChatColor.AQUA + "{ENDER_STONETimer}" + "\n" +
-                                ChatColor.BLUE + "Blockin:     " + ChatColor.AQUA + "{BlockinTimer}" + "\n" +
-                                ChatColor.BLUE + "Finish:       " + ChatColor.AQUA + "{TotalTimer}" + "\n" +
-                                "" + "\n" +
-                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                                        ChatColor.AQUA + "Blockin Practice",
+                                        "" + "\n" + ChatColor.BLUE + "Wool:         " + ChatColor.AQUA + "{WOOLTimer}" + "\n" + ChatColor.BLUE + "Wood:        " + ChatColor.AQUA + "{WOODTimer}" + "\n" + ChatColor.BLUE + "Endstone: " + ChatColor.AQUA + "{ENDER_STONETimer}" + "\n" + ChatColor.BLUE + "Blockin:     " + ChatColor.AQUA + "{BlockinTimer}" + "\n" + ChatColor.BLUE + "Finish:       " + ChatColor.AQUA + "{TotalTimer}" + "\n" + "" + "\n" + ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
-                
+    
                 SQLUtil.Instance.applyComponents(m);
                 
                 /*new BedLayerComponent(m, Material.ENDER_STONE, new ConfigLocation(0, 101, 0), new ConfigLocation(1, 101, 0), 1, true);
@@ -327,55 +330,81 @@ public final class Practice extends JavaPlugin
             else if(args[0].equalsIgnoreCase("Bridge"))
             {
                 Player p = (Player) s;
-                Map m = new Map(-1,"BridgeTest", "BridgeTest", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100, 0, -90, 0)));
+                Map m = new Map(-1,
+                                "BridgeTest",
+                                "BridgeTest",
+                                new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100, 0, -90, 0))
+                );
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m, false, false);
+                Game g = new Game(new SoloAutoscaleLogic(),
+                                  new List<>(Collections.singletonList(p)),
+                                  k,
+                                  m,
+                                  false,
+                                  false
+                );
                 g.getLogic().setName("BridgePractice");
-                
+    
                 new MapResetComponent(g.getLogic());
                 new PressurePlateResetComponent(g.getLogic());
-                
+    
                 new YKillComponent(g.getLogic(), 90);
                 new KillResetComponent(g.getLogic());
-                
+    
                 new DisconnectStopComponent(g.getLogic());
-                
+    
                 new DropItemComponent(g.getLogic(), Material.WOOL, new List<>(new Material[]{Material.BED}), false);
                 new DropToResetTimer(g.getLogic());
-                
+    
                 new StartInventoryComponent(g.getLogic());
                 new InventoryOnResetComponent(g.getLogic());
                 new LeaveItemComponent(g.getLogic(), Material.BED);
                 new NoHungerComponent(g.getLogic());
                 new NoItemDropComponent(g.getLogic());
                 new ResetHealComponent(g.getLogic());
-                
+    
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Bridge Practice",
-                                "\n" +
-                                ChatColor.BLUE + "Time:     " + ChatColor.AQUA + "{TotalTimer}" + "\n" +
-                                "\n" +
-                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                                        ChatColor.AQUA + "Bridge Practice",
+                                        "\n" + ChatColor.BLUE + "Time:     " + ChatColor.AQUA + "{TotalTimer}" + "\n" + "\n" + ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
-                
+    
                 new StatComponent(g.getLogic());
                 new SuccessStat(g.getLogic());
-                
+    
                 new NoMapBreakComponent(m);
-                new AutoScaleComponent(m, 0, 0, 20,new List(new Region(new ConfigLocation(-5.5,90, -5.5,0,0), new ConfigLocation(5.5, 110, 5.5)),
-                                                                    new Region(new ConfigLocation(20.5,90, -5.5,0,0), new ConfigLocation(30.5, 110, 5.5))
-                ));
+                new AutoScaleComponent(m,
+                                       0,
+                                       0,
+                                       20,
+                                       new List(new Region(new ConfigLocation(-5.5, 90, -5.5, 0, 0),
+                                                           new ConfigLocation(5.5, 110, 5.5)
+                                       ),
+                                                new Region(new ConfigLocation(20.5, 90, -5.5, 0, 0),
+                                                           new ConfigLocation(30.5, 110, 5.5)
+                                                )
+                                       )
+                );
             }
             else if(args[0].equalsIgnoreCase("Jump"))
             {
                 Player p = (Player) s;
-                Map m = new Map(-1,"JumpWorld", "JumpWorld", new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100.1, 0, -90, 0)));
+                Map m = new Map(-1,
+                                "JumpWorld",
+                                "JumpWorld",
+                                new SoloAutoScaleSpawnComponent(new Location(p.getWorld(), 0, 100.1, 0, -90, 0))
+                );
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new SoloAutoscaleLogic(), new List<>(Collections.singletonList(p)), k, m, false, false);
+                Game g = new Game(new SoloAutoscaleLogic(),
+                                  new List<>(Collections.singletonList(p)),
+                                  k,
+                                  m,
+                                  false,
+                                  false
+                );
                 g.getLogic().setName(args[1]);
-                
+    
                 new MapResetComponent(g.getLogic());
     
                 new YKillComponent(g.getLogic(), 90);
@@ -393,10 +422,7 @@ public final class Practice extends JavaPlugin
     
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "FB/TNT Jump Practice",
-                                        "\n" +
-                                                ChatColor.BLUE + "Distance:     " + ChatColor.AQUA + "{Distance}" + "\n" +
-                                                "\n" +
-                                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                                        "\n" + ChatColor.BLUE + "Distance:     " + ChatColor.AQUA + "{Distance}" + "\n" + "\n" + ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
     
                 new StatComponent(g.getLogic());
@@ -405,10 +431,19 @@ public final class Practice extends JavaPlugin
                 new TNTFbComponent(g.getLogic());
     
                 new NoMapBreakComponent(m);
-                new AutoScaleComponent(m, 0, 0, 20, new List(new Region(new ConfigLocation(-5.5,90, -5.5,0,0), new ConfigLocation(5.5, 110, 5.5)),
-                                                            new Region(new ConfigLocation(20.5,90, -5.5,0,0), new ConfigLocation(30.5, 110, 5.5))
-                ));
-                
+                new AutoScaleComponent(m,
+                                       0,
+                                       0,
+                                       20,
+                                       new List(new Region(new ConfigLocation(-5.5, 90, -5.5, 0, 0),
+                                                           new ConfigLocation(5.5, 110, 5.5)
+                                       ),
+                                                new Region(new ConfigLocation(20.5, 90, -5.5, 0, 0),
+                                                           new ConfigLocation(30.5, 110, 5.5)
+                                                )
+                                       )
+                );
+    
                 new JumpComponent(g.getLogic(), Material.GOLD_BLOCK);
             }
             else if(args[0].equalsIgnoreCase("Invis"))
@@ -421,74 +456,58 @@ public final class Practice extends JavaPlugin
                     Player pl = Bukkit.getPlayer(args[i]);
                     if(pl != null) players.add(pl);
                 }
-                FFASpawnComponent spawn = new FFASpawnComponent(
-                        new List(
-                                new ConfigLocation(4.5, 84, -76.5, 20, -20),
-                                new ConfigLocation(-2.5, 88, -74.5, 0, -15),
-                                new ConfigLocation(-9.5,84,-75.5,-20,-24)
-                        )
-                );
+                FFASpawnComponent spawn = new FFASpawnComponent(new List(new ConfigLocation(4.5, 84, -76.5, 20, -20),
+                                                                         new ConfigLocation(-2.5, 88, -74.5, 0, -15),
+                                                                         new ConfigLocation(-9.5, 84, -75.5, -20, -24)
+                ));
                 Map m = new Map(-1, "ToxicInvisPractice", "ToxicInvisPractice", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("OneInAChamber", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
                 log(3, "Starting debug Game with " + players.size() + " players");
-                
+    
                 Game g = new Game(new FFALogic(), players, k, m, false, false);
                 g.getLogic().setName("InvisPractice");
-                
+    
                 new NoDieComponent(g.getLogic());
-                
+    
                 new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
-                
+    
                 new LeaveRemoveComponent(g.getLogic());
                 new SpectatorRespawnComponent(g.getLogic(), 100,
                                               ChatColor.RED + "Respawning!",
                                               ChatColor.WHITE + "You will respawn in {Timer}s!",
                                               ChatColor.GREEN + "Respawned!",
                                               "",
-                                              false);
+                                              false
+                );
     
                 new WinMessageComponent(g.getLogic(),
-                                        "§9-------------------------------------\n" +
-                                                "\n" +
-                                                "      §b{Winner}§9 won the Game!\n\n" +
-                                                "          &bTop Killers:\n" +
-                                                "§91. {Points1Player}§b {Points1}\n" +
-                                                "§92. {Points2Player}§b {Points2}\n" +
-                                                "§93. {Points3Player}§b {Points3}\n" +
-                                                "\n" +
-                                                "§9-------------------------------------");
+                                        "§9-------------------------------------\n" + "\n" + "      §b{Winner}§9 won the Game!\n\n" + "          &bTop Killers:\n" + "§91. {Points1Player}§b {Points1}\n" + "§92. {Points2Player}§b {Points2}\n" + "§93. {Points3Player}§b {Points3}\n" + "\n" + "§9-------------------------------------"
+                );
     
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "Invis Practice",
-                                        "" + "\n" +
-                                                "§9Time Left: §b{TimeLeft}\n" +
-                                                "" + "\n" +
-                                                "§91. {Points1Player}§b {Points1}\n" +
-                                                "§92. {Points2Player}§b {Points2}\n" +
+                                        "" + "\n" + "§9Time Left: §b{TimeLeft}\n" + "" + "\n" +
+                                                "§91. {Points1Player}§b {Points1}\n" + "§92. {Points2Player}§b {Points2}\n" +
                                                 //"§93. {Points3Player}§b {Points3}\n" +
                                                 //"§94. {Points4Player}§b {Points4}\n" +
-                                                "\n" +
-                                                "§9You:\n" +
-                                                "§9{Place}. {Name}§b {Points}" +
-                                                "" + "\n" +
-                                                ChatColor.AQUA + "Ranked.fun" + "\n"
+                                                "\n" + "§9You:\n" + "§9{Place}. {Name}§b {Points}" + "" + "\n" + ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
     
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
     
                 new NoHungerComponent(g.getLogic());
-                
+    
                 new NoItemDropComponent(g.getLogic());
-                
+    
                 new InvisPracticeComponent(g.getLogic(), 3, 60, "InvisPractice_Attacker");
-                new InvisPracticeSpawnProvider(m, new ConfigLocation(0,100,0, 180, 0));
-                
+                new InvisPracticeSpawnProvider(m, new ConfigLocation(0, 100, 0, 180, 0));
+    
                 new MapResetComponent(g.getLogic());
-                
+    
                 new BridgeEggComponent(g.getLogic(), true);
                 new ExplosionProtectComponent(g.getLogic(), Material.STAINED_CLAY);
                 new ExplosionProtectComponent(g.getLogic(), Material.BED);
@@ -497,9 +516,12 @@ public final class Practice extends JavaPlugin
     
                 new TNTFbComponent(g.getLogic());
                 new InvisComponent(g.getLogic());
-                
+    
                 new NoMapBreakComponent(m);
-                new BreakRegion(m, new Region(new ConfigLocation(0.5,84, -77.5), new ConfigLocation(-5.5, 88, -70.5)), true);
+                new BreakRegion(m,
+                                new Region(new ConfigLocation(0.5, 84, -77.5), new ConfigLocation(-5.5, 88, -70.5)),
+                                true
+                );
                 new KillHeightComponent(m, 50);
                 new HeightLimitComponent(m, 100);
             }
@@ -512,13 +534,13 @@ public final class Practice extends JavaPlugin
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(p, p2), k, m, false, false);
                 g.getLogic().setName("BedFight");
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
                 new NoItemDropComponent(g.getLogic());
-                
+    
                 new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
                 new SpectatorRespawnComponent(g.getLogic(), 60,
@@ -526,39 +548,35 @@ public final class Practice extends JavaPlugin
                                               ChatColor.WHITE + "You will respawn in {Timer}s!",
                                               ChatColor.GREEN + "Respawned!",
                                               "",
-                                              false);
-                
+                                              false
+                );
+    
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "Bed Fight",
-                                        "" + "\n" +
-                                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-                                                "" + "\n" +
-                                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                                ChatColor.BLUE + "Bed: " + ChatColor.AQUA + "{PlayerBed}" + "\n" +
-                                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                                ChatColor.BLUE + "Bed: " + ChatColor.AQUA + "{OpponentBed}" + "\n" +
-                                                "" + "\n" +
-                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                        "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" + "" + "\n" + ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "Bed: " + ChatColor.AQUA + "{PlayerBed}" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + ChatColor.BLUE + "Bed: " + ChatColor.AQUA + "{OpponentBed}" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
     
                 new WinMessageComponent(g.getLogic(),
-                                        "§9-------------------------------------\n" +
-                                                "\n" +
-                                                "      §b{Winner}§9 won the Game!\n" +
-                                                "\n" +
-                                                "§9-------------------------------------");
-                
+                                        "§9-------------------------------------\n" + "\n" + "      §b{Winner}§9 won the Game!\n" + "\n" + "§9-------------------------------------"
+                );
+    
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
                 new BedComponent(g.getLogic());
-                
+    
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
     
                 new NoMapBreakComponent(m);
-                new BreakRegion(m, new Region(new ConfigLocation(1.5,100, -21.5), new ConfigLocation(5.5, 102, -26.5)), true);
-                new BreakRegion(m, new Region(new ConfigLocation(-1.5,100, 21.5), new ConfigLocation(-5.5, 102, 26.5)), true);
+                new BreakRegion(m,
+                                new Region(new ConfigLocation(1.5, 100, -21.5), new ConfigLocation(5.5, 102, -26.5)),
+                                true
+                );
+                new BreakRegion(m,
+                                new Region(new ConfigLocation(-1.5, 100, 21.5), new ConfigLocation(-5.5, 102, 26.5)),
+                                true
+                );
                 new KillHeightComponent(m, 90);
                 new HeightLimitComponent(m, 107);
             }
@@ -571,7 +589,7 @@ public final class Practice extends JavaPlugin
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("Sumo1", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(p, p2), k, m, false, false);
                 g.getLogic().setName("TopBridgeFight");
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
@@ -580,20 +598,12 @@ public final class Practice extends JavaPlugin
                 new RespawnInventoryComponent(g.getLogic());
                 new NoItemDropComponent(g.getLogic());
                 new SpawnProtComponent(g.getLogic(), 40,
-                                       ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
+                                       ChatColor.BLUE + "The Game starts in " + ChatColor.AQUA + "{Timer}s",
                                        ChatColor.BLUE + "The Game started, go fight!", false
                 );
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "Top Fight",
-                                        "" + "\n" +
-                                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-                                                "" + "\n" +
-                                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                                "{Points1}" + "\n" +
-                                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                                "{Points2}" + "\n" +
-                                                "" + "\n" +
-                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                        "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" + "" + "\n" + ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + "{Points1}" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "{Points2}" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
@@ -613,10 +623,10 @@ public final class Practice extends JavaPlugin
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[2]);
                 DuelSpawnComponent spawn = new DuelSpawnComponent(30, 100, 0, 90, 0, -30, 100, 0, -90, 0);
-                Map m = new Map(-1,"Practice1", "Practice1", spawn);
+                Map m = new Map(-1, "Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p, p2)), k, m, false, false);
                 g.getLogic().setName("UHC");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDieComponent(g.getLogic());
@@ -627,14 +637,8 @@ public final class Practice extends JavaPlugin
                         ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
                         ChatColor.BLUE + "The Game started, go fight!");*/
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "UHC",
-                                "" + "\n" +
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-                                "\n" +
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                        ChatColor.AQUA + "UHC",
+                                        "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" + "\n" + ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
@@ -643,7 +647,7 @@ public final class Practice extends JavaPlugin
     
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
-
+    
                 new NoMapBreakComponent(m);
             }
             else if(args[0].equalsIgnoreCase("Boxxing"))
@@ -651,40 +655,30 @@ public final class Practice extends JavaPlugin
                 Player p = (Player) s;
                 Player p2 = Bukkit.getPlayer(args[2]);
                 DuelSpawnComponent spawn = new DuelSpawnComponent(30, 100, 0, 0, 0, -30, 100, 0, 180, 0);
-                Map m = new Map(-1,"Practice1", "Practice1", spawn);
+                Map m = new Map(-1, "Practice1", "Practice1", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p, p2)), k, m, false, false);
                 g.getLogic().setName("Boxxing");
                 new YKillComponent(g.getLogic(), 90);
                 new NoDamageComponent(g.getLogic());
-
+    
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
-
+    
                 new NoHungerComponent(g.getLogic());
-
+    
                 new StartInventoryComponent(g.getLogic());
-
+    
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Boxxing",
-                        "" + "\n" +
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "Points:\n" +
-                                ChatColor.BLUE + "  You: " + ChatColor.AQUA + "{Points1}\n" +
-                                ChatColor.BLUE + "  Them: " + ChatColor.AQUA + "{Points2}\n" +
-                                ChatColor.BLUE + "  Combo: " + ChatColor.AQUA + "{Combo}\n\n" +
-                                
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                        ChatColor.AQUA + "Boxxing",
+                                        "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+                                                "" + "\n" + ChatColor.BLUE + "Points:\n" + ChatColor.BLUE + "  You: " + ChatColor.AQUA + "{Points1}\n" + ChatColor.BLUE + "  Them: " + ChatColor.AQUA + "{Points2}\n" + ChatColor.BLUE + "  Combo: " + ChatColor.AQUA + "{Combo}\n\n" +
+            
+                                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
-                new WinMessageComponent(g.getLogic(),
-                        ChatColor.BLUE + "{Winner} won the game!\n"
-                );
-
+                new WinMessageComponent(g.getLogic(), ChatColor.BLUE + "{Winner} won the game!\n");
+    
                 new ComboComponent(g.getLogic());
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
@@ -693,7 +687,7 @@ public final class Practice extends JavaPlugin
     
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
-
+    
                 new NoMapBreakComponent(m);
             }
             else if(args[0].equalsIgnoreCase("NoDebuff"))
@@ -704,32 +698,25 @@ public final class Practice extends JavaPlugin
                 SQLUtil.Instance.applyComponents(m);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p, p2)), k, m, false, false);
                 g.getLogic().setName("NoDebuff");
-
+    
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
-
+    
                 new StartInventoryComponent(g.getLogic());
-
-                new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "NoDebuff",
-                        "" + "\n" +
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+    
+                new ScoreboardComponent(g.getLogic(), ChatColor.AQUA + "NoDebuff", "" + "\n" + ChatColor.BLUE + "Map" +
+                        ":" + ChatColor.AQUA + " {MapName}" + "\n" +
+            
+                        ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
-                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" +
-                        "\n       §b{Winner}§9 won the Game!" +
-                        "\n §9-------------------------------------<>\n");
-
+                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" + "\n       §b{Winner}§9 won the Game!" + "\n §9-------------------------------------<>\n");
+    
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
-
+    
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
             }
@@ -741,32 +728,24 @@ public final class Practice extends JavaPlugin
                 SQLUtil.Instance.applyComponents(m);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p, p2)), k, m, false, false);
                 g.getLogic().setName("Gapple");
-
+    
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
-
+    
                 new StartInventoryComponent(g.getLogic());
-
-                new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Gapple",
-                        "" + "\n" +
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+    
+                new ScoreboardComponent(g.getLogic(), ChatColor.AQUA + "Gapple", "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+            
+                        ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
-                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" +
-                        "\n       §b{Winner}§9 won the Game!" +
-                        "\n §9-------------------------------------<>\n");
-
+                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" + "\n       §b{Winner}§9 won the Game!" + "\n §9-------------------------------------<>\n");
+    
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
-
+    
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
             }
@@ -778,33 +757,25 @@ public final class Practice extends JavaPlugin
                 SQLUtil.Instance.applyComponents(m);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p, p2)), k, m, false, false);
                 g.getLogic().setName("Combo");
-
+    
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
                 new HitDelayComponent(g.getLogic());
-
+    
                 new StartInventoryComponent(g.getLogic());
-
-                new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Combo",
-                        "" + "\n" +
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+    
+                new ScoreboardComponent(g.getLogic(), ChatColor.AQUA + "Combo", "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+            
+                        ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
-                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" +
-                        "\n       §b{Winner}§9 won the Game!" +
-                        "\n §9-------------------------------------<>\n");
-
+                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" + "\n       §b{Winner}§9 won the Game!" + "\n §9-------------------------------------<>\n");
+    
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
-
+    
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
             }
@@ -816,32 +787,24 @@ public final class Practice extends JavaPlugin
                 SQLUtil.Instance.applyComponents(m);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p,p2)), k,m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(Arrays.asList(p, p2)), k, m, false, false);
                 g.getLogic().setName("Classic");
-
+    
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
-
+    
                 new StartInventoryComponent(g.getLogic());
-
-                new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Classic",
-                        "" + "\n" +
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+    
+                new ScoreboardComponent(g.getLogic(), ChatColor.AQUA + "Classic", "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
+            
+                        ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
-                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" +
-                        "\n       §b{Winner}§9 won the Game!" +
-                        "\n §9-------------------------------------<>\n");
-
+                new WinMessageComponent(g.getLogic()).applyData("winMessage= §9-------------------------------------" + "\n       §b{Winner}§9 won the Game!" + "\n §9-------------------------------------<>\n");
+    
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
-
+    
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
             }
@@ -854,37 +817,31 @@ public final class Practice extends JavaPlugin
                 //Kit k = SQLUtil.Instance.getKit(args[2]);
                 Kit k = new Kit("Sumo1", -1, new List<>(), new HashMap<>());
                 //SQLUtil.Instance.applyComponents(k);
-                Game g = new Game(new DuelGameLogic(), new List<>(p,p2), k, m, false, false);
+                Game g = new Game(new DuelGameLogic(), new List<>(p, p2), k, m, false, false);
                 g.getLogic().setName("Sumo");
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
                 new DieStopComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
-                new SpawnProtComponent(g.getLogic(), 100,
-                        ChatColor.BLUE + "The Game starts in "+ ChatColor.AQUA +"{Timer}s",
-                        ChatColor.BLUE + "The Game started, go fight!", false
+                new SpawnProtComponent(g.getLogic(),
+                                       100,
+                                       ChatColor.BLUE + "The Game starts in " + ChatColor.AQUA + "{Timer}s",
+                                       ChatColor.BLUE + "The Game started, go fight!",
+                                       false
                 );
                 new ScoreboardComponent(g.getLogic(),
-                        ChatColor.AQUA + "Sumo",
-                        "" + "\n" +
-                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                "{Points1}" + "\n" +
-                                ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" +
-                                "{Points2}" + "\n" +
-                                "" + "\n" +
-                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                        ChatColor.AQUA + "Sumo",
+                                        "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" + "" + "\n" + ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + "{Points1}" + "\n" + ChatColor.BLUE + "{OpponentName}" + ChatColor.AQUA + " {OpponentPing} ms" + "\n" + "{Points2}" + "\n" + "" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
                 new OpponentPlaceholderComponent(g.getLogic());
                 new PointComponent(g.getLogic(), 2, "⬤", true, false);
                 new NoFallDamageComponent(g.getLogic());
-                
+    
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
-
+    
                 new NoMapBreakComponent(m);
                 new KillHeightComponent(m, 97);
             }
@@ -902,83 +859,71 @@ public final class Practice extends JavaPlugin
                 FFASpawnComponent spawn = null;
                 if(args[2].equalsIgnoreCase("8"))
                 {
-                    spawn = new FFASpawnComponent(new List(
-                            new ConfigLocation(-14.5, 95, 2.5, 20, 0),
-                            new ConfigLocation(-9.5, 87, -0.5, 16, 0),
-                            new ConfigLocation(-18.5, 80, 10.5, 0, -30),
-                            new ConfigLocation(-14.5, 78, -0.5, 10, -15),
-                            new ConfigLocation(-23.5, 87, 10, -124, 0),
-                            new ConfigLocation(-14.5, 87, 4.5, 80, 0),
-                            new ConfigLocation(-25.5, 93, 28.5, -90, 0),
-                            new ConfigLocation(-6.5, 87, 25.5, 140, 0)
+                    spawn = new FFASpawnComponent(new List(new ConfigLocation(-14.5, 95, 2.5, 20, 0),
+                                                           new ConfigLocation(-9.5, 87, -0.5, 16, 0),
+                                                           new ConfigLocation(-18.5, 80, 10.5, 0, -30),
+                                                           new ConfigLocation(-14.5, 78, -0.5, 10, -15),
+                                                           new ConfigLocation(-23.5, 87, 10, -124, 0),
+                                                           new ConfigLocation(-14.5, 87, 4.5, 80, 0),
+                                                           new ConfigLocation(-25.5, 93, 28.5, -90, 0),
+                                                           new ConfigLocation(-6.5, 87, 25.5, 140, 0)
                     ));
                 }
                 else
                 {
-                    spawn = new FFASpawnComponent(new List(
-                            new ConfigLocation(-11.5, 81, -43.5, 22, -40),
-                            new ConfigLocation(-26.5, 89, -49.5, -60, 10),
-                            new ConfigLocation(-9.5, 87, -56.5, 16, 0),
-                            new ConfigLocation(-22.5, 87, -33.5, -150, 0)
+                    spawn = new FFASpawnComponent(new List(new ConfigLocation(-11.5, 81, -43.5, 22, -40),
+                                                           new ConfigLocation(-26.5, 89, -49.5, -60, 10),
+                                                           new ConfigLocation(-9.5, 87, -56.5, 16, 0),
+                                                           new ConfigLocation(-22.5, 87, -33.5, -150, 0)
                     ));
                 }
                 Map m = new Map(-1, "CityChamber" + args[2], "CityChamber", spawn);
                 Kit k = SQLUtil.Instance.getKit(args[1]);
                 //Kit k = new Kit("OneInAChamber", -1, new List<>(), -1, new HashMap<>());
                 SQLUtil.Instance.applyComponents(k);
-                log(3, "Starting debug Game with " + players.size() + " players\n" +
-                        "Kit: " + k.getName() + "\n" +
-                        "Map: " + m.getName());
+                log(3,
+                    "Starting debug Game with " + players.size() + " players\n" + "Kit: " + k.getName() + "\n" + "Map: " + m.getName()
+                );
                 Game g = new Game(new FFALogic(), players, k, m, false, false);
                 g.getLogic().setName("OneInAChamber");
                 new NoDieComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
                 new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
-                
-                new GenerateLinesPlaceholder(g.getLogic(), "{PointLines}", "§7#{line} §b{Points{line}Player}§f {Points{line}}");
-                
+    
+                new GenerateLinesPlaceholder(g.getLogic(),
+                                             "{PointLines}",
+                                             "§7#{line} §b{Points{line}Player}§f {Points{line}}"
+                );
+    
                 new PointComponentFFA(g.getLogic(), 20);
                 new KillArrowComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
                 new LeaveRemoveComponent(g.getLogic());
-                
+    
                 new SpectatorRespawnComponent(g.getLogic(), 60,
                                               ChatColor.RED + "Respawning!",
                                               ChatColor.WHITE + "You will respawn in {Timer}s!",
                                               ChatColor.GREEN + "Respawned!",
                                               "",
-                                              false);
-                
+                                              false
+                );
+    
                 new WinMessageComponent(g.getLogic(),
-                                        "§9-------------------------------------\n" +
-                                                "\n" +
-                                                "      §b{Winner}§9 won the Game!\n\n" +
-                                                "          §bTop Killers:\n" +
-                                                "§91. {Points1Player}§b {Points1}\n" +
-                                                "§92. {Points2Player}§b {Points2}\n" +
-                                                "§93. {Points3Player}§b {Points3}\n" +
-                                                "\n" +
-                                                "§9-------------------------------------");
-                
-                
-                
+                                        "§9-------------------------------------\n" + "\n" + "      §b{Winner}§9 won the Game!\n\n" + "          §bTop Killers:\n" + "§91. {Points1Player}§b {Points1}\n" + "§92. {Points2Player}§b {Points2}\n" + "§93. {Points3Player}§b {Points3}\n" + "\n" + "§9-------------------------------------"
+                );
+    
+    
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "One in a Chamber",
-                                        "\n" +
-                                        "{PointLines}" +
-                                        "\n" +
-                                        "§9You:\n" +
-                                        "§7#{Place} §b{Name}§f {Points}\n" +
-                                        "\n" +
-                                        ChatColor.AQUA + "Ranked.fun" + "\n"
+                                        "\n" + "{PointLines}" + "\n" + "§9You:\n" + "§7#{Place} §b{Name}§f {Points}\n" + "\n" + ChatColor.AQUA + "Ranked.fun" + "\n"
                 );
-                
+    
                 new DeathMessageComponent(g.getLogic(), "§b{player}§9 was killed by §b{killer} §c[{Points}]");
     
                 new StatComponent(g.getLogic());
                 new WinStatComponent(g.getLogic());
-                
+    
                 new NoHungerComponent(g.getLogic());
                 new NoFallDamageComponent(g.getLogic());
                 new NoArrowPickupComponent(g.getLogic());
@@ -1002,13 +947,7 @@ public final class Practice extends JavaPlugin
                 new StartInventoryComponent(g.getLogic());
                 new ScoreboardComponent(g.getLogic(),
                                         ChatColor.AQUA + "Bot PVP",
-                                        "" + "\n" +
-                                                ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" +
-                                                "\n" +
-                                                ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" +
-                                                ChatColor.BLUE + "Bot" + ChatColor.AQUA + " 0 ms" + "\n" +
-                                                "\n" +
-                                                ChatColor.BLUE + "Ranked.fun" + "\n"
+                                        "" + "\n" + ChatColor.BLUE + "Map:" + ChatColor.AQUA + " {MapName}" + "\n" + "\n" + ChatColor.BLUE + "{PlayerName}" + ChatColor.AQUA + " {PlayerPing} ms" + "\n" + ChatColor.BLUE + "Bot" + ChatColor.AQUA + " 0 ms" + "\n" + "\n" + ChatColor.BLUE + "Ranked.fun" + "\n"
                 );
                 new PlayerPlaceholderComponent(g.getLogic());
                 new MapNamePlaceholderComponent(g.getLogic());
@@ -1055,17 +994,17 @@ public final class Practice extends JavaPlugin
                 Kit k = SQLUtil.Instance.getKit(args[3]);
                 SQLUtil.Instance.applyComponents(k);
                 SQLUtil.Instance.applyComponents(m);
-
+    
                 List<Player> ppl = new List<>();
-
+    
                 ppl.add(p);
-
-                for (int i = 4;i < args.length; i++)
+    
+                for(int i = 4; i < args.length; i++)
                 {
                     ppl.add(Bukkit.getPlayer(args[i]));
                 }
-
-                Game g = new Game(SQLUtil.Instance.getLogic(args[1], false), ppl,k,m, false, false);
+    
+                Game g = new Game(SQLUtil.Instance.getLogic(args[1], false), ppl, k, m, false, false);
                 SQLUtil.Instance.applyComponents(g.getLogic());
             }
             else if(args[0].equalsIgnoreCase("editMap"))
@@ -1088,21 +1027,25 @@ public final class Practice extends JavaPlugin
             if(!(s instanceof Player)) return false;
             Game g = Game.getGame((Player) s);
             if(g == null) BungeeUtil.getInstance().toLobby((Player) s);
-            else {
+            else
+            {
                 GameLogic logic = g.getLogic();
                 logic.removePlayer((Player) s, true);
             }
         }
-        else if(label.equalsIgnoreCase("kit")){
+        else if(label.equalsIgnoreCase("kit"))
+        {
             if(!(s instanceof Player)) return false;
             Player p = (Player) s;
             KitEditor kitEditor = KitEditor.getInstance();
-            if(!kitEditor.hasPlayer(p)) {
+            if(!kitEditor.hasPlayer(p))
+            {
                 p.sendMessage(ChatColor.RED + "Please enter a kit editing area!");
                 return true;
             }
-            
-            if(args.length == 0) {
+    
+            if(args.length == 0)
+            {
                 p.sendMessage("usage: /kit <potion|item|enchants>");
             }
             else if(args[0].equalsIgnoreCase("potion"))
@@ -1132,7 +1075,7 @@ public final class Practice extends JavaPlugin
             {
                 log(4, s.getName() + " is accessing the inventory view!");
                 PracticePlayer pp = PracticePlayer.getPlayer((Player) s);
-                if(pp == null) ((Player)s).kickPlayer("§cNot found in cache");
+                if(pp == null) ((Player) s).kickPlayer("§cNot found in cache");
                 else
                 {
                     InventoryView view = SQLUtil.Instance.getView(Integer.parseInt(args[0]));
@@ -1143,6 +1086,26 @@ public final class Practice extends JavaPlugin
                     }
                 }
             }
+        }
+        else if(label.equalsIgnoreCase("OpenGUI"))
+        {
+            if(!(s instanceof Player) || args.length != 1) return false;
+            PracticePlayer pp = PracticePlayer.getPlayer((Player) s);
+            if(pp == null) return false;
+            Lobby l = Lobby.get(pp.getPlayer().getWorld());
+            if(l == null) return false;
+            pp.openBungeeInventory(args[0]);
+        }
+        else if(label.equalsIgnoreCase("DuelSettings"))
+        {
+            if(!(s instanceof Player) || args.length != 0) return false;
+            PracticePlayer pp = PracticePlayer.getPlayer((Player) s);
+            if(pp == null) return false;
+            Lobby l = Lobby.get(pp.getPlayer().getWorld());
+            if(l == null) return false;
+            LobbyItem i = l.getItems().find(x -> x instanceof CustomGamemodeItem);
+            if(i == null) return false;
+            i.onClick(new PlayerInteractEvent(pp.getPlayer(), Action.RIGHT_CLICK_AIR, new ItemStack(Material.GOLD_SWORD), null, null));
         }
         return false;
     }

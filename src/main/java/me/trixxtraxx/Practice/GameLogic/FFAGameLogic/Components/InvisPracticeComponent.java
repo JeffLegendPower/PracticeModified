@@ -267,6 +267,11 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
         {
             return pointMap.get(p) == null ? "0" : String.valueOf(pointMap.get(p));
         }
+        else if(stat.equalsIgnoreCase("TotalPoints"))
+        {
+            int points =  pointMap.get(p) == null ? 0 : pointMap.get(p);
+            return getBestAndAdd(p, logic.getName(), "TotalPoints", points);
+        }
         else if(stat.equalsIgnoreCase("Time")){
             return String.valueOf(60 - timeLeft);
         }
@@ -278,6 +283,7 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
     {
         List<IStatComponent.SQLProperty> list = new List();
         list.add(new IStatComponent.SQLProperty("Points", "int(11)", "0", true));
+        list.add(new IStatComponent.SQLProperty("TotalPoints", "int(11)", "0", true));
         list.add(new IStatComponent.SQLProperty("Time", "int(11)", "0", true));
         return list;
     }

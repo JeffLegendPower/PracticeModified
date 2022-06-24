@@ -100,6 +100,7 @@ public class Lobby
     public List<String> getBlockedInventories(){return blockedInventories;}
     public List<Launchpad> getLaunchpads(){return launchpads;}
     public LobbyItem getItem(int slot){return items.find(x -> x.getSlot() == slot);}
+    public List<LobbyItem> getItems(){return items;}
     public List<PracticePlayer> getPlayers(){return players;}
     public void addPlayer(PracticePlayer player){
         if(player == null || player.getPlayer() == null || players.contains(player)) return;
@@ -133,7 +134,6 @@ public class Lobby
                 board.updateLines(
                         "",
                         "§9Player: §b" + player.getName(),
-                        "§9Global Elo: §b" + player.getGlobalElo(),
                         "",
                         "§bRanked.fun"
                 );
