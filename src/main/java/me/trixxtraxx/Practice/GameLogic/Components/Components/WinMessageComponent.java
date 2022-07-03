@@ -5,6 +5,7 @@ import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import org.bukkit.entity.Player;
 
@@ -27,7 +28,11 @@ public class WinMessageComponent extends GameComponent
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     public void onWin(WinEvent event)
     {
-        String msg = logic.applyPlaceholders(event.getPlayer(), winMessage.replace("{Winner}", event.getPlayer().getName()));
+        Practice.log(4, "Sending win message");
+        String msg = logic.applyPlaceholders(event.getPlayer(),
+                     winMessage
+                     .replace("{Winner}", event.getPlayer().getName())
+        );
         if(logic instanceof DuelGameLogic){
             DuelGameLogic duel = (DuelGameLogic)logic;
             Player winner = event.getPlayer();

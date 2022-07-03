@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.GameLogic.FFAGameLogic.Components;
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameEvents.AllModes.SpectatorRespawnEvent;
 import me.trixxtraxx.Practice.GameEvents.AllModes.StartEvent;
+import me.trixxtraxx.Practice.GameEvents.AllModes.WinEvent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.SpectatorRespawnComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Stats.IStatComponent;
 import me.trixxtraxx.Practice.GameLogic.Components.Components.Timer.TimerComponent;
@@ -197,6 +198,8 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
                 
                 if(points == maxPoints)
                 {
+                    if(logic.triggerEvent(new WinEvent(logic,event.getPlayer(), false)).isCanceled()) return;
+                    event.setCancelled(false);
                     logic.stop(false);
                     return;
                 }
@@ -283,7 +286,7 @@ public class InvisPracticeComponent extends GameComponent implements IStatCompon
     {
         List<IStatComponent.SQLProperty> list = new List();
         list.add(new IStatComponent.SQLProperty("Points", "int(11)", "0", true));
-        list.add(new IStatComponent.SQLProperty("TotalPoints", "int(11)", "0", true));
+        list.add(new IStatComponent.SQLProperty("TotalPoints", "int(11)", "0", false));
         list.add(new IStatComponent.SQLProperty("Time", "int(11)", "0", true));
         return list;
     }

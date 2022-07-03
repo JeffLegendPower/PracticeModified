@@ -361,7 +361,7 @@ public final class Practice extends JavaPlugin
                 new InventoryOnResetComponent(g.getLogic());
                 new LeaveItemComponent(g.getLogic(), Material.BED);
                 new NoHungerComponent(g.getLogic());
-                new NoItemDropComponent(g.getLogic());
+                new NoKillitemDrop(g.getLogic());
                 new ResetHealComponent(g.getLogic());
     
                 new ScoreboardComponent(g.getLogic(),
@@ -417,7 +417,7 @@ public final class Practice extends JavaPlugin
                 new InventoryOnResetComponent(g.getLogic());
                 new LeaveItemComponent(g.getLogic(), Material.BED);
                 new NoHungerComponent(g.getLogic());
-                new NoItemDropComponent(g.getLogic());
+                new NoKillitemDrop(g.getLogic());
                 new ResetHealComponent(g.getLogic());
     
                 new ScoreboardComponent(g.getLogic(),
@@ -501,7 +501,7 @@ public final class Practice extends JavaPlugin
     
                 new NoHungerComponent(g.getLogic());
     
-                new NoItemDropComponent(g.getLogic());
+                new NoKillitemDrop(g.getLogic());
     
                 new InvisPracticeComponent(g.getLogic(), 3, 60, "InvisPractice_Attacker");
                 new InvisPracticeSpawnProvider(m, new ConfigLocation(0, 100, 0, 180, 0));
@@ -539,7 +539,7 @@ public final class Practice extends JavaPlugin
                 new NoDieComponent(g.getLogic());
                 new DisconnectStopComponent(g.getLogic());
                 new DieToSpawnComponent(g.getLogic());
-                new NoItemDropComponent(g.getLogic());
+                new NoKillitemDrop(g.getLogic());
     
                 new RespawnInventoryComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
@@ -596,7 +596,7 @@ public final class Practice extends JavaPlugin
                 new DieStopComponent(g.getLogic());
                 new StartInventoryComponent(g.getLogic());
                 new RespawnInventoryComponent(g.getLogic());
-                new NoItemDropComponent(g.getLogic());
+                new NoKillitemDrop(g.getLogic());
                 new SpawnProtComponent(g.getLogic(), 40,
                                        ChatColor.BLUE + "The Game starts in " + ChatColor.AQUA + "{Timer}s",
                                        ChatColor.BLUE + "The Game started, go fight!", false
@@ -927,7 +927,7 @@ public final class Practice extends JavaPlugin
                 new NoHungerComponent(g.getLogic());
                 new NoFallDamageComponent(g.getLogic());
                 new NoArrowPickupComponent(g.getLogic());
-                new NoItemDropComponent(g.getLogic());
+                new NoKillitemDrop(g.getLogic());
                 new NoMapBreakComponent(m);
                 new ElevatorComponent(m, Material.WOOL);
             }
@@ -1106,6 +1106,17 @@ public final class Practice extends JavaPlugin
             LobbyItem i = l.getItems().find(x -> x instanceof CustomGamemodeItem);
             if(i == null) return false;
             i.onClick(new PlayerInteractEvent(pp.getPlayer(), Action.RIGHT_CLICK_AIR, new ItemStack(Material.GOLD_SWORD), null, null));
+        }
+        else if(label.equalsIgnoreCase("Spectate"))
+        {
+            if(!(s instanceof Player)) return false;
+            PracticePlayer pp = PracticePlayer.getPlayer((Player) s);
+            String cmd = "practiceSpectate";
+            for(String arg : args)
+            {
+                cmd += " " + arg;
+            }
+            pp.executeBungeeCommand(cmd);
         }
         return false;
     }

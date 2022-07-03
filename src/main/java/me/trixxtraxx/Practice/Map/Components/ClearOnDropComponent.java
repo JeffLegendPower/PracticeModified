@@ -20,6 +20,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import me.TrixxTraxx.Linq.List;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ClearOnDropComponent extends MapComponent
 {
@@ -46,36 +47,47 @@ public class ClearOnDropComponent extends MapComponent
         Practice.log(4, "Drop Component Automatically added");
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = 2, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
     public void onEvent1(DropEvent e)
     {
+        boolean needStore = true;
+        if(stored.size() != 0) needStore = false;
         Practice.log(4, "Clearing Drop Area");
         for (Location loc:remove.getLocations(e.getlogic().getWorld()))
         {
-            ItemStorage store = new ItemStorage();
             Block b = loc.getBlock();
-            store.mat = b.getType();
-            store.data = b.getData();
-            stored.add(store);
+            if(needStore)
+            {
+                ItemStorage store = new ItemStorage();
+                store.mat = b.getType();
+                store.data = b.getData();
+                stored.add(store);
+            }
             b.setType(Material.AIR);
         }
     }
     
-    @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
+    @TriggerEvent(priority = 999, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
     @SuppressWarnings("deprecation")
     public void onEvent2(ResetEvent e)
     {
-        if(stored.size() == 0) return;
-        Practice.log(4, "Reseting Drop Area");
-        int i = 0;
-        for (Location loc:remove.getLocations(e.getlogic().getWorld()))
+        new BukkitRunnable()
         {
-            ItemStorage store = stored.get(i);
-            loc.getBlock().setType(store.mat);
-            loc.getBlock().setData(store.data);
-            i++;
-        }
-        stored.clear();
+            @Override
+            public void run()
+            {
+                if(stored.size() == 0) return;
+                Practice.log(4, "Reseting Drop Area");
+                int i = 0;
+                for(Location loc: remove.getLocations(e.getlogic().getWorld()))
+                {
+                    ItemStorage store = stored.get(i);
+                    loc.getBlock().setType(store.mat);
+                    loc.getBlock().setData(store.data);
+                    i++;
+                }
+            }
+        }.runTaskLater(Practice.Instance, 0);
     }
 }

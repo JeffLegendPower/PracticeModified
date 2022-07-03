@@ -3,6 +3,7 @@ package me.trixxtraxx.Practice.GameLogic.Components.Components;
 import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
+import me.trixxtraxx.Practice.GameLogic.SoloGameLogic.Events.ResetEvent;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.TriggerEvent;
 import net.md_5.bungee.api.ChatColor;
@@ -37,6 +38,7 @@ public class TNTFbComponent extends GameComponent
             event.getBlockPlaced().setType(Material.AIR);
             TNTPrimed tnt = event.getBlockPlaced().getWorld().spawn(event.getBlockPlaced().getLocation().add(.5, .5, .5), TNTPrimed.class);
             tnt.setFuseTicks(40);
+            entities.add(tnt);
         }
     }
     
@@ -48,10 +50,14 @@ public class TNTFbComponent extends GameComponent
         }
     }
     
+    private List<Entity> entities = new List<>();
+    
     @TriggerEvent(state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onTNT(EntityExplodeEvent event)
-    {
-        //TODO push player away from TNT
+    public void onTNTDMG(ResetEvent e){
+        entities.forEach(ent -> {
+            ent.remove();
+        });
+        entities.clear();
     }
     
     private int ticks = 20;
@@ -80,6 +86,7 @@ public class TNTFbComponent extends GameComponent
             }.runTaskLater(Practice.Instance, ticks);
             
             Fireball fireball = p.launchProjectile(Fireball.class);
+            entities.add(fireball);
             
             new BukkitRunnable(){
                 @Override
@@ -106,10 +113,15 @@ public class TNTFbComponent extends GameComponent
     public void OnFbExplode(EntityExplodeEvent e)
     {
         if(!(e.getEntity() instanceof Fireball)) return;
+        if(!entities.contains(e.getEntity())) return;
+        entities.remove(e.getEntity());
         Location loc = e.getLocation();
         HashMap<Entity, Vector> velocities = new HashMap<>();
         for (Entity en:e.getLocation().getWorld().getNearbyEntities(e.getLocation(), 20d,20d,20d))
         {
+            if(!(en  instanceof Player)) continue;
+            Player p = (Player) en;
+            if(!logic.getPlayers().contains(p)) continue;
             velocities.put(en, en.getVelocity());
         }
         

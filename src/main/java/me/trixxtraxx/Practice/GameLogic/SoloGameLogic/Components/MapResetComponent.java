@@ -104,6 +104,7 @@ public class MapResetComponent extends GameComponent
     @SuppressWarnings("deprecation")
     public void onResetAfter(ResetEvent e)
     {
+        blocks.reverse();
         for (BlockStorage store:blocks)
         {
             store.loc.getBlock().setType(store.mat);
