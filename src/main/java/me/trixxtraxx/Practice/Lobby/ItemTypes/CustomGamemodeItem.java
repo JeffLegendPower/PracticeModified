@@ -142,7 +142,7 @@ public class CustomGamemodeItem extends LobbyItem
                     interact.getDamager().sendMessage("§cPlease select a non solo Gamemode!");
                 }
                 String k = "";
-                boolean useCustomKit = Boolean.parseBoolean(sql.getOrStoreDefault("Practice_Challenge_CustomKit", "true"));
+                boolean useCustomKit = Boolean.parseBoolean(sql.getOrStoreDefault("Practice_Challenge_CustomKit", "false"));
                 if(useCustomKit)
                 {
                     k = challenger.getName();
@@ -264,7 +264,7 @@ public class CustomGamemodeItem extends LobbyItem
             inv.onClose(x -> {
                 PracticePlayer pp = PracticePlayer.getPlayer(inv.getPlayer());
                 //get kit
-                boolean useCustomKit = Boolean.parseBoolean(StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomKit", "true"));
+                boolean useCustomKit = Boolean.parseBoolean(StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomKit", "false"));
                 //get map
                 String map = StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomMap", "Random");
                 //start game, if not custom kit then use default kit
@@ -301,7 +301,7 @@ public class CustomGamemodeItem extends LobbyItem
         inv.setItem(16, new BetterItem(Material.BOOK).setDisplayName("§bToggle Custom Kit").setLore("§9Use the kit you made in the Kit Editing Area"));
         inv.lock(16);
 
-        boolean customKit = Boolean.parseBoolean(StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomKit", "true"));
+        boolean customKit = Boolean.parseBoolean(StringStorer.getPlayer(inv.getPlayer()).getOrStoreDefault("Practice_Challenge_CustomKit", "false"));
         if(customKit) inv.setItem(25, new BetterItem(Material.INK_SACK).NsetDurability((short) 10).setDisplayName("§9Custom Kit: §bEnabled"));
         else inv.setItem(25, new BetterItem(Material.INK_SACK).NsetDurability((short) 8).setDisplayName("§9Custom Kit: §bDisabled"));
 
