@@ -1,15 +1,12 @@
 package me.trixxtraxx.Practice.Lobby;
 
 import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
-import me.trixxtraxx.Practice.Practice;
-import me.trixxtraxx.Practice.SQL.PracticePlayer;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class LobbyItem
 {
@@ -20,18 +17,16 @@ public abstract class LobbyItem
         this.item = item;
         this.slot = slot;
     }
-    
-    public LobbyItem(ConfigurationSection section)
-    {
-        Practice.log(4, "Getting Item: " + section.getCurrentPath());
-        BetterItem item = new BetterItem(Material.valueOf(section.getString("Item.Material")));
-        if(section.contains("Item.Name")) item.setDisplayName(section.getString("Item.Name"));
-        if(section.contains("Item.Lore")) item.setLore(section.getStringList("Item.Lore"));
+
+    public LobbyItem(Material material, String name, @Nullable String lore, int slot) {
+        BetterItem item = new BetterItem(material);
+        item.setDisplayName(name);
+        item.setLore(lore);
         item.setUnbreakable(true);
         item.addItemFlag(ItemFlag.HIDE_ATTRIBUTES);
         item.addItemFlag(ItemFlag.HIDE_UNBREAKABLE);
         this.item = item;
-        this.slot = section.getInt("Item.Slot");
+        this.slot = slot;
     }
     
     public ItemStack getItem() {

@@ -1,27 +1,20 @@
 package me.trixxtraxx.Practice.SQL;
 
 import com.google.gson.Gson;
-import me.TrixxTraxx.InventoryAPI.Items.BetterItem;
+import me.TrixxTraxx.Linq.List;
 import me.TrixxTraxx.RestCommunicator.PluginAPI.MessageProvider;
-import me.trixxtraxx.Practice.Bungee.BungeeUtil;
 import me.trixxtraxx.Practice.Bungee.KitOrderUpdatePacket;
 import me.trixxtraxx.Practice.Bungee.Queue.QueueUpdatePacket;
-import me.trixxtraxx.Practice.ComponentClass;
-import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Practice;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import me.TrixxTraxx.Linq.List;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
 
 public class PracticePlayer
 {
@@ -34,8 +27,17 @@ public class PracticePlayer
     private boolean queriedKit = false;
     private Kit cachedKit = null;
     private boolean inQueue = false;
+    private Lobby lobby;
     
-    public PracticePlayer(int playerId, int kitId, String playerName, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, List<PlayerStats> stats)
+    public PracticePlayer(int playerId, int kitId, String playerName, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, List<PlayerStats> stats, Lobby lobby)
+    {
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.customKitOrders = customKitOrders;
+        this.stats = stats;
+        this.kitId = kitId;
+        this.lobby = lobby;
+    }
     {
         this.playerName = playerName;
         this.customKitOrders = customKitOrders;
@@ -136,8 +138,7 @@ public class PracticePlayer
         {
             this.inQueue = inQueue;
             Practice.log(4, "Player " + playerName + " is now " + (inQueue ? "in" : "out") + " queue");
-            Lobby l = Lobby.get(getPlayer().getWorld());
-            l.setInv(this);
+            lobby.setInv(this);
         }
     }
     public boolean isInQueue() {return inQueue;}

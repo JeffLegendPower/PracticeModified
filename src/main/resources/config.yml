@@ -1,20 +1,2 @@
 LogLevel: 2
-
-SQL:
-  Database: database
-  Host: localhost
-  Port: 3006
-  Username: root
-  Password: myCoolPassword
-
 SlimeLoader: "mysql"
-
-KitEditor:
-  enabled: true
-  Region:
-    x1: 30
-    x2: 30
-    y1: 0
-    y2: 100
-    z1: -30
-    z2: -30

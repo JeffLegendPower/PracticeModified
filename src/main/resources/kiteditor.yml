@@ -1,0 +1,9 @@
+enabled: true
+world: 'world'
+Region:
+  x1: -60
+  y1: 93
+  z1: 35.5
+  x2: -101
+  y2: 104
+  z2: -34.5

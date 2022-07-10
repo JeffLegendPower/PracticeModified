@@ -1,0 +1,21 @@
+enabled: true
+AddComponentItem:
+  ==: org.bukkit.inventory.ItemStack
+  type: WOOL
+  damage: 5
+RemoveComponentItem:
+  ==: org.bukkit.inventory.ItemStack
+  type: WOOL
+  damage: 14
+NextArrowItem:
+  ==: org.bukkit.inventory.ItemStack
+  type: ARROW
+BackArrowItem:
+  ==: org.bukkit.inventory.ItemStack
+  type: ARROW
+DescriptionItem:
+  ==: org.bukkit.inventory.ItemStack
+  type: BOOK
+BackToMenuItem:
+  ==: org.bukkit.inventory.ItemStack
+  type: BARRIER

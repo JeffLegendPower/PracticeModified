@@ -1,0 +1,242 @@
+world: 'world'
+name: 'Practice Lobby'
+spawn: 0.5,100,0.5,90,0
+maxRatedPlayers: 100
+canBreakBlocks: false
+canPlaceBlocks: false
+canDamageBlocks: false
+entityDamageEnabled: false
+AllowEditInventory: false
+canDropItems: false
+lockHunger: true
+lockWeather: true
+VoidOutHeight: 50
+blockedInventories:
+  - 'Crafting Table'
+  - 'Anvil'
+  - 'Chest'
+  - 'Enchanter'
+  - 'Ender Chest'
+  - 'Furnace'
+  - 'Dispenser'
+  - 'Droper'
+  - 'Hoper'
+launchpads:
+  1:
+    loc: -8.5,99,0.5,90,0
+    radius: 1
+    velo: -30,1.5,0
+  2:
+    loc: -64.5,89,9.5,45,0
+    radius: 1
+    velo: -4,1.8,4
+  3:
+    loc: -64.5,89,-8.5,45,0
+    radius: 1
+    velo: -4,1.8,-4
+
+Items:
+  Unranked:
+    Type: OPEN_MENU
+    Menu: Overview
+    Item:
+      Slot: 0
+      Material: IRON_SWORD
+      Name: '§9Play Unranked'
+  Ranked:
+    Type: OPEN_MENU
+    Menu: Overview_Ranked
+    Item:
+      Slot: 1
+      Material: DIAMOND_SWORD
+      Name: '§9Play Ranked'
+  Custom:
+    Type: CUSTOM_GAMEMODE
+    DefaultGamemode: UHC
+    Gamemodes:
+      BlockinPractice:
+        Maps:
+          - 'Blockin1'
+        DefaultKit: Blockin1
+        Solo: true
+
+        Material: BED
+        Name: '§9Blockin Practice'
+      BridgePractice:
+        Maps:
+          - 'Bridge1'
+        DefaultKit: Bridge1
+        Solo: true
+
+        Material: WOOL
+        Name: '§9Bridge Practice'
+      FbPractice:
+        Maps:
+          - 'JumpWorld'
+        DefaultKit: FbPractice
+        Solo: true
+
+        Material: FIREBALL
+        Name: '§9Fireball Jump Practice'
+      TNTPrac:
+        Maps:
+          - 'JumpWorld'
+        DefaultKit: TNTPrac
+        Solo: true
+
+        Material: TNT
+        Name: '§9TNT Jump Practice'
+      BedFight:
+        Maps:
+          - 'BedFight1'
+        DefaultKit: BedFight1
+        Solo: false
+
+        Material: BED
+        Name: '§9BedFight'
+      TopBridgeFight:
+        Maps:
+          - 'TopBridgeFight1'
+        DefaultKit: TopBridgeFight1
+        Solo: false
+
+        Material: WOOL
+        Name: '§9Top Bridge Fight'
+      InvisPractice:
+        Maps:
+          - 'ToxicInvisPractice'
+        DefaultKit: InvisPractice
+        Solo: false
+
+        Material: POTION
+        Name: '§9Invis Practice'
+      UHC:
+        Maps:
+          - 'Playground'
+          - 'Temple'
+          - 'Gothic'
+          - 'Haunt'
+        DefaultKit: UHC
+        Solo: false
+
+        Material: GOLDEN_APPLE
+        Name: '§9UHC'
+      Sumo:
+        Maps:
+          - 'Tropical'
+          - 'Fortress'
+          - 'Arctic'
+          - 'Volcano'
+          - 'Dojo'
+          - 'Sunken'
+          - 'Highland'
+          - 'Sahara'
+          - 'Tribal'
+          - 'Origin_Sumo'
+        DefaultKit: Sumo1
+        Solo: false
+
+        Material: SLIME_BALL
+        Name: '§9Sumo'
+      Boxxing:
+        Maps:
+          - 'Playground'
+          - 'Temple'
+          - 'Gothic'
+          - 'Haunt'
+        DefaultKit: Boxxing1
+        Solo: false
+
+        Material: DIAMOND_CHESTPLATE
+        Name: '§9Boxing'
+
+      NoDebuff:
+        Maps:
+          - 'Playground'
+          - 'Temple'
+          - 'Gothic'
+          - 'Haunt'
+        DefaultKit: nodebuff
+        Solo: false
+
+        Material: POTION
+        Name: '§9NoDebuff'
+
+      Classic:
+        Maps:
+          - 'Playground'
+          - 'Temple'
+          - 'Gothic'
+          - 'Haunt'
+        DefaultKit: classic
+        Solo: false
+
+        Material: IRON_SWORD
+        Name: '§9Classic'
+
+      Gapple:
+        Maps:
+          - 'Playground'
+          - 'Temple'
+          - 'Gothic'
+          - 'Haunt'
+        DefaultKit: gapple
+        Solo: false
+
+        Material: GOLDEN_APPLE
+        Name: '§9Gapple'
+
+      Combo:
+        Maps:
+          - 'Playground'
+          - 'Temple'
+          - 'Gothic'
+          - 'Haunt'
+        DefaultKit: combo
+        Solo: false
+
+        Material: GOLDEN_APPLE
+        Name: '§9Combo'
+        Data: 1
+
+      OneInAChamber:
+        Maps:
+          - 'CityChamber4'
+          - 'CityChamber8'
+        DefaultKit: Chamber
+        Solo: false
+
+        Material: BOW
+        Name: '§9One in the Chamber'
+
+
+    Item:
+      Slot: 2
+      Material: GOLD_SWORD
+      Name: '§9Challenge a Player'
+  Stats:
+    Type: OPEN_MENU
+    Menu: 'Stats'
+    Item:
+      Slot: 3
+      Material: EMERALD
+      Name: '§9Stats'
+  Leaderboard:
+    Type: OPEN_MENU
+    Menu: Leaderboard
+    Item:
+      Slot: 8
+      Material: BOOK
+      Name: '§9Leaderboard'
+  Parties:
+    Type: PARTIES
+    Item:
+      Slot: 6
+      Material: IRON_AXE
+      Name: '§9Create a Party'
+  Events:
+    Type: EVENTS
+    Item:
+      Slot: 7
+      Material: DIAMOND
+      Name: '§9Host a Event'

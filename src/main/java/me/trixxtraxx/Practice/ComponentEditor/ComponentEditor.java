@@ -50,17 +50,22 @@ public class ComponentEditor
     private static ItemStack AddComponent = new BetterItem(Material.WOOL).NsetDurability((short) 5).setDisplayName(ChatColor.GREEN + "Add Component").setLore(ChatColor.AQUA + "Drag a Component to here to add it");
     private static ItemStack BackToMenu = new BetterItem(Material.BARRIER).setDisplayName(ChatColor.RED + "Back to Menu").setLore(ChatColor.AQUA + "Go back to the Menu");
     private static HashMap<Class<? extends Component>, ItemStack> componentItems = new HashMap<>();
-    
-    public static void init(FileConfiguration conf)
-    {
+
+    private static boolean enabled = false;
+
+    static {
         componentItems.put(BedLayerComponent.class, new BetterItem(Material.BED));
         componentItems.put(BreakRegion.class, new BetterItem(Material.DIAMOND_PICKAXE));
         componentItems.put(ClearOnDropComponent.class, new BetterItem(Material.BARRIER));
         componentItems.put(NoMapBreakComponent.class, new BetterItem(Material.WOOD_PICKAXE).NsetDurability((short) 1));
         componentItems.put(PlaceRegion.class, new BetterItem(Material.WOOL));
     }
+
+    public static void enable() {
+        enabled = true;
+    }
     
-    public interface Save{
+    public interface Save {
         void save(List<Component> components);
     }
     
@@ -72,7 +77,10 @@ public class ComponentEditor
         this.currentComponent = null;
         this.save = save;
         this.editing = editing;
-        openComponentGui();
+        if (enabled)
+            openComponentGui();
+        else
+            player.sendMessage(ChatColor.RED + "The Component Editor is currently disabled.");
     }
     
     //Create a inventory with the following items:

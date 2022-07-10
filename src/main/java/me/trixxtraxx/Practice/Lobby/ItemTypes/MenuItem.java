@@ -2,18 +2,19 @@ package me.trixxtraxx.Practice.Lobby.ItemTypes;
 
 import me.trixxtraxx.Practice.Lobby.LobbyItem;
 import me.trixxtraxx.Practice.SQL.PracticePlayer;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class MenuItem extends LobbyItem
 {
     String menu;
-    public MenuItem(ConfigurationSection section)
-    {
-        super(section);
-        menu = section.getString("Menu");
+    public MenuItem(Material material, String name, @Nullable String lore, int slot, String menu) {
+        super(material, name, lore, slot);
+        this.menu = menu;
     }
     
     @Override

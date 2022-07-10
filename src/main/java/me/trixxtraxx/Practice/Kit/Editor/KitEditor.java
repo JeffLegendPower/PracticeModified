@@ -1,5 +1,6 @@
 package me.trixxtraxx.Practice.Kit.Editor;
 
+import me.TrixxTraxx.Linq.List;
 import me.trixxtraxx.Practice.Kit.Kit;
 import me.trixxtraxx.Practice.Lobby.Lobby;
 import me.trixxtraxx.Practice.Practice;
@@ -10,26 +11,24 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.ArrayList;
-import me.TrixxTraxx.Linq.List;
-
-public class KitEditor
-{
+public class KitEditor {
     private static KitEditor instance;
     private Region region;
     private List<Player> players = new List<>();
     private String world;
+    private Lobby lobby;
 
-    private KitEditor(Region r, String w)
+    private KitEditor(Region r, String w, Lobby lobby)
     {
         region = r;
         world = w;
+        this.lobby = lobby;
         Practice.log(4, "Kit Editor Created:\n" + r.getLocation1(Bukkit.getWorld("world")) + "\n" + r.getLocation2(Bukkit.getWorld("world")));
     }
-    public static void init(Region r, String w)
+    public static void init(Region r, String w, Lobby lobby)
     {
         if(hasInstance()) return;
-        instance = new KitEditor(r,w);
+        instance = new KitEditor(r,w, lobby);
     }
     public static boolean hasInstance(){return instance != null;}
     public static KitEditor getInstance(){return instance;}
@@ -74,9 +73,8 @@ public class KitEditor
         p.getActivePotionEffects().forEach(x -> p.removePotionEffect(x.getType()));
         p.sendMessage("§9You are no longer in the kit editing area!");
         p.sendMessage("§bYour kit has been saved!");
-        Lobby l = Lobby.get(Bukkit.getWorld("world"));
-        if(l != null){
-            l.setInv(pp);
+        if(lobby != null){
+            lobby.setInv(pp);
         }
     }
 
