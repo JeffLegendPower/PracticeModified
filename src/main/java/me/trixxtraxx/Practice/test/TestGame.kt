@@ -31,6 +31,7 @@ import me.trixxtraxx.Practice.Kit.Editor.Item.ItemEditor
 import me.trixxtraxx.Practice.Kit.Editor.KitEditor
 import me.trixxtraxx.Practice.Kit.Editor.Potion.PotionEditor
 import me.trixxtraxx.Practice.Kit.Kit
+import me.trixxtraxx.Practice.Lobby.ItemTypes.CustomGamemodeItem
 import me.trixxtraxx.Practice.Lobby.Lobby
 import me.trixxtraxx.Practice.Lobby.LobbyItem
 import me.trixxtraxx.Practice.Map.Components.*
