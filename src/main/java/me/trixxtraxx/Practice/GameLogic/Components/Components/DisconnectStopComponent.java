@@ -1,5 +1,7 @@
 package me.trixxtraxx.Practice.GameLogic.Components.Components;
 
+import me.trixxtraxx.Practice.GameLogic.DuelGameLogic.DuelGameLogic;
+import me.trixxtraxx.Practice.GameLogic.FFAGameLogic.FFALogic;
 import me.trixxtraxx.Practice.Practice;
 import me.trixxtraxx.Practice.GameLogic.Components.GameComponent;
 import me.trixxtraxx.Practice.GameLogic.GameLogic;
@@ -15,9 +17,20 @@ public class DisconnectStopComponent extends GameComponent
     }
     
     @TriggerEvent(priority = 1, state = TriggerEvent.CancelState.ENSURE_NOT_CANCEL)
-    public void onEvent(PlayerQuitEvent e)
-    {
-        Practice.log(3, "Stoping Game due to a disconnect");
-        logic.stop(true);
+    public void onEvent(PlayerQuitEvent e) {
+        Practice.log(3, "Stopping Game due to a disconnect");
+        if (logic instanceof DuelGameLogic) {
+            DuelGameLogic duelGameLogic = (DuelGameLogic) logic;
+            if (duelGameLogic.getP1().getUniqueId() == e.getPlayer().getUniqueId()) {
+                duelGameLogic.win(duelGameLogic.getP2(), true);
+            } else {
+                duelGameLogic.win(duelGameLogic.getP1(), true);
+            }
+        } else if (logic instanceof FFALogic) {
+            FFALogic ffaLogic = (FFALogic) logic;
+            ffaLogic.removePlayer(e.getPlayer(), true);
+        } else {
+            logic.stop(true);
+        }
     }
 }
