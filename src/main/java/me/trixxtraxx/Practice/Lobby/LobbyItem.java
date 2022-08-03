@@ -21,7 +21,7 @@ public abstract class LobbyItem
     public LobbyItem(Material material, String name, @Nullable String lore, int slot) {
         BetterItem item = new BetterItem(material);
         item.setDisplayName(name);
-        item.setLore(lore);
+        item.setLore(lore != null ? lore : "");
         item.setUnbreakable(true);
         item.addItemFlag(ItemFlag.HIDE_ATTRIBUTES);
         item.addItemFlag(ItemFlag.HIDE_UNBREAKABLE);
