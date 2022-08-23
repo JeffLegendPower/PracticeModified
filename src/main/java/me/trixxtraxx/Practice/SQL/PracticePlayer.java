@@ -15,11 +15,13 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class PracticePlayer
 {
     private static List<PracticePlayer> players = new List<>();
     private String playerName;
+    private UUID uniqueId;
     private int playerId;
     private HashMap<Integer, HashMap<Integer, Integer>> customKitOrders;
     private List<PlayerStats> stats;
@@ -29,28 +31,22 @@ public class PracticePlayer
     private boolean inQueue = false;
     private Lobby lobby;
     
-    public PracticePlayer(int playerId, int kitId, String playerName, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, List<PlayerStats> stats, Lobby lobby)
+    public PracticePlayer(int playerId, int kitId, String playerName, UUID uniqueId, HashMap<Integer, HashMap<Integer, Integer>> customKitOrders, List<PlayerStats> stats, Lobby lobby)
     {
         this.playerId = playerId;
         this.playerName = playerName;
+        this.uniqueId = uniqueId;
         this.customKitOrders = customKitOrders;
         this.stats = stats;
         this.kitId = kitId;
         this.lobby = lobby;
-    }
-    {
-        this.playerName = playerName;
-        this.customKitOrders = customKitOrders;
-        this.playerId = playerId;
-        this.stats = stats;
-        this.kitId = kitId;
     }
     
     public void resetKit(){
         queriedKit = false;
         cachedKit = null;
     }
-    public Player getPlayer(){return Bukkit.getPlayer(playerName);}
+    public Player getPlayer(){return Bukkit.getPlayer(uniqueId);}
     public Kit getKit()
     {
         if(queriedKit) return cachedKit;
@@ -215,8 +211,8 @@ public class PracticePlayer
         }
         return p;
     }
-    public static PracticePlayer getPlayer(Player p){
-        return players.find(x -> x.playerName.equalsIgnoreCase(p.getName()));
+    public static PracticePlayer getPlayer(Player p) {
+        return players.find(x -> x.uniqueId.equals(p.getUniqueId()));
     }
     public static void clearKitId(int kitId)
     {

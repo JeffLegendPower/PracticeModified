@@ -82,8 +82,8 @@ public final class Practice extends JavaPlugin
     //
     // GAMEMODES WILL BE STORED IN MYSQL, YOU WILL BE ABLE TO GET IT FROM A CONFIG FILE HOWEVER!
     // all slime worlds should also be stored in mysql for easier scalability!
-    // all the extensions should also store their data in mysql rather then in files, this is so you can easly create custom Gamemodes in the kit editor
-    // make a import from file function to import Gamemodes...
+    // all the extensions should also store their data in mysql rather than in files, this is so you can easly create custom Gamemodes in the kit editor
+    // make an import from file function to import Gamemodes...
     //
     // Kits:
     // - Kit editor inside a region or in a new world, probably inside a region, you can still have a tp to another world entering the region like that
@@ -115,7 +115,7 @@ public final class Practice extends JavaPlugin
     // Gamemode:
     // - by default it handles only very basic stuff
     // - you can add components too it, which makes it custimizable
-    // - Contains a Gameloop and a kit that isnt always the same
+    // - Contains a Gameloop and a kit that isn't always the same
     //
     // Gameloop:
     // - handles teams, modes are: solo, duels, x teams with x players, FFA
@@ -124,7 +124,7 @@ public final class Practice extends JavaPlugin
     //
     // Map:
     // - this will handle ONLY the map loading and preperation
-    // - will contains a SPAWN Component, that gets dictated by the Gameloop, different Gameloops have different spawn Components, closely tied to the gameloop
+    // - will contain a SPAWN Component, that gets dictated by the Gameloop, different Gameloops have different spawn Components, closely tied to the gameloop
     // - Component api to place shops and other stuff
     //
     // Kits:
@@ -159,6 +159,7 @@ public final class Practice extends JavaPlugin
     public static Practice Instance;
     public static int loglevel;
     public static WorldLoader worldLoader;
+    private Lobby lobby;
 
     @Override
     public void onEnable()
@@ -190,7 +191,7 @@ public final class Practice extends JavaPlugin
         );
 
         FileConfiguration lobbyConfig = deepConfig.getConfig("lobby");
-        Lobby lobby = initLobby(lobbyConfig);
+        lobby = initLobby(lobbyConfig);
 
         getServer().getPluginManager().registerEvents(new GameLogicListener(), this);
         getServer().getPluginManager().registerEvents(new CacheListener(), this);
@@ -373,5 +374,9 @@ public final class Practice extends JavaPlugin
                 launchpads,
                 ConfigLocation.deserialize(lobbyConfig.getString("spawn"))
         );
+    }
+
+    public Lobby getLobby() {
+        return lobby;
     }
 }
